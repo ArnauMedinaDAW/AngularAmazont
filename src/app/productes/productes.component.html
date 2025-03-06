@@ -1,0 +1,59 @@
+<main [ngClass]="{'dark': oscuro}">
+  @if(!isFromCategories){
+    <div class="slider-container">
+      <button 
+        class="slider-btn prev"
+        (click)="anteriorSlide()"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    
+      <div class="row">
+        @for(product of grupProductes; track product.id){
+
+          <div class="product-card" (click)="verDetalles(product)">
+            <img [src]="product.img" [alt]="product.name" class="product-image">
+            <div class="product-info">
+              <h3>{{ product.name }}</h3>
+              <div class="price-container">
+                <span class="price">{{ product.price }}</span>
+                <span class="discount">
+                  {{ product.rate }}/10
+                </span>
+              </div>
+            </div>
+          </div> 
+        }
+      </div>
+    
+      <button 
+        class="slider-btn next" 
+        (click)="seguentSlide()"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  }@else{
+
+    <div class="product-detail">
+      <div class="row">
+        <div class="col-3">
+          <img  [src]="product.img" [alt]="product.name">
+        </div>
+        <div class="col-6">
+          <h2>{{ product.name }}</h2>
+          <span class="price">{{ product.price }}€</span>
+          <hr class="mb-4">
+          <button class="add-to-cart">Añadir al carrito</button>
+        </div>
+      <p>{{ product.description }}</p>
+      <span class="rating">Valoración: {{ product.rate }}/10</span>
+      <hr>
+      </div>
+    </div>
+    
+  }
+
+
+</main>
+

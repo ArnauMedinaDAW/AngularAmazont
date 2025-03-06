@@ -1,0 +1,71 @@
+<main [ngClass]="{'dark': oscuro}">
+
+  
+  <div class="search-container">
+    <input type="text" placeholder="Productos tecnológicos..." class="search-input">
+    <button class="search-btn">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+  <div class="row">
+
+    <!-- Secció de categories -->
+    @for (categoria of categories; track categoria.id) {
+      <div class="col-4">
+        <div class="card mb-4 shadow-sm">
+          <p (click)="selectCategory(categoria)" style="cursor: pointer; font-weight: bold;">{{ categoria.name }}</p>
+          <div class="row">
+            @for (imatge of categoria.img; track imatge) {
+              <div class="col-4 mb-2">
+                <img [src]="imatge">
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    @if(selectedCategory){
+      
+      <div class="row">
+        <div class="col-12 mb-4 mt-4">
+        <h3>Productos en: {{ selectedCategory.name }}</h3>
+
+        </div>
+        <div class="mb-4"></div>
+        <div class="col-3">
+          <button class="btn btn-primary" (click)="sortByPrice('asc')">Ordenar por Precio Ascendente</button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-primary" (click)="sortByPrice('desc')">Ordenar por Precio Descendente</button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-primary" (click)="sortByRate('asc')">Ordenar por Valoración Ascendente</button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-primary" (click)="sortByRate('desc')">Ordenar por Valoración Descendente</button>
+        </div>
+      </div>
+      <div class="product-list row" >
+        @for (product of selectedCategory.product; track product.id) {
+          <div class="product-card col-3" (click)="goToProduct(product)"style="text-decoration: none; color: inherit; cursor: pointer;">
+          
+            <img [src]="product.img" [alt]="product.name">
+            <p class="product-name">{{ product.name }}</p>
+            <span class="product-price">{{ product.price }}€</span>
+            <span class="discount">
+              {{ product.rate }}/10
+            </span>
+            <p class="product-description">{{ product.description }}</p>
+        </div>
+        }
+        
+      </div>
+      
+    }
+
+    
+  </div>
+</main>
+
+  
+  
