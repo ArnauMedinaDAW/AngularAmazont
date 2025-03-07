@@ -1,4 +1,12 @@
 <main [ngClass]="{'dark': oscuro}">
+
+  <div class="search-container">
+    <input #searchInput type="text" placeholder="Productos tecnológicos..." class="search-input">
+    <button class="search-btn" (click)="buscarProducte(searchInput.value)">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+    
   @if(!isFromCategories){
     <div class="slider-container">
       <button 
@@ -38,7 +46,7 @@
     <div class="product-detail">
       <div class="row">
         <div class="col-3">
-          <img  [src]="product.img" [alt]="product.name">
+          <img  [src]="product.img" [alt]="product.name" class="producte-foto">
         </div>
         <div class="col-6">
           <h2>{{ product.name }}</h2>
@@ -56,4 +64,3 @@
 
 
 </main>
-

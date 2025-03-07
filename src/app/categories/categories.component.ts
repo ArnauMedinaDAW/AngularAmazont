@@ -17,6 +17,9 @@ export class CategoriesComponent {
 
   constructor(private router: Router) {}
   oscuro = input.required<boolean>();
+  
+  buscarText: string = '';
+
 
    categories: Categoria[] = [
     {
@@ -115,5 +118,4 @@ export class CategoriesComponent {
   goToProduct(product: Product) {
     this.router.navigate(['/productes'], { state: { product, isFromCategories: true } });
   }
-  
 }

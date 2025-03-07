@@ -6,6 +6,14 @@
   justify-content: center;
 }
 
+.search-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .dark .row {
   background-color: #121212;
 }
@@ -91,7 +99,7 @@
 }
 
 .product-image {
-  width: 100%;
+  max-width: 100%;
   height: 200px;
   object-fit: contain;
   border-radius: 8px;
@@ -188,15 +196,8 @@
     padding: 30px;
   }
   
-  .product-gallery {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .product-gallery img {
-    width: 700px;
+  .producte-foto {
+    max-width: 400px;
     height: auto;
     border-radius: 15px;
   }

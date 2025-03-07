@@ -14,6 +14,8 @@ export class ProductesComponent {
 
   product!: Product;
   isFromCategories: boolean = false;
+
+  buscarText: string = '';
   
 
   constructor(private router: Router) {
@@ -42,12 +44,13 @@ export class ProductesComponent {
     { id: 14, name: 'Silla Gamer Razer', price: 300, rate: 9, img: 'https://tiendaselectron.com/131653-large_default/silla-gaming-razer-enki-rz38-03720100-r3g1.jpg', description: 'Silla ergonómica para gamers con ajuste lumbar y diseño premium.' },
     { id: 15, name: 'Teclado Mecánico Logitech', price: 100, rate: 9, img: 'https://img.pccomponentes.com/articles/35/354236/1409-logitech-g-pro-teclado-mecanico-gaming-rgb-switch-gx-azul.jpg', description: 'Teclado mecánico con retroiluminación RGB y switches precisos.' }
 ];
+productsFiltrats = this.products;
 
   index = 0;
   productesPerSlide = 5;
 
   get grupProductes() {
-    return this.products.slice(this.index, this.index + this.productesPerSlide);
+    return this.productsFiltrats.slice(this.index, this.index + this.productesPerSlide);
   }
 
   seguentSlide() {
@@ -69,5 +72,14 @@ export class ProductesComponent {
       this.product = product;
       this.isFromCategories = true;
   }
+ 
+   buscarProducte(filtre : string) {
+
+    const valor = filtre.toLowerCase().trim();
+    this.productsFiltrats = this.products.filter(product => 
+      product.name.toLowerCase().includes(valor)
+    );
+
+  } 
  
 }
