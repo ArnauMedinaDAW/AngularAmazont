@@ -1,13 +1,20 @@
 <main [ngClass]="{'dark': oscuro}">
-
-  <div class="search-container">
-    <input #searchInput type="text" placeholder="Productos tecnológicos..." class="search-input">
-    <button class="search-btn" (click)="buscarProducte(searchInput.value)">
-      <i class="fas fa-search"></i>
-    </button>
-  </div>
     
   @if(!isFromCategories){
+
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input #searchInput type="text" class="form-control" placeholder="Buscar productos tecnológicos...">
+            <button class="btn btn-primary" (click)="buscarProducte(searchInput.value)">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="slider-container">
       <button 
         class="slider-btn prev"
@@ -43,23 +50,43 @@
     </div>
   }@else{
 
-    <div class="product-detail">
+    <div class="product-detail container mt-4">
       <div class="row">
-        <div class="col-3">
-          <img  [src]="product.img" [alt]="product.name" class="producte-foto">
+        <div class="col-md-4 text-center">
+          <img [src]="product.img" [alt]="product.name" class="img-fluid rounded shadow">
         </div>
-        <div class="col-6">
+    
+        <div class="col-md-8">
           <h2>{{ product.name }}</h2>
-          <span class="price">{{ product.price }}€</span>
-          <hr class="mb-4">
-          <button class="add-to-cart">Añadir al carrito</button>
+          <span class="price fs-4 text-primary fw-bold">{{ product.price }}€</span>
+          <p class="mt-3">{{ product.description }}</p>
+          <span class="rating fw-semibold mr-5">⭐ Valoración: {{ product.rate }}/10</span>
+          <hr>
+          <button class="btn btn-success">
+            <i class="fas fa-cart-plus"></i> Añadir al carrito
+          </button>
         </div>
-      <p>{{ product.description }}</p>
-      <span class="rating">Valoración: {{ product.rate }}/10</span>
-      <hr>
+      </div>
+    
+      <div class="mt-5">
+        <h4>Comentarios</h4>
+        <div class="list-group">
+
+          @for(comment of comments; track comment){
+            <div class="list-group-item">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-user-circle fa-2x me-2 text-secondary"></i>
+                <h6 class="mb-0">{{ comment.user }}</h6>
+              </div>
+              <p class="mb-1">{{ comment.text }}</p>
+              <small class="text-muted">Valoración: ⭐ {{ comment.rating }}/5</small>
+            </div>
+          }
+
+          
+        </div>
       </div>
     </div>
-    
   }
 
 

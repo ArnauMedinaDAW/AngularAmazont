@@ -227,12 +227,6 @@
     line-height: 1.6;
   }
   
-  .product-info .availability {
-    font-size: 22px;
-    color: #2c3e50;
-    margin-bottom: 15px;
-  }
-  
   .product-info .rating {
     font-size: 30px;
     color: #f39c12;
@@ -260,8 +254,51 @@
     font-size: 30px;
   }
 
-  .rating{
-    font-size: 25px;
-    text-align: center;
-    margin-left: 500px;
+
+
+  .dark {
+    background-color: #121212;
+    color: #e0e0e0;
   }
+  
+  .dark .mt-5 {
+    margin-top: 2rem;
+  }
+  
+  .dark h4 {
+    color: #ffffff;
+  }
+  
+  .dark .list-group {
+    background-color: #1e1e1e;
+    border-radius: 5px;
+  }
+  
+  .dark .list-group-item {
+    background-color: #242424;
+    border: 1px solid #333;
+    color: #e0e0e0;
+  }
+  
+  .dark .d-flex {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dark .fas.fa-user-circle {
+    color: #bbb;
+  }
+  
+  .dark h6 {
+    color: #ffffff;
+  }
+  
+  .dark p {
+    color: #cccccc;
+  }
+  
+  .dark .text-muted {
+    color: #aaaaaa !important;
+  }
+  
+

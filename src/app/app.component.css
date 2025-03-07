@@ -179,8 +179,7 @@ header {
 }
 
 .dark .categories-menu {
-  background-color: #333;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  background-color: #1e1e1e;
 }
 
 .menu-item {
@@ -197,6 +196,7 @@ header {
 
 
 .menu-section {
+  width: 400px;
   margin-top: 1rem;
   border-top: 1px solid #ddd;
   padding-top: 1rem;
@@ -211,8 +211,8 @@ header {
 }
 
 .banner-image {
-  width: 100%;
-  max-height: 600px;
+  width: 300px;
+  height: 400px;
   object-fit: contain;
 }
 

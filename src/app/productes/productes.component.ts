@@ -44,6 +44,13 @@ export class ProductesComponent {
     { id: 14, name: 'Silla Gamer Razer', price: 300, rate: 9, img: 'https://tiendaselectron.com/131653-large_default/silla-gaming-razer-enki-rz38-03720100-r3g1.jpg', description: 'Silla ergonómica para gamers con ajuste lumbar y diseño premium.' },
     { id: 15, name: 'Teclado Mecánico Logitech', price: 100, rate: 9, img: 'https://img.pccomponentes.com/articles/35/354236/1409-logitech-g-pro-teclado-mecanico-gaming-rgb-switch-gx-azul.jpg', description: 'Teclado mecánico con retroiluminación RGB y switches precisos.' }
 ];
+
+comments = [
+  { user: 'Carlos García', text: 'Muy buenos auriculares, el sonido es excelente.', rating: 5 },
+  { user: 'María López', text: 'La batería dura bastante, aunque esperaba más graves.', rating: 4 },
+  { user: 'Juan Pérez', text: 'Cómodos y de buena calidad, pero un poco caros.', rating: 4 }
+];
+
 productsFiltrats = this.products;
 
   index = 0;
