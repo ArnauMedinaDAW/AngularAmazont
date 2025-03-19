@@ -1,0 +1,92 @@
+<main [ngClass]="{'dark': oscuro}">
+  <header>
+    <div class="header-left">
+      <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
+      <button class="settings-btn img">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+
+    <div class="header-right margin">
+      <button class="cart-btn img">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+      <div class="auth-buttons">
+        <button class="sign-in">Sign in</button>
+        <button class="register">Register</button>
+      </div>
+      <div class="theme-switch ms-3" id="themeSwitch" (click)="canviarTema()">
+        <span class="switch-label">Oscuro</span>
+        <div class="switch">
+          <div class="slider"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+
+  <div class="row mt-5">
+    <div class="col-3">
+      <div class="content-container">
+        <div class="categories-menu">
+          <!--
+          <div class="menu-item">
+            <span>Portátiles</span>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="menu-item">
+            <span>Monitores</span>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="menu-item ">
+            <span>Componentes</span>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+          <div class="menu-item">
+            <span>Televisores</span>
+            <i class="fas fa-chevron-right"></i>
+          </div> -->
+
+          <div class="menu-section">
+            <div class="menu-item" routerLink="categories">
+              <span >TODAS LAS CATEGORÍAS</span>
+              <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item" routerLink="productes">
+              <span >TODOS LOS PRODUCTOS</span>
+              <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item">
+              <img src="banner.png" alt="Black Friday Banner" class="banner-image">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-9 mt-3">
+      <router-outlet (activate)="onActivate($event)"></router-outlet>
+    </div>
+  </div>
+
+  <footer>
+    <div class="contact-info">
+      <div class="info-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>123 Anywhere St.</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-phone"></i>
+        <span>123-456-7890</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-envelope"></i>
+        <span>contacto  amazont.es</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-globe"></i>
+        <span>www.amazont.es</span>
+      </div>
+    </div>
+  </footer>
+</main>
