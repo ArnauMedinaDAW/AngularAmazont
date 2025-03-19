@@ -1,6 +1,6 @@
-<main [ngClass]="{'dark': oscuro}">
+<app-menu-inici></app-menu-inici>
 
-  
+<main [ngClass]="{'dark': oscuro}">
 
   <div class="row">
 
@@ -20,7 +20,7 @@
       </div>
     }
     @if(selectedCategory){
-      
+
       <div class="row">
         <div class="col-12 mb-4 mt-4">
         <h3>Productos en: {{ selectedCategory.name }}</h3>
@@ -43,7 +43,7 @@
       <div class="product-list row" >
         @for (product of selectedCategory.product; track product.id) {
           <div class="product-card col-3" (click)="goToProduct(product)"style="text-decoration: none; color: inherit; cursor: pointer;">
-          
+
             <img [src]="product.img" [alt]="product.name">
             <p class="product-name">{{ product.name }}</p>
             <span class="product-price">{{ product.price }}€</span>
@@ -53,14 +53,13 @@
             <p class="product-description">{{ product.description }}</p>
         </div>
         }
-        
+
       </div>
-      
+
     }
 
-    
+
   </div>
 </main>
 
-  
-  
+

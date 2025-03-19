@@ -1,5 +1,7 @@
+<app-menu-inici></app-menu-inici>
+
 <main [ngClass]="{'dark': oscuro}">
-    
+
   @if(!isFromCategories){
 
     <div class="container mt-4">
@@ -16,13 +18,13 @@
     </div>
 
     <div class="slider-container">
-      <button 
+      <button
         class="slider-btn prev"
         (click)="anteriorSlide()"
       >
         <i class="fas fa-chevron-left"></i>
       </button>
-    
+
       <div class="row">
         @for(product of grupProductes; track product.id){
 
@@ -37,12 +39,12 @@
                 </span>
               </div>
             </div>
-          </div> 
+          </div>
         }
       </div>
-    
-      <button 
-        class="slider-btn next" 
+
+      <button
+        class="slider-btn next"
         (click)="seguentSlide()"
       >
         <i class="fas fa-chevron-right"></i>
@@ -55,7 +57,7 @@
         <div class="col-md-4 text-center">
           <img [src]="product.img" [alt]="product.name" class="img-fluid rounded shadow">
         </div>
-    
+
         <div class="col-md-8">
           <h2>{{ product.name }}</h2>
           <span class="price fs-4 text-primary fw-bold">{{ product.price }}€</span>
@@ -67,7 +69,7 @@
           </button>
         </div>
       </div>
-    
+
       <div class="mt-5">
         <h4>Comentarios</h4>
         <div class="list-group">
@@ -83,7 +85,7 @@
             </div>
           }
 
-          
+
         </div>
       </div>
     </div>

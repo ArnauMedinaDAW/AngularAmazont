@@ -2,11 +2,12 @@ import { Component,input } from '@angular/core';
 import { Product } from '../intarfaces/Product.intarface';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { MenuIniciComponent } from "../menu-inici/menu-inici.component";
 
 @Component({
   selector: 'app-productes',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, MenuIniciComponent],
   templateUrl: './productes.component.html',
   styleUrl: './productes.component.css'
 })
@@ -16,7 +17,7 @@ export class ProductesComponent {
   isFromCategories: boolean = false;
 
   buscarText: string = '';
-  
+
 
   constructor(private router: Router) {
     const navigation = this.router.getCurrentNavigation();
@@ -79,14 +80,14 @@ productsFiltrats = this.products;
       this.product = product;
       this.isFromCategories = true;
   }
- 
+
    buscarProducte(filtre : string) {
 
     const valor = filtre.toLowerCase().trim();
-    this.productsFiltrats = this.products.filter(product => 
+    this.productsFiltrats = this.products.filter(product =>
       product.name.toLowerCase().includes(valor)
     );
 
-  } 
- 
+  }
+
 }
