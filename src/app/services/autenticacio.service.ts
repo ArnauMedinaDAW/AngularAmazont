@@ -6,8 +6,18 @@ import { Usuari } from '../intarfaces/Usuari.interface';
 })
 export class AutenticacioService {
   private usuaris: Usuari[] = [
-    { correo: 'admin@admin.com', password: 'admin123' },
-    { correo: 'user@user.com', password: 'user123' }
+    { 
+      nom: 'Arnau',
+      correo: 'arnau@admin.com', 
+      password: 'arnau123',
+      rol: 'admin'
+    },
+    { 
+      nom: 'David',
+      correo: 'david@admin.com', 
+      password: 'david123',
+      rol: 'admin'
+    }
   ];
 
   constructor() { }

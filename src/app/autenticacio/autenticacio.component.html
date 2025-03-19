@@ -1,83 +1,156 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="text-center">{{ mostrarRegistro ? 'Registro' : 'Iniciar Sesión' }}</h3>
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="text-center mb-0">{{ mostrarRegistro ? 'Registro de Usuario' : 'Iniciar Sesión' }}</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           @if(!mostrarRegistro){
-            <form (ngSubmit)="onSubmit()">
-              <div class="mb-3">
-                <label for="correo" class="form-label">Correo electrónico</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  id="correo" 
-                  [(ngModel)]="usuari.correo" 
-                  name="correo" 
-                  required>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="mb-4">
+                <label for="correo" class="form-label fw-bold">Correo electrónico</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="correo" 
+                    formControlName="correo"
+                    placeholder="ejemplo@correo.com">
+                </div>
+                @if(loginControls['correo'].errors?.['required'] && loginControls['correo'].touched){
+                  <div class="text-danger mt-1 small">El correo es requerido</div>
+                }
+                @if(loginControls['correo'].errors?.['email'] && loginControls['correo'].touched){
+                  <div class="text-danger mt-1 small">Ingrese un correo válido</div>
+                }
               </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input 
-                  type="password" 
-                  class="form-control" 
-                  id="password" 
-                  [(ngModel)]="usuari.password" 
-                  name="password" 
-                  required>
+              <div class="mb-4">
+                <label for="password" class="form-label fw-bold">Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="password" 
+                    formControlName="password"
+                    placeholder="••••••••">
+                </div>
+                @if(loginControls['password'].errors?.['required'] && loginControls['password'].touched){
+                  <div class="text-danger mt-1 small">La contraseña es requerida</div>
+                }
+                @if(loginControls['password'].errors?.['minlength'] && loginControls['password'].touched){
+                  <div class="text-danger mt-1 small">La contraseña debe tener al menos 6 caracteres</div>
+                }
               </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg" [disabled]="!loginForm.valid">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                </button>
               </div>
             </form>
           } @else {
-            <form (ngSubmit)="onRegistro()">
-              <div class="mb-3">
-                <label for="correoRegistro" class="form-label">Correo electrónico</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  id="correoRegistro" 
-                  [(ngModel)]="usuari.correo" 
-                  name="correo" 
-                  required>
+            <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
+              <div class="mb-4">
+                <label for="nom" class="form-label fw-bold">Nombre</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nom" 
+                    formControlName="nom"
+                    placeholder="Tu nombre">
+                </div>
+                @if(registroControls['nom'].errors?.['required'] && registroControls['nom'].touched){
+                  <div class="text-danger mt-1 small">El nombre es requerido</div>
+                }
+                @if(registroControls['nom'].errors?.['minlength'] && registroControls['nom'].touched){
+                  <div class="text-danger mt-1 small">El nombre debe tener al menos 3 caracteres</div>
+                }
               </div>
-              <div class="mb-3">
-                <label for="passwordRegistro" class="form-label">Contraseña</label>
-                <input 
-                  type="password" 
-                  class="form-control" 
-                  id="passwordRegistro" 
-                  [(ngModel)]="usuari.password" 
-                  name="password" 
-                  required>
+              <div class="mb-4">
+                <label for="correoRegistro" class="form-label fw-bold">Correo electrónico</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="correoRegistro" 
+                    formControlName="correo"
+                    placeholder="ejemplo@correo.com">
+                </div>
+                @if(registroControls['correo'].errors?.['required'] && registroControls['correo'].touched){
+                  <div class="text-danger mt-1 small">El correo es requerido</div>
+                }
+                @if(registroControls['correo'].errors?.['email'] && registroControls['correo'].touched){
+                  <div class="text-danger mt-1 small">Ingrese un correo válido</div>
+                }
               </div>
-              <div class="mb-3">
-                <label for="confirmarPassword" class="form-label">Confirmar Contraseña</label>
-                <input 
-                  type="password" 
-                  class="form-control" 
-                  id="confirmarPassword" 
-                  [(ngModel)]="confirmarPassword" 
-                  name="confirmarPassword" 
-                  required>
+              <div class="mb-4">
+                <label for="passwordRegistro" class="form-label fw-bold">Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="passwordRegistro" 
+                    formControlName="password"
+                    placeholder="••••••••">
+                </div>
+                @if(registroControls['password'].errors?.['required'] && registroControls['password'].touched){
+                  <div class="text-danger mt-1 small">La contraseña es requerida</div>
+                }
+                @if(registroControls['password'].errors?.['minlength'] && registroControls['password'].touched){
+                  <div class="text-danger mt-1 small">La contraseña debe tener al menos 6 caracteres</div>
+                }
               </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-success">Registrarse</button>
+              <div class="mb-4">
+                <label for="confirmarPassword" class="form-label fw-bold">Confirmar Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="confirmarPassword" 
+                    formControlName="confirmarPassword"
+                    placeholder="••••••••">
+                </div>
+                @if(registroForm.errors?.['mismatch'] && registroControls['confirmarPassword'].touched){
+                  <div class="text-danger mt-1 small">Las contraseñas no coinciden</div>
+                }
+              </div>
+              <div class="mb-4">
+                <label for="rol" class="form-label fw-bold">Rol</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                  <select 
+                    class="form-select" 
+                    id="rol" 
+                    formControlName="rol">
+                    <option value="usuari">Usuario</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-lg" [disabled]="!registroForm.valid">
+                  <i class="bi bi-person-plus me-2"></i>Registrarse
+                </button>
               </div>
             </form>
           }
 
           @if(errorMessage){
-            <div class="alert alert-danger mt-3">
-              {{ errorMessage }}
+            <div class="alert alert-danger mt-4">
+              <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
             </div>
           }
 
-          <div class="d-grid mt-3">
-            <button (click)="toggleFormulario()" class="btn btn-secondary">
+          <div class="d-grid gap-2 mt-4">
+            <button (click)="toggleFormulario()" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-repeat me-2"></i>
               {{ mostrarRegistro ? 'Volver al Login' : 'Registrar nuevo usuario' }}
             </button>
           </div>
