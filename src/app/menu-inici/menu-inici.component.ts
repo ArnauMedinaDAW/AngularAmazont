@@ -15,9 +15,6 @@ export class MenuIniciComponent {
   oscuro = false;
   componentActual: any = null;
 
-  // constructor(private router: Router) {
-  //   this.router.navigate(['/productes'], { state: { isFromCategories: false } });
-  // }
 
   canviarTema() {
     this.oscuro = !this.oscuro;

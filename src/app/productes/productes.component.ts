@@ -11,12 +11,11 @@ import { Router } from '@angular/router';
   styleUrl: './productes.component.css'
 })
 export class ProductesComponent {
-
   product!: Product;
   isFromCategories: boolean = false;
-
   buscarText: string = '';
-  
+  quantity: number = 1;
+  showReviews: boolean = false;
 
   constructor(private router: Router) {
     const navigation = this.router.getCurrentNavigation();
@@ -25,6 +24,7 @@ export class ProductesComponent {
       this.isFromCategories = navigation.extras.state['isFromCategories'] || false;
     }
   }
+
   oscuro = input.required<boolean>();
 
   products: Product[] = [
@@ -89,4 +89,19 @@ productsFiltrats = this.products;
 
   } 
  
+  toggleReviews() {
+    this.showReviews = !this.showReviews;
+  }
+
+  incrementQuantity() {
+    if (this.quantity < 10) {
+      this.quantity++;
+    }
+  }
+
+  decrementQuantity() {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
 }
