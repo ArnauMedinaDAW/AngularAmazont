@@ -5,22 +5,41 @@ import { Usuari } from '../intarfaces/Usuari.interface';
   providedIn: 'root'
 })
 export class AutenticacioService {
-  private usuaris: Usuari[] = [
-    { 
-      nom: 'Arnau',
-      correo: 'arnau@admin.com', 
-      password: 'arnau123',
-      rol: 'admin'
-    },
-    { 
-      nom: 'David',
-      correo: 'david@admin.com', 
-      password: 'david123',
-      rol: 'admin'
-    }
-  ];
+  private readonly STORAGE_KEY = 'usuaris';
+  private usuaris: Usuari[] = [];
 
-  constructor() { }
+  constructor() {
+    // Cargar usuarios del localStorage al iniciar
+    this.cargarUsuaris();
+  }
+
+  private cargarUsuaris() {
+    const usuarisGuardats = localStorage.getItem(this.STORAGE_KEY);
+    if (usuarisGuardats) {
+      this.usuaris = JSON.parse(usuarisGuardats);
+    } else {
+      // Si no hay usuarios guardados, inicializar con los usuarios por defecto
+      this.usuaris = [
+        { 
+          nom: 'Arnau',
+          correo: 'arnau@admin.com', 
+          password: 'arnau123',
+          rol: 'admin'
+        },
+        { 
+          nom: 'David',
+          correo: 'david@admin.com', 
+          password: 'david123',
+          rol: 'admin'
+        }
+      ];
+      this.guardarUsuaris();
+    }
+  }
+
+  private guardarUsuaris() {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuaris));
+  }
 
   getUsuaris(): Usuari[] {
     return this.usuaris;
@@ -37,6 +56,7 @@ export class AutenticacioService {
       return false;
     }
     this.usuaris.push(usuari);
+    this.guardarUsuaris();
     return true;
   }
 } 
