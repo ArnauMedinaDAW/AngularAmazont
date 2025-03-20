@@ -5,30 +5,33 @@ import { AutenticacioComponent } from './autenticacio/autenticacio.component';
 import { MenuIniciComponent } from './menu-inici/menu-inici.component';
 
 export const routes: Routes = [
-
-    {
-        path:'Menu',
-        title:'Menu',
-        component:MenuIniciComponent,
-        children: [
-          {
-            path: 'productes',
-            title: 'productes',
-            component: ProductesComponent
-          }
-        ,
-{
-            path: 'categories',
-            title: 'categories',
-            component: CategoriesComponent
-}
-        ]
-
-    },
-    {
-      path:'autenticacio',
-      title:'autenticacio',
-      component:AutenticacioComponent,
+  {
+    path: '',
+    redirectTo: 'autenticacio',
+    pathMatch: 'full'
   },
-
+  {
+    path: 'autenticacio',
+    title: 'Autenticacio',
+    component: AutenticacioComponent
+  },
+  {
+    path: 'menu',
+    component: MenuIniciComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'productes',
+        pathMatch: 'full'
+      },
+      {
+        path: 'productes',
+        component: ProductesComponent
+      },
+      {
+        path: 'categories',
+        component: CategoriesComponent
+      }
+    ]
+  }
 ];

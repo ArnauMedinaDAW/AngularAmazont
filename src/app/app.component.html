@@ -1,1 +1,23 @@
+<header>
+    <div class="header-left">
+      <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
+      <button class="settings-btn img">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+
+    <div class="header-right margin">
+      <button class="cart-btn img">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+      <div class="theme-switch ms-3" id="themeSwitch" (click)="canviarTema()">
+        <span class="switch-label">Oscuro</span>
+        <div class="switch">
+          <div class="slider"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
 <router-outlet></router-outlet>
+

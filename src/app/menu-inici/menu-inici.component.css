@@ -1,22 +1,5 @@
 @media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.5rem 1rem;
-    gap: 0.5rem;
-  }
-
-  .header-left {
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  .header-right {
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-  }
+  
 
   .auth-buttons {
     display: flex;
@@ -55,16 +38,44 @@
   max-width: 100vw;
   overflow-x: hidden;
 }
-.dark .settings-btn i,
-.dark .cart-btn i {
-  color: white;
-}
-.dark{
+
+.dark {
   background-color: #1e1e1e;
   color: #e0e0e0;
 }
+
 main {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  width: 100%;
+  margin: 0;
+  padding: 0;
   flex: 1;
+}
+
+.col-3 {
+  padding: 0;
+  margin: 0;
+  width: 250px;
+  position: fixed;
+  height: calc(100vh - 60px);
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  overflow-y: auto;
+}
+
+.col-9 {
+  padding: 0;
+  margin-left: 250px;
+  flex: 1;
+}
+
+.content-container {
   width: 100%;
   padding-bottom: 80px;
   overflow-x: hidden;
@@ -73,60 +84,12 @@ main {
 .dark main {
   background-color: #1e1e1e;
 }
+
 .dark img {
   color: white;
 }
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #f8f9fa;
-}
-
-.dark header {
-  background-color: #333;
-}
-
-.header-left, .header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 
 .dark .header-left, .dark .header-right {
-  color: #e0e0e0;
-}
-
-.logo {
-  height: 60px;
-  width: auto;
-  object-fit: contain;
-}
-
-.settings-btn, .cart-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-}
-
-.auth-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.sign-in, .register {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: #f8f9fa;
-  cursor: pointer;
-}
-
-.dark .sign-in, .dark .register {
-  border-color: #444;
-  background-color: #333;
   color: #e0e0e0;
 }
 
@@ -164,13 +127,6 @@ header {
   color: #e0e0e0;
 }
 
-.content-container {
-  display: flex;
-  gap: 2rem;
-  padding: 0.5rem 2rem;
-  margin-top: -3rem;
-}
-
 .categories-menu {
   width: 250px;
   background-color: #fff;
@@ -190,10 +146,9 @@ header {
   cursor: pointer;
 }
 
-.menu-item:hover, .menu-item.active {
+.menu-item:hover {
   background-color: #f0f0f0;
 }
-
 
 .menu-section {
   width: 400px;

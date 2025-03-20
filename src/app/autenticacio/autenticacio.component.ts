@@ -8,7 +8,7 @@ import { Usuari } from '../intarfaces/Usuari.interface';
 @Component({
   selector: 'app-autenticacio',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass,ReactiveFormsModule],
   templateUrl: './autenticacio.component.html',
   styleUrl: './autenticacio.component.css'
 })
@@ -17,6 +17,8 @@ export class AutenticacioComponent implements OnInit {
   registroForm!: FormGroup;
   errorMessage: string = '';
   mostrarRegistro: boolean = false;
+  mostrarPassword: boolean = false;
+  mostrarPasswordRegistro: boolean = false;
 
   constructor(
     private router: Router,
@@ -49,31 +51,40 @@ export class AutenticacioComponent implements OnInit {
     if (this.loginForm.valid) {
       const { correo, password } = this.loginForm.value;
       if (this.autenticacioService.validarUsuari(correo, password)) {
-        this.router.navigate(['/productes']);
+        this.router.navigate(['menu']);
       } else {
         this.errorMessage = 'Credenciales incorrectas';
       }
     }
   }
-
+  
   onRegistro() {
     if (this.registroForm.valid) {
       const { nom, correo, password, rol } = this.registroForm.value;
       const usuari: Usuari = { nom, correo, password, rol };
 
       if (this.autenticacioService.registrarUsuari(usuari)) {
-        this.router.navigate(['/productes']);
+        this.router.navigate(['menu']);
       } else {
         this.errorMessage = 'El correo ya está registrado';
       }
     }
   }
 
+  //Canviar la visibilitat del formulari
   toggleFormulario() {
     this.mostrarRegistro = !this.mostrarRegistro;
     this.errorMessage = '';
     this.loginForm.reset();
     this.registroForm.reset();
+  }
+
+  togglePasswordVisibility() {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
+  togglePasswordVisibilityRegistro() {
+    this.mostrarPasswordRegistro = !this.mostrarPasswordRegistro;
   }
 
   get loginControls() {
