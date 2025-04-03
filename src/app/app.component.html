@@ -1,4 +1,5 @@
-<header>
+<div [ngClass]="{'dark': oscuro}">
+  <header>
     <div class="header-left">
       <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
       <button class="settings-btn img">
@@ -11,8 +12,8 @@
         <i class="fas fa-shopping-cart"></i>
         <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
       </button>
-      <div class="theme-switch ms-3" id="themeSwitch" (click)="canviarTema()">
-        <span class="switch-label">Oscuro</span>
+      <div class="theme-switch ms-3" id="themeSwitch" [class.active]="oscuro" (click)="canviarTema()">
+        <span class="switch-label">{{ oscuro ? 'Oscuro' : 'Claro' }}</span>
         <div class="switch">
           <div class="slider"></div>
         </div>
@@ -20,5 +21,6 @@
     </div>
   </header>
 
-<router-outlet></router-outlet>
+  <router-outlet (activate)="onActivate($event)"></router-outlet>
+</div>
 

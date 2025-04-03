@@ -96,6 +96,14 @@ header {
   transition: all 0.3s ease;
 }
 
+.theme-switch.active .switch {
+  background-color: #007bff;
+}
+
+.theme-switch.active .slider {
+  transform: translateX(20px);
+}
+
 .dark .theme-switch {
   color: #e0e0e0;
 }
