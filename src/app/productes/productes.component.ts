@@ -1,12 +1,13 @@
-import { Component,input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Product } from '../intarfaces/Product.intarface';
-import { NgClass } from '@angular/common';
+import { NgClass, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { CarritoService } from '../services/carrito.service';
 
 @Component({
   selector: 'app-productes',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, CommonModule],
   templateUrl: './productes.component.html',
   styleUrl: './productes.component.css'
 })
@@ -17,7 +18,10 @@ export class ProductesComponent {
   quantity: number = 1;
   showReviews: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private carritoService: CarritoService
+  ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       this.product = navigation.extras.state['product'];
@@ -103,5 +107,11 @@ productsFiltrats = this.products;
     if (this.quantity > 1) {
       this.quantity--;
     }
+  }
+  
+  addToCart(product: Product, quantity: number) {
+    this.carritoService.addToCart(product, quantity);
+    // Show a confirmation message
+    alert(`${product.name} añadido al carrito`);
   }
 }

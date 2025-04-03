@@ -1,17 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { NgClass } from '@angular/common';
+import { NgClass, CommonModule } from '@angular/common';
+import { CarritoService } from './services/carrito.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NgClass],
+  imports: [RouterOutlet, RouterLink, NgClass, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   oscuro = false;
   componentActual: any = null;
+  cartCount = 0;
+
+  constructor(private carritoService: CarritoService) {}
+
+  ngOnInit() {
+    this.carritoService.cart$.subscribe(() => {
+      this.cartCount = this.carritoService.getCartCount();
+    });
+  }
 
   canviarTema() {
     this.oscuro = !this.oscuro;

@@ -3,6 +3,7 @@ import { CategoriesComponent } from './categories/categories.component';
 import { ProductesComponent } from './productes/productes.component';
 import { AutenticacioComponent } from './autenticacio/autenticacio.component';
 import { MenuIniciComponent } from './menu-inici/menu-inici.component';
+import { CarritoComponent } from './carrito/carrito.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,10 @@ export const routes: Routes = [
       {
         path: 'categories',
         component: CategoriesComponent
+      },
+      {
+        path: 'carrito',
+        component: CarritoComponent
       }
     ]
   }

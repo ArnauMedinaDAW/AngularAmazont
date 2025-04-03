@@ -97,13 +97,14 @@
             </ul>
           </div>
 
+          <!-- Find the product-actions div around line 100 and update the button -->
           <div class="product-actions">
             <div class="quantity-selector">
               <button class="btn-quantity" (click)="decrementQuantity()">-</button>
               <span class="quantity-value">{{quantity}}</span>
               <button class="btn-quantity" (click)="incrementQuantity()">+</button>
             </div>
-            <button class="btn-add-cart">
+            <button class="btn-add-cart" (click)="addToCart(product, quantity)">
               <i class="bi bi-cart-plus"></i>
               Añadir al carrito
             </button>

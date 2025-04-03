@@ -7,8 +7,9 @@
     </div>
 
     <div class="header-right margin">
-      <button class="cart-btn img">
+      <button class="cart-btn img" [routerLink]="['/menu/carrito']">
         <i class="fas fa-shopping-cart"></i>
+        <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
       </button>
       <div class="theme-switch ms-3" id="themeSwitch" (click)="canviarTema()">
         <span class="switch-label">Oscuro</span>
