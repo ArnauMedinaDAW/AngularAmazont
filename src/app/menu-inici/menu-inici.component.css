@@ -251,3 +251,33 @@ footer {
 .dark .theme-switch.active .slider {
   transform: translateX(20px);
 }
+
+
+/* Button styling and animations */
+.menu-btn {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  border-radius: 8px;
+  padding: 12px 24px;
+}
+
+.menu-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.menu-btn.active {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Dark mode adjustments */
+.dark .menu-btn {
+  background-color: #343a40;
+  border-color: #343a40;
+}
+
+.dark .menu-btn.active {
+  background-color: #212529;
+  border-color: #212529;
+}

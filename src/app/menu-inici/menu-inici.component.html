@@ -1,13 +1,21 @@
 <main [ngClass]="{'dark': oscuro}">
-  <div class="row">
-    <div class="menu-container">
-      <div class="menu-buttons">
-        <button class="menu-btn" routerLink="productes" routerLinkActive="active">
-          <span>TODOS LOS PRODUCTOS</span>
-        </button>
-        <button class="menu-btn" routerLink="categories" routerLinkActive="active">
-          <span>TODAS LAS CATEGORÍAS</span>
-        </button>
+  <div class="container">
+    <div class="row">
+      <div class="menu-container py-3">
+        <div class="menu-buttons d-flex justify-content-center gap-4">
+          <button class="menu-btn btn btn-primary btn-lg shadow-sm mr-4" 
+                  routerLink="productes" 
+                  routerLinkActive="active">
+            <i class="fas fa-box-open me-2"></i>
+            <span>TODOS LOS PRODUCTOS</span>
+          </button>
+          <button class="menu-btn btn btn-primary btn-lg shadow-sm" 
+                  routerLink="categories" 
+                  routerLinkActive="active">
+            <i class="fas fa-tags me-2"></i>
+            <span>TODAS LAS CATEGORÍAS</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
