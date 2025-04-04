@@ -9,7 +9,7 @@
         <div class="alert alert-info">
           <i class="bi bi-info-circle me-2"></i>Tu carrito está vacío
         </div>
-        <button class="btn btn-primary" (click)="continueShopping()">
+        <button class="btn btn-primary" (click)="continuarComprant()">
           <i class="bi bi-arrow-left me-2"></i>Continuar comprando
         </button>
       } @else {
@@ -41,15 +41,15 @@
                       <td class="text-center align-middle">
                         <div class="d-flex justify-content-center">
                           <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="updateQuantity(item, item.quantity - 1)"
+                                  (click)="actualitzarQuantitat(item, item.quantity - 1)"
                                   [disabled]="item.quantity <= 1">
                             <i class="bi bi-dash"></i>
                           </button>
                           <input type="number" class="form-control mx-2" style="width: 60px;" 
                                  min="1" max="10" [(ngModel)]="item.quantity" 
-                                 (change)="updateQuantity(item, item.quantity)">
+                                 (change)="actualitzarQuantitat(item, item.quantity)">
                           <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="updateQuantity(item, item.quantity + 1)"
+                                  (click)="actualitzarQuantitat(item, item.quantity + 1)"
                                   [disabled]="item.quantity >= 10">
                             <i class="bi bi-plus"></i>
                           </button>
@@ -59,7 +59,7 @@
                         {{ (item.product.price * item.quantity) | currency:'EUR' }}
                       </td>
                       <td class="text-center align-middle">
-                        <button class="btn btn-sm btn-danger" (click)="removeItem(item.product.id)">
+                        <button class="btn btn-sm btn-danger" (click)="eliminarProducte(item.product.id)">
                           <i class="bi bi-trash"></i>
                         </button>
                       </td>
@@ -74,10 +74,10 @@
         <div class="row">
           <div class="col-md-6">
             <div class="d-flex gap-2">
-              <button class="btn btn-outline-primary" (click)="continueShopping()">
+              <button class="btn btn-outline-primary" (click)="continuarComprant()">
                 <i class="bi bi-arrow-left me-2"></i>Continuar comprando
               </button>
-              <button class="btn btn-outline-danger" (click)="clearCart()">
+              <button class="btn btn-outline-danger" (click)="buidarCarret()">
                 <i class="bi bi-trash me-2"></i>Vaciar carrito
               </button>
             </div>
@@ -100,7 +100,7 @@
                   <span>Total:</span>
                   <span>{{ (total + shippingCost) | currency:'EUR' }}</span>
                 </div>
-                <button class="btn btn-success w-100" (click)="checkout()">
+                <button class="btn btn-success w-100" (click)="finalitzarCompra()">
                   <i class="bi bi-credit-card me-2"></i>Proceder al pago
                 </button>
               </div>

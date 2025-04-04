@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.carritoService.cart$.subscribe(() => {
-      this.cartCount = this.carritoService.getCartCount();
+      this.cartCount = this.carritoService.obtenirQuantitatCarret();
     });
     
     // Check if dark mode was previously set

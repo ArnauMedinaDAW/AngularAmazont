@@ -110,7 +110,7 @@ productsFiltrats = this.products;
   }
   
   addToCart(product: Product, quantity: number) {
-    this.carritoService.addToCart(product, quantity);
+    this.carritoService.afegirAlCarret(product, quantity);
     // Show a confirmation message
     alert(`${product.name} añadido al carrito`);
   }

@@ -18,10 +18,10 @@ export class CarritoService {
   cart$ = this.cartSubject.asObservable();
   
   constructor() {
-    this.loadCart();
+    this.carregarCarret();
   }
   
-  private loadCart() {
+  private carregarCarret() {
     const savedCart = localStorage.getItem(this.STORAGE_KEY);
     if (savedCart) {
       this.cartItems = JSON.parse(savedCart);
@@ -29,12 +29,12 @@ export class CarritoService {
     }
   }
   
-  private saveCart() {
+  private guardarCarret() {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.cartItems));
     this.cartSubject.next(this.cartItems);
   }
   
-  addToCart(product: Product, quantity: number = 1) {
+  afegirAlCarret(product: Product, quantity: number = 1) {
     const existingItem = this.cartItems.find(item => item.product.id === product.id);
     
     if (existingItem) {
@@ -43,37 +43,37 @@ export class CarritoService {
       this.cartItems.push({ product, quantity });
     }
     
-    this.saveCart();
+    this.guardarCarret();
   }
   
-  removeFromCart(productId: number) {
+  eliminarDelCarret(productId: number) {
     this.cartItems = this.cartItems.filter(item => item.product.id !== productId);
-    this.saveCart();
+    this.guardarCarret();
   }
   
-  updateQuantity(productId: number, quantity: number) {
+  actualitzarQuantitat(productId: number, quantity: number) {
     const item = this.cartItems.find(item => item.product.id === productId);
     if (item) {
       item.quantity = quantity;
-      this.saveCart();
+      this.guardarCarret();
     }
   }
   
-  clearCart() {
+  buidarCarret() {
     this.cartItems = [];
-    this.saveCart();
+    this.guardarCarret();
   }
   
-  getCartItems(): CartItem[] {
+  obtenirElementsCarret(): CartItem[] {
     return this.cartItems;
   }
   
-  getCartTotal(): number {
+  obtenirTotalCarret(): number {
     return this.cartItems.reduce((total, item) => 
       total + (item.product.price * item.quantity), 0);
   }
   
-  getCartCount(): number {
+  obtenirQuantitatCarret(): number {
     return this.cartItems.reduce((count, item) => count + item.quantity, 0);
   }
 }

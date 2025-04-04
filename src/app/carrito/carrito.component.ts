@@ -2,14 +2,13 @@ import { Component, OnInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CarritoService, CartItem } from '../services/carrito.service';
 import { FormsModule } from '@angular/forms';
-import { MenuIniciComponent } from '../menu-inici/menu-inici.component';
 import { Router } from '@angular/router';
 import { AutenticacioService } from '../services/autenticacio.service';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [CommonModule, FormsModule, MenuIniciComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './carrito.component.html',
   styleUrl: './carrito.component.css'
 })
@@ -27,43 +26,50 @@ export class CarritoComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    this.loadCartItems();
+    this.carregarElementsCarret();
     this.carritoService.cart$.subscribe(() => {
-      this.loadCartItems();
+      this.carregarElementsCarret();
     });
   }
   
-  loadCartItems(): void {
-    this.cartItems = this.carritoService.getCartItems();
-    this.calculateTotal();
+  // Carrega els elements del carret
+  carregarElementsCarret(): void {
+    this.cartItems = this.carritoService.obtenirElementsCarret();
+    this.calcularTotal();
   }
   
-  calculateTotal(): void {
-    this.total = this.carritoService.getCartTotal();
+  // Calcula el total de la compra
+  calcularTotal(): void {
+    this.total = this.carritoService.obtenirTotalCarret();
   }
   
-  updateQuantity(item: CartItem, newQuantity: number): void {
-    if (newQuantity > 0 && newQuantity <= 10) {
-      this.carritoService.updateQuantity(item.product.id, newQuantity);
+  // Actualitza la quantitat d'un producte
+  actualitzarQuantitat(item: CartItem, novaQuantitat: number): void {
+    if (novaQuantitat > 0 && novaQuantitat <= 10) {
+      this.carritoService.actualitzarQuantitat(item.product.id, novaQuantitat);
     }
   }
   
-  removeItem(productId: number): void {
-    this.carritoService.removeFromCart(productId);
+  // Elimina un producte del carret
+  eliminarProducte(productId: number): void {
+    this.carritoService.eliminarDelCarret(productId);
   }
   
-  clearCart(): void {
-    this.carritoService.clearCart();
+  // Buida tot el carret
+  buidarCarret(): void {
+    this.carritoService.buidarCarret();
   }
   
-  checkout(): void {
-    // Here you would implement the checkout logic
-    alert('¡Gracias por tu compra!');
-    this.carritoService.clearCart();
+  // Finalitza la compra
+  finalitzarCompra(): void {
+    // Aquí s'implementaria la lògica de pagament
+    alert('Gràcies per la teva compra!');
+    this.carritoService.buidarCarret();
     this.router.navigate(['/menu/productes']);
   }
   
-  continueShopping(): void {
+  // Continua comprant
+  continuarComprant(): void {
     this.router.navigate(['/menu/productes']);
   }
 }
