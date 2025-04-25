@@ -41,8 +41,7 @@
       </div>
       <div class="product-list row" >
         @for (product of selectedCategory.product; track product.id) {
-          <div class="product-card col-3" (click)="goToProduct(product)"style="text-decoration: none; color: inherit; cursor: pointer;">
-
+          <div class="product-card col-3" (click)="goToProduct(product)" style="text-decoration: none; color: inherit; cursor: pointer;">
             <img [src]="product.img" [alt]="product.name">
             <p class="product-name">{{ product.name }}</p>
             <span class="product-price">{{ product.price }}€</span>
@@ -50,9 +49,8 @@
               {{ product.rate }}/10
             </span>
             <p class="product-description">{{ product.description }}</p>
-        </div>
+          </div>
         }
-
       </div>
 
     }

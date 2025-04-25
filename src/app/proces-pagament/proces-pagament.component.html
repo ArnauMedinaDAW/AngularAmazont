@@ -1,0 +1,188 @@
+<div [ngClass]="{'dark': oscuro}" class="payment-process-container py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h3 class="mb-4"><i class="fas fa-credit-card me-2"></i>Proceso de Pago</h3>
+        
+        @if (paymentSuccess) {
+          <div class="payment-success text-center py-5">
+            <div class="success-animation mb-4">
+              <div class="checkmark-circle">
+                <div class="background"></div>
+                <div class="checkmark draw"></div>
+              </div>
+            </div>
+            <h2 class="mb-3">¡Pago realizado con éxito!</h2>
+            <p class="mb-4">Gracias por tu compra. Recibirás un correo electrónico con los detalles de tu pedido.</p>
+            <div class="spinner-border text-primary" role="status">
+            </div>
+            <p class="mt-2">Redirigiendo a la tienda...</p>
+          </div>
+        } @else {
+          <div class="row">
+            <!-- Order summary -->
+            <div class="col-md-4 order-md-2 mb-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-3">Resumen del pedido</h5>
+                  
+                  @for (item of cartItems; track item.product.id) {
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>{{ item.product.name }} x{{ item.quantity }}</span>
+                      <span>{{ (item.product.price * item.quantity) | currency:'EUR' }}</span>
+                    </div>
+                  }
+                  
+                  <hr>
+                  
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>{{ total | currency:'EUR' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Gastos de envío:</span>
+                    <span>{{ shippingCost | currency:'EUR' }}</span>
+                  </div>
+                  <hr>
+                  <div class="d-flex justify-content-between mb-3 fw-bold">
+                    <span>Total:</span>
+                    <span>{{ (total + shippingCost) | currency:'EUR' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Payment form -->
+            <div class="col-md-8 order-md-1">
+              @if (processingPayment) {
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary mb-3" role="status">
+                  </div>
+                  <h4>Procesando tu pago</h4>
+                  <p>Por favor, espera un momento mientras procesamos tu pago...</p>
+                </div>
+              } @else {
+                <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+                  <!-- Shipping address -->
+                  <h5 class="mb-3">Dirección de envío</h5>
+                  <div class="row g-3 mb-4">
+                    <div class="col-12">
+                      <label for="fullName" class="form-label">Nombre completo</label>
+                      <input type="text" class="form-control" id="fullName" formControlName="fullName">
+                      @if (paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched) {
+                        <div class="text-danger mt-1">Nombre completo es requerido</div>
+                      }
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="address" class="form-label">Dirección</label>
+                      <input type="text" class="form-control" id="address" formControlName="address" placeholder="Calle, número, piso...">
+                      @if (paymentForm.get('address')?.invalid && paymentForm.get('address')?.touched) {
+                        <div class="text-danger mt-1">Dirección es requerida</div>
+                      }
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <label for="city" class="form-label">Ciudad</label>
+                      <input type="text" class="form-control" id="city" formControlName="city">
+                      @if (paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched) {
+                        <div class="text-danger mt-1">Ciudad es requerida</div>
+                      }
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <label for="postalCode" class="form-label">Código postal</label>
+                      <input type="text" class="form-control" id="postalCode" formControlName="postalCode">
+                      @if (paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched) {
+                        <div class="text-danger mt-1">Código postal válido es requerido (5 dígitos)</div>
+                      }
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="country" class="form-label">País</label>
+                      <input type="text" class="form-control" id="country" formControlName="country">
+                      @if (paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched) {
+                        <div class="text-danger mt-1">País es requerido</div>
+                      }
+                    </div>
+                  </div>
+                  
+                  <!-- Payment method -->
+                  <h5 class="mb-3">Método de pago</h5>
+                  <div class="mb-4">
+                    <div class="form-check mb-2" *ngFor="let method of paymentMethods">
+                      <input class="form-check-input" type="radio" [id]="method" formControlName="paymentMethod" [value]="method">
+                      <label class="form-check-label" [for]="method">
+                        {{ method }}
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <!-- Credit card details -->
+                  @if (showCreditCardForm) {
+                    <div class="credit-card-form mb-4">
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label for="cardNumber" class="form-label">Número de tarjeta</label>
+                          <input type="text" class="form-control" id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456">
+                          @if (paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched) {
+                            <div class="text-danger mt-1">Número de tarjeta válido es requerido (16 dígitos)</div>
+                          }
+                        </div>
+                        
+                        <div class="col-12">
+                          <label for="cardName" class="form-label">Nombre en la tarjeta</label>
+                          <input type="text" class="form-control" id="cardName" formControlName="cardName">
+                          @if (paymentForm.get('cardName')?.invalid && paymentForm.get('cardName')?.touched) {
+                            <div class="text-danger mt-1">Nombre en la tarjeta es requerido</div>
+                          }
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <label for="expiryDate" class="form-label">Fecha de expiración</label>
+                          <input type="text" class="form-control" id="expiryDate" formControlName="expiryDate" placeholder="MM/AA">
+                          @if (paymentForm.get('expiryDate')?.invalid && paymentForm.get('expiryDate')?.touched) {
+                            <div class="text-danger mt-1">Fecha de expiración es requerida</div>
+                          }
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <label for="cvv" class="form-label">CVV</label>
+                          <input type="text" class="form-control" id="cvv" formControlName="cvv" placeholder="123">
+                          @if (paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched) {
+                            <div class="text-danger mt-1">CVV válido es requerido (3-4 dígitos)</div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  
+                  <!-- Terms and conditions -->
+                  <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="acceptTerms" formControlName="acceptTerms">
+                    <label class="form-check-label" for="acceptTerms">
+                      Acepto los términos y condiciones
+                    </label>
+                    @if (paymentForm.get('acceptTerms')?.invalid && paymentForm.get('acceptTerms')?.touched) {
+                      <div class="text-danger mt-1">Debes aceptar los términos y condiciones</div>
+                    }
+                  </div>
+                  
+                  <!-- Submit buttons -->
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" (click)="cancelPayment()">
+                      <i class="fas fa-arrow-left me-2"></i>Volver al carrito
+                    </button>
+                    <button type="submit" class="btn btn-success" [disabled]="paymentForm.invalid">
+                      <i class="fas fa-check me-2"></i>Confirmar compra
+                    </button>
+                  </div>
+                </form>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

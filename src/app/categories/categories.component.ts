@@ -2,14 +2,14 @@ import { Component,input } from '@angular/core';
 import { Categoria } from '../intarfaces/Categoria.interface';
 import { RouterOutlet, RouterLink} from '@angular/router';
 import { Router } from '@angular/router';
-import { NgClass } from '@angular/common';
+import { NgClass, CommonModule } from '@angular/common';
 import { Product } from '../intarfaces/Product.intarface';
 import { MenuIniciComponent } from "../menu-inici/menu-inici.component";
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [NgClass, MenuIniciComponent],
+  imports: [NgClass, MenuIniciComponent, RouterLink, RouterOutlet, CommonModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'
 })
@@ -117,6 +117,7 @@ export class CategoriesComponent {
     }
   }
   goToProduct(product: Product) {
-    this.router.navigate(['/productes'], { state: { product, isFromCategories: true } });
+    console.log('Navegando a producto:', product);
+    this.router.navigate(['/menu/productes'], { state: { product, isFromCategories: true } });
   }
 }

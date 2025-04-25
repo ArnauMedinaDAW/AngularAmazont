@@ -4,11 +4,12 @@ import { CarritoService, CartItem } from '../services/carrito.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AutenticacioService } from '../services/autenticacio.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterOutlet],
   templateUrl: './carrito.component.html',
   styleUrl: './carrito.component.css'
 })
@@ -61,8 +62,19 @@ export class CarritoComponent implements OnInit {
   }
   
   // Finalitza la compra
+  iniciarProcesPagament(): void {
+    // Navigate to payment process
+    this.router.navigate(['/menu/carrito/pagament'], { 
+      state: { 
+        cartItems: this.cartItems,
+        total: this.total,
+        shippingCost: this.shippingCost
+      } 
+    });
+  }
+  
   finalitzarCompra(): void {
-    // Aquí s'implementaria la lògica de pagament
+    // This method will be called from the payment process component
     alert('Gràcies per la teva compra!');
     this.carritoService.buidarCarret();
     this.router.navigate(['/menu/productes']);

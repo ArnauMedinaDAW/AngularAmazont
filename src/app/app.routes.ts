@@ -4,6 +4,7 @@ import { ProductesComponent } from './productes/productes.component';
 import { AutenticacioComponent } from './autenticacio/autenticacio.component';
 import { MenuIniciComponent } from './menu-inici/menu-inici.component';
 import { CarritoComponent } from './carrito/carrito.component';
+import { ProcesPagamentComponent } from './proces-pagament/proces-pagament.component';
 
 export const routes: Routes = [
   {
@@ -35,7 +36,13 @@ export const routes: Routes = [
       },
       {
         path: 'carrito',
-        component: CarritoComponent
+        component: CarritoComponent,
+        children: [
+          {
+            path: 'pagament',
+            component: ProcesPagamentComponent
+          }
+        ]
       }
     ]
   }

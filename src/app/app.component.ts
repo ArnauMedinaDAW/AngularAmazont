@@ -22,7 +22,6 @@ export class AppComponent implements OnInit {
       this.cartCount = this.carritoService.obtenirQuantitatCarret();
     });
     
-    // Check if dark mode was previously set
     const savedTheme = localStorage.getItem('darkMode');
     if (savedTheme === 'true') {
       this.oscuro = true;
@@ -33,15 +32,12 @@ export class AppComponent implements OnInit {
   canviarTema() {
     this.oscuro = !this.oscuro;
     
-    // Save theme preference
     localStorage.setItem('darkMode', this.oscuro.toString());
 
-    // Update child components
     if (this.componentActual && 'oscuro' in this.componentActual) {
       this.componentActual.oscuro = this.oscuro;
     }
 
-    // Update switch appearance
     const botoSwitch = document.getElementById('themeSwitch');
     if (this.oscuro) {
       botoSwitch?.classList.add('active');
@@ -49,7 +45,6 @@ export class AppComponent implements OnInit {
       botoSwitch?.classList.remove('active');
     }
     
-    // Apply theme to body for global styles
     if (this.oscuro) {
       document.body.classList.add('dark');
     } else {
