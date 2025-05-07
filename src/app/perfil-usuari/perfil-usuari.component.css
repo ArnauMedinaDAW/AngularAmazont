@@ -1,0 +1,617 @@
+/* Light mode styles */
+.profile-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: none;
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item.active {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.border-dashed {
+  border-style: dashed;
+  border-width: 2px;
+  border-color: #dee2e6;
+}
+
+/* Dark mode styles */
+.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark .card {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+.dark .list-group-item {
+  background-color: #1e1e1e;
+  border-color: #333;
+  color: #e0e0e0;
+}
+
+.dark .list-group-item:hover:not(.active) {
+  background-color: #2c2c2c;
+}
+
+.dark .list-group-item.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.dark .form-control {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+.dark .form-control:focus {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+}
+
+.dark .table {
+  color: #e0e0e0;
+}
+
+.dark .table-hover tbody tr:hover {
+  background-color: #2c2c2c;
+}
+
+.dark .border-dashed {
+  border-color: #444;
+}
+
+.dark .text-muted {
+  color: #aaa !important;
+}
+
+.dark .btn-outline-primary {
+  color: #9ecbff;
+  border-color: #9ecbff;
+}
+
+.dark .btn-outline-primary:hover {
+  background-color: #2a5485;
+  color: #e0e0e0;
+}
+
+.dark .btn-outline-danger {
+  color: #ff9999;
+  border-color: #ff9999;
+}
+
+.dark .btn-outline-danger:hover {
+  background-color: #662222;
+  color: #fff;
+}
+
+.contenedor-principal {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contenedor-principal.dark {
+  background-color: #222;
+  color: #eee;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.seccion {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dark .seccion {
+  background-color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.dark h2 {
+  border-bottom-color: #444;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.dark input {
+  background-color: #444;
+  border-color: #555;
+  color: #eee;
+}
+
+.error-message {
+  color: #d9534f;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block;
+}
+
+.dark .error-message {
+  color: #ff6b6b;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.mensaje-exito {
+  color: #28a745;
+  margin-top: 10px;
+}
+
+.dark .mensaje-exito {
+  color: #5cb85c;
+}
+
+/* Estilos para pedidos */
+.pedidos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.pedido-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.dark .pedido-card {
+  border-color: #555;
+}
+
+/* Estilos para métodos de pago */
+.metodos-pago-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.metodo-pago-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  position: relative;
+}
+
+.dark .metodo-pago-card {
+  border-color: #555;
+}
+
+.badge-predeterminado {
+  background-color: #28a745;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.metodo-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pedidos-container,
+  .metodos-pago-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Main container styles */
+:host {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #343a40;
+  font-size: 2.2rem;
+  font-weight: 600;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* Section styles */
+.seccion {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.seccion:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+h2 {
+  color: #495057;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: #007bff;
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #495057;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  margin-top: 5px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+  font-weight: 500;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
+  background-color: #0069d9;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.mensaje-exito {
+  color: #28a745;
+  background-color: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+/* Pedidos styles */
+.pedidos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.pedido-card {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pedido-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pedido-card h3 {
+  margin-top: 0;
+  color: #343a40;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pedido-card p {
+  margin: 8px 0;
+  color: #6c757d;
+}
+
+details {
+  margin: 15px 0;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #495057;
+  padding: 8px 0;
+}
+
+summary:hover {
+  color: #007bff;
+}
+
+.pedido-card ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.pedido-card li {
+  margin-bottom: 5px;
+}
+
+/* Métodos de pago styles */
+.metodos-pago-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.metodo-pago-card {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  background-color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.metodo-pago-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metodo-pago-card h3 {
+  margin-top: 0;
+  color: #343a40;
+  font-size: 1.2rem;
+}
+
+.badge-predeterminado {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.metodo-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.metodo-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .pedidos-container,
+  .metodos-pago-container {
+    grid-template-columns: 1fr;
+  }
+
+  .seccion {
+    padding: 20px 15px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Dark mode styles */
+:host.dark {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.dark h1 {
+  color: #f8f9fa;
+  border-bottom-color: #495057;
+}
+
+.dark .seccion {
+  background-color: #495057;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark h2 {
+  color: #e9ecef;
+  border-bottom-color: #6c757d;
+}
+
+.dark label {
+  color: #e9ecef;
+}
+
+.dark input {
+  background-color: #6c757d;
+  border-color: #495057;
+  color: #f8f9fa;
+}
+
+.dark input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.dark .pedido-card,
+.dark .metodo-pago-card {
+  background-color: #495057;
+  border-color: #6c757d;
+}
+
+.dark .pedido-card h3,
+.dark .metodo-pago-card h3 {
+  color: #f8f9fa;
+}
+
+.dark .pedido-card p {
+  color: #ced4da;
+}
+
+.dark summary {
+  color: #e9ecef;
+}
+
+.dark summary:hover {
+  color: #80bdff;
+}
+
+/* Animation for success message */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mensaje-exito {
+  animation: fadeIn 0.3s ease-out forwards;
+}

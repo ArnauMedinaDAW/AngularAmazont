@@ -5,6 +5,7 @@ import { AutenticacioComponent } from './autenticacio/autenticacio.component';
 import { MenuIniciComponent } from './menu-inici/menu-inici.component';
 import { CarritoComponent } from './carrito/carrito.component';
 import { ProcesPagamentComponent } from './proces-pagament/proces-pagament.component';
+import { PerfilUsuariComponent } from './perfil-usuari/perfil-usuari.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,10 @@ export const routes: Routes = [
       {
         path: 'categories',
         component: CategoriesComponent
+      },
+      {
+        path: 'perfil',
+        component: PerfilUsuariComponent
       },
       {
         path: 'carrito',

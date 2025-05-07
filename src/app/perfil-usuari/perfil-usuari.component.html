@@ -1,0 +1,175 @@
+<!-- <div class="contenedor-principal" [ngClass]="{'dark': oscuro()}"> -->
+  <h1>Perfil de Usuario</h1>
+
+  <!-- Información personal -->
+  <section class="seccion">
+    <h2>Información Personal</h2>
+    <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+      <div class="form-group">
+        <label>Nombre:
+          <input formControlName="nombre" />
+          @if (perfilForm.get('nombre')?.invalid && perfilForm.get('nombre')?.touched) {
+            <span class="error-message">Nombre inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Email:
+          <input formControlName="email" type="email" />
+          @if (perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched) {
+            <span class="error-message">Email inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono:
+          <input formControlName="telefono" type="tel" />
+          @if (perfilForm.get('telefono')?.invalid && perfilForm.get('telefono')?.touched) {
+            <span class="error-message">Teléfono inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Dirección:
+          <input formControlName="direccion" />
+          @if (perfilForm.get('direccion')?.invalid && perfilForm.get('direccion')?.touched) {
+            <span class="error-message">Dirección inválida</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Ciudad:
+          <input formControlName="ciudad" />
+          @if (perfilForm.get('ciudad')?.invalid && perfilForm.get('ciudad')?.touched) {
+            <span class="error-message">Ciudad inválida</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Código Postal:
+          <input formControlName="codigoPostal" />
+          @if (perfilForm.get('codigoPostal')?.invalid && perfilForm.get('codigoPostal')?.touched) {
+            <span class="error-message">Código postal inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>País:
+          <input formControlName="pais" />
+          @if (perfilForm.get('pais')?.invalid && perfilForm.get('pais')?.touched) {
+            <span class="error-message">País inválido</span>
+          }
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="perfilForm.invalid">Guardar Perfil</button>
+      @if (perfilGuardado) {
+        <p class="mensaje-exito">Perfil guardado correctamente.</p>
+      }
+    </form>
+  </section>
+
+  <!-- Historial de pedidos -->
+  <section class="seccion">
+    <h2>Historial de Pedidos</h2>
+    @if (pedidos.length === 0) {
+      <p>No tienes pedidos realizados.</p>
+    } @else {
+      <div class="pedidos-container">
+        @for (pedido of pedidos; track pedido.id) {
+          <div class="pedido-card">
+            <h3>{{ pedido.id }} - {{ pedido.estado }}</h3>
+            <p>Fecha: {{ pedido.fecha | date }}</p>
+            <p>Total: {{ pedido.total | currency:'EUR' }}</p>
+            <details>
+              <summary>Ver productos</summary>
+              <ul>
+                @for (prod of pedido.productos; track prod.nombre) {
+                  <li>
+                    {{ prod.nombre }} - {{ prod.cantidad }} x {{ prod.precio | currency:'EUR' }}
+                  </li>
+                }
+              </ul>
+            </details>
+            <button (click)="verDetallePedido(pedido.id)">Ver Detalle</button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Métodos de pago -->
+  <section class="seccion">
+    <h2>Métodos de Pago</h2>
+    @if (metodosPago.length === 0) {
+      <p>No tienes métodos de pago guardados.</p>
+    } @else {
+      <div class="metodos-pago-container">
+        @for (metodo of metodosPago; track metodo.id) {
+          <div class="metodo-pago-card">
+            <h3>{{ metodo.tipo }}</h3>
+            <p>{{ metodo.ultimosDigitos }}</p>
+            @if (metodo.fechaExpiracion) {
+              <p>Expira: {{ metodo.fechaExpiracion }}</p>
+            }
+            @if (metodo.predeterminado) {
+              <span class="badge-predeterminado">Predeterminado</span>
+            }
+            <div class="metodo-actions">
+              @if (!metodo.predeterminado) {
+                <button (click)="establecerPredeterminado(metodo.id)">Establecer como predeterminado</button>
+              }
+              <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id)">Eliminar</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Seguridad -->
+  <section class="seccion">
+    <h2>Seguridad de la Cuenta</h2>
+    <form [formGroup]="securityForm" (ngSubmit)="cambiarPassword()">
+      <div class="form-group">
+        <label>Contraseña Actual:
+          <input type="password" formControlName="passwordActual" />
+          @if (securityForm.get('passwordActual')?.invalid && securityForm.get('passwordActual')?.touched) {
+            <span class="error-message">Contraseña actual requerida</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Nueva Contraseña:
+          <input type="password" formControlName="passwordNueva" />
+          @if (securityForm.get('passwordNueva')?.invalid && securityForm.get('passwordNueva')?.touched) {
+            <span class="error-message">La contraseña debe tener al menos 8 caracteres</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Confirmar Nueva Contraseña:
+          <input type="password" formControlName="passwordConfirmar" />
+          @if ((securityForm.get('passwordConfirmar')?.invalid || securityForm.hasError('passwordMismatch')) && securityForm.get('passwordConfirmar')?.touched) {
+            <span class="error-message">
+              Las contraseñas no coinciden
+            </span>
+          }
+        </label>
+      </div>
+
+      <!-- <button type="submit" [disabled]="securityForm.invalid">Cambiar Contraseña</button>
+      @if (contraseñaCambiada) {
+        <p class="mensaje-exito">Contraseña actualizada con éxito.</p>
+      } -->
+    </form>
+  </section>
+<!-- </div> -->
