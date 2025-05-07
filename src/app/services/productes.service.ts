@@ -33,7 +33,7 @@ export class ProductesService {
 
   // Get products by category
   getProductsByCategory(categoryId: number): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(`${this.apiUrl}/categories/${categoryId}/products`).pipe(
+    return this.httpClient.get<Product[]>(`${this.apiUrl}/products/categoria/${categoryId}`).pipe(
       catchError(error => {
         console.error(`Error fetching products for category ${categoryId}:`, error);
         return of([]);

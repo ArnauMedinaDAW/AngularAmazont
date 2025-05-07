@@ -22,17 +22,14 @@ export class AutenticacioService {
 
   // Validar el login
   validarUsuari(nick: string, password: string): Observable<boolean> {
-    return this.httpClient.post<{message: string}>(`${this.apiUrl}/auth/login`, { 
+    return this.httpClient.post<{message: string, user: Usuari}>(`${this.apiUrl}/auth/login`, { 
       nick, 
       password 
     }).pipe(
       map(response => {
-        if (response) {
-          // Since we don't get a user object, we'll create a minimal one with the nick
-          const user: Usuari = {
-            nick: nick,
-          };
-          this.usuariActual = user;
+        if (response && response.user) {
+          // Store the complete user object from the API
+          this.usuariActual = response.user;
           // Store user in localStorage
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
           return true;

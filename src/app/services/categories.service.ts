@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, of, forkJoin, map, switchMap } from 'rxjs';
 import { Categoria } from '../intarfaces/Categoria.interface';
+import { Product } from '../intarfaces/Product.intarface';
+import { ProductesService } from './productes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,10 @@ import { Categoria } from '../intarfaces/Categoria.interface';
 export class CategoriesService {
   private apiUrl = 'http://127.0.0.1:8000/api';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private productesService: ProductesService
+  ) { }
 
   // Get all categories
   getCategories(): Observable<Categoria[]> {
@@ -31,13 +36,30 @@ export class CategoriesService {
     );
   }
 
-  // Get products for a specific category
-  getProductsByCategory(categoryId: number): Observable<Categoria> {
-    return this.httpClient.get<Categoria>(`${this.apiUrl}/categories/${categoryId}`).pipe(
+  // Get categories with their products
+  getCategoriesWithProducts(): Observable<Categoria[]> {
+    return this.getCategories().pipe(
+      map(categories => {
+        const categoriesWithProductsRequests = categories.map(category => {
+          return this.productesService.getProductsByCategory(category.id).pipe(
+            map(products => {
+              return { ...category, product: products };
+            }),
+            catchError(error => {
+              console.error(`Error loading products for category ${category.id}:`, error);
+              return of({ ...category, product: [] });
+            })
+          );
+        });
+        
+        return forkJoin(categoriesWithProductsRequests);
+      }),
       catchError(error => {
-        console.error(`Error fetching products for category ${categoryId}:`, error);
-        throw error;
-      })
+        console.error('Error in getCategoriesWithProducts:', error);
+        return of([]);
+      }),
+      // Flatten the observable
+      switchMap(obs => obs)
     );
   }
 }

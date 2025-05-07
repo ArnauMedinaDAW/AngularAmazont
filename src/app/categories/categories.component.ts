@@ -11,7 +11,7 @@ import { ThemeService } from '../services/theme.service';
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [NgClass, CommonModule],
+  imports: [NgClass, CommonModule, RouterLink, RouterOutlet],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'
 })
@@ -42,32 +42,26 @@ export class CategoriesComponent implements OnInit {
 
   loadCategories(): void {
     this.loading = true;
-    this.categoriesService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
+    this.error = '';
+    
+    // Use the new method to get categories with products in one call
+    this.categoriesService.getCategoriesWithProducts().subscribe({
+      next: (categoriesWithProducts) => {
+        this.categories = categoriesWithProducts;
         this.loading = false;
+        console.log('Categories with products:', this.categories);
       },
       error: (error) => {
-        console.error('Error loading categories:', error);
-        this.error = 'Error al cargar las categorías. Por favor, inténtelo de nuevo más tarde.';
+        console.error('Error loading categories with products:', error);
+        this.error = 'Error al cargar las categorías y productos. Por favor, inténtelo de nuevo más tarde.';
         this.loading = false;
       }
     });
   }
 
   selectCategory(category: Categoria) {
-    this.loading = true;
-    this.categoriesService.getProductsByCategory(category.id).subscribe({
-      next: (categoryWithProducts) => {
-        this.selectedCategory = categoryWithProducts;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error(`Error loading products for category ${category.id}:`, error);
-        this.error = 'Error al cargar los productos de esta categoría.';
-        this.loading = false;
-      }
-    });
+    // Since we already have the products loaded, we can just set the selected category
+    this.selectedCategory = category;
   }
 
   sortByPrice(order: 'asc' | 'desc'): void {
