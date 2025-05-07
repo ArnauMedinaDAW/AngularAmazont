@@ -1,6 +1,8 @@
 export interface Usuari {
-    correo: string;
-    password: string;
-    nom: string;
-    rol: 'usuari' | 'admin';
+    id?: number;
+    nick: string;
+    email?: string;
+    password?: string;   
+    rol?: 'usuario' | 'admin';
+    direccion_envio?: string;   
 } 

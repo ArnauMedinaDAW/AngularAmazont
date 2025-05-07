@@ -1,4 +1,4 @@
-<div [ngClass]="{'dark': oscuro}">
+<div>
   <header>
     <div class="header-left">
       <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
@@ -6,6 +6,8 @@
         <i class="fas fa-cog"></i>
       </button>
     </div>
+
+    <h1 class="header-title"><em>AMAZONT</em></h1>
 
     <div class="header-right margin">
       <button class="cart-btn img" [routerLink]="['/menu/carrito']">
@@ -20,7 +22,6 @@
       </div>
     </div>
   </header>
-
   <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>
 

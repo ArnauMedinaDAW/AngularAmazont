@@ -1,28 +1,53 @@
 
-<main [ngClass]="{'dark': oscuro}">
-
+<main>
   <div class="row">
-
-    <!-- Secció de categories -->
-    @for (categoria of categories; track categoria.id) {
-      <div class="col-4">
-        <div class="card mb-4 shadow-sm">
-          <p (click)="selectCategory(categoria)" style="cursor: pointer; font-weight: bold;">{{ categoria.name }}</p>
-          <div class="row">
-            @for (imatge of categoria.img; track imatge) {
-              <div class="col-4 mb-2">
-                <img [src]="imatge">
-              </div>
-            }
-          </div>
+    <!-- Loading indicator -->
+    @if(loading){
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
         </div>
+        <p class="mt-2">Cargando categorías...</p>
       </div>
     }
+
+    <!-- Error message -->
+    @if(error){
+      <div class="alert alert-danger text-center my-5">
+        {{ error }}
+      </div>
+    }
+
+    <!-- Secció de categories -->
+    @if(!loading && !error){
+      @for (categoria of categories; track categoria.id) {
+        <div class="col-4">
+          <div class="card mb-4 shadow-sm">
+            <p (click)="selectCategory(categoria)" style="cursor: pointer; font-weight: bold;">{{ categoria.nombre }}</p>
+            <div class="row">
+              @if(categoria.img && categoria.img.length > 0){
+                @for (imatge of categoria.img; track imatge) {
+                  <div class="col-4 mb-2">
+                    <img [src]="imatge">
+                  </div>
+                }
+              }@else if(categoria.imagen){
+                <div class="col-12 mb-2">
+                  <img [src]="categoria.imagen" class="img-fluid">
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Selected category products -->
     @if(selectedCategory){
 
       <div class="row">
         <div class="col-12 mb-4 mt-4">
-        <h3>Productos en: {{ selectedCategory.name }}</h3>
+        <h3>Productos en: {{ selectedCategory.nombre }}</h3>
 
         </div>
         <div class="mb-4"></div>
@@ -42,20 +67,18 @@
       <div class="product-list row" >
         @for (product of selectedCategory.product; track product.id) {
           <div class="product-card col-3" (click)="goToProduct(product)" style="text-decoration: none; color: inherit; cursor: pointer;">
-            <img [src]="product.img" [alt]="product.name">
-            <p class="product-name">{{ product.name }}</p>
-            <span class="product-price">{{ product.price }}€</span>
+            <img [src]="product.imagen" [alt]="product.nombre">
+            <p class="product-name">{{ product.nombre }}</p>
+            <span class="product-price">{{ product.precio }}€</span>
             <span class="discount">
-              {{ product.rate }}/10
+              {{ product.nota }}/10
             </span>
-            <p class="product-description">{{ product.description }}</p>
+            <p class="product-description">{{ product.descripcion }}</p>
           </div>
         }
       </div>
 
     }
-
-
   </div>
 </main>
 

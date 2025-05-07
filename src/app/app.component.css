@@ -5,6 +5,7 @@
   flex-direction: column;
 }
 
+/* Essential container styles */
 :host {
   display: block;
   width: 100%;
@@ -48,20 +49,6 @@ header {
 .dark .settings-btn i,
 .dark .cart-btn i {
   color: white;
-}
-
-.sign-in, .register {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: #f8f9fa;
-  cursor: pointer;
-}
-
-.dark .sign-in, .dark .register {
-  border-color: #444;
-  background-color: #333;
-  color: #e0e0e0;
 }
 
 /* Theme Switch Styles */
@@ -116,7 +103,7 @@ header {
   transform: translateX(20px);
 }
 
-/* Estilos para el router-outlet */
+/* Router outlet styles */
 router-outlet {
   display: block;
   width: 100%;
@@ -125,24 +112,7 @@ router-outlet {
   padding: 0;
 }
 
-/* Estilos específicos para cuando se muestra el MenuIniciComponent */
-router-outlet + app-menu-inici {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-
-/* Ajuste para el contenido principal cuando se muestra el MenuIniciComponent */
-app-menu-inici {
-  display: block;
-  width: 100%;
-  margin: 0;  
-  padding: 0;
-  position: relative;
-}
-
+/* Cart badge styles */
 .cart-badge {
   position: absolute;
   top: -8px;
@@ -160,4 +130,13 @@ app-menu-inici {
 
 .cart-btn {
   position: relative;
+}
+
+/* Header title styles */
+.header-title {
+  margin: 0;
+  font-size: 2rem;
+  color: #ff9900;
+  text-align: center;
+  flex-grow: 1;
 }

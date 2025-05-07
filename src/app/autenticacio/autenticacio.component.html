@@ -9,21 +9,21 @@
           @if(!mostrarRegistro){
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <div class="mb-4">
-                <label for="correo" class="form-label fw-bold">Correo electrónico</label>
+                <label for="nick" class="form-label fw-bold">Nombre de usuario</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
                   <input 
-                    type="email" 
+                    type="text" 
                     class="form-control" 
-                    id="correo" 
-                    formControlName="correo"
-                    placeholder="ejemplo@correo.com">
+                    id="nick" 
+                    formControlName="nick"
+                    placeholder="Tu nombre de usuario">
                 </div>
-                @if(loginControls['correo'].errors?.['required'] && loginControls['correo'].touched){
-                  <div class="text-danger mt-1 small">El correo es requerido</div>
+                @if(loginControls['nick'].errors?.['required'] && loginControls['nick'].touched){
+                  <div class="text-danger mt-1 small">El nombre de usuario es requerido</div>
                 }
-                @if(loginControls['correo'].errors?.['email'] && loginControls['correo'].touched){
-                  <div class="text-danger mt-1 small">Ingrese un correo válido</div>
+                @if(loginControls['nick'].errors?.['minlength'] && loginControls['nick'].touched){
+                  <div class="text-danger mt-1 small">El nombre de usuario debe tener al menos 3 caracteres</div>
                 }
               </div>
               <div class="mb-4">
@@ -51,49 +51,55 @@
                 }
               </div>
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg" [disabled]="!loginForm.valid">
-                  <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                <button type="submit" class="btn btn-primary btn-lg" [disabled]="!loginForm.valid || loading">
+                  @if(loading){
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Iniciando sesión...
+                  } @else {
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                  }
                 </button>
               </div>
             </form>
           } @else {
             <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
               <div class="mb-4">
-                <label for="nom" class="form-label fw-bold">Nombre</label>
+                <label for="nick" class="form-label fw-bold">Nombre de usuario</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="bi bi-person"></i></span>
                   <input 
                     type="text" 
                     class="form-control" 
-                    id="nom" 
-                    formControlName="nom"
-                    placeholder="Tu nombre">
+                    id="nick" 
+                    formControlName="nick"
+                    placeholder="Tu nombre de usuario">
                 </div>
-                @if(registroControls['nom'].errors?.['required'] && registroControls['nom'].touched){
-                  <div class="text-danger mt-1 small">El nombre es requerido</div>
+                @if(registroControls['nick'].errors?.['required'] && registroControls['nick'].touched){
+                  <div class="text-danger mt-1 small">El nombre de usuario es requerido</div>
                 }
-                @if(registroControls['nom'].errors?.['minlength'] && registroControls['nom'].touched){
-                  <div class="text-danger mt-1 small">El nombre debe tener al menos 3 caracteres</div>
+                @if(registroControls['nick'].errors?.['minlength'] && registroControls['nick'].touched){
+                  <div class="text-danger mt-1 small">El nombre de usuario debe tener al menos 3 caracteres</div>
                 }
               </div>
               <div class="mb-4">
-                <label for="correoRegistro" class="form-label fw-bold">Correo electrónico</label>
+                <label for="email" class="form-label fw-bold">Correo electrónico</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                   <input 
                     type="email" 
                     class="form-control" 
-                    id="correoRegistro" 
-                    formControlName="correo"
+                    id="email" 
+                    formControlName="email"
                     placeholder="ejemplo@correo.com">
                 </div>
-                @if(registroControls['correo'].errors?.['required'] && registroControls['correo'].touched){
+                @if(registroControls['email'].errors?.['required'] && registroControls['email'].touched){
                   <div class="text-danger mt-1 small">El correo es requerido</div>
                 }
-                @if(registroControls['correo'].errors?.['email'] && registroControls['correo'].touched){
+                @if(registroControls['email'].errors?.['email'] && registroControls['email'].touched){
                   <div class="text-danger mt-1 small">Ingrese un correo válido</div>
                 }
               </div>
+              <!-- Rest of the registration form remains the same -->
               <div class="mb-4">
                 <label for="passwordRegistro" class="form-label fw-bold">Contraseña</label>
                 <div class="input-group">
@@ -154,7 +160,7 @@
                   id="terminos" 
                   formControlName="terminos">
                 <label class="form-check-label" for="terminos">
-                  Acepto los <a href="" class="text-primary">términos y condiciones</a>
+                  Acepto los <a href="#" class="text-primary">términos y condiciones</a>
                 </label>
                 @if(registroControls['terminos'].errors?.['required'] && registroControls['terminos'].touched){
                   <div class="text-danger mt-1 small">Debes aceptar los términos y condiciones</div>
@@ -162,8 +168,13 @@
               </div>
 
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success btn-lg" [disabled]="!registroForm.valid">
-                  <i class="bi bi-person-plus me-2"></i>Registrarse
+                <button type="submit" class="btn btn-success btn-lg" [disabled]="!registroForm.valid || loading">
+                  @if(loading){
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Registrando...
+                  } @else {
+                    <i class="bi bi-person-plus me-2"></i>Registrarse
+                  }
                 </button>
               </div>
             </form>
@@ -176,7 +187,7 @@
           }
 
           <div class="d-grid gap-2 mt-4">
-            <button (click)="toggleFormulario()" class="btn btn-outline-secondary">
+            <button (click)="toggleFormulario()" class="btn btn-outline-secondary" [disabled]="loading">
               <i class="bi bi-arrow-repeat me-2"></i>
               {{ mostrarRegistro ? 'Volver al Login' : 'Registrar nuevo usuario' }}
             </button>

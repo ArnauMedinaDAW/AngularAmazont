@@ -1,65 +1,77 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Usuari } from '../intarfaces/Usuari.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AutenticacioService {
-  private readonly STORAGE_KEY = 'usuaris'; //Key objecte usuaris local storage
-  private usuaris: Usuari[] = [];
+  private readonly STORAGE_KEY = 'usuari_actual'; // Store current user
+  private apiUrl = 'http://127.0.0.1:8000/api';
+  private usuariActual: Usuari | null = null;
 
-  constructor() {
-
-    this.cargarUsuaris();
-  }
-  private cargarUsuaris() {
-
-    const usuarisGuardats = localStorage.getItem(this.STORAGE_KEY);
-
-    if (usuarisGuardats) {
-      //Obtenir usuaris guardats localment
-      this.usuaris = JSON.parse(usuarisGuardats);
-    } else {
-      //Usuaris hardcored
-      this.usuaris = [
-        {
-          nom: 'Arnau',
-          correo: 'arnau@admin.com',
-          password: 'arnau123',
-          rol: 'admin',
-        },
-        {
-          nom: 'David',
-          correo: 'david@admin.com',
-          password: 'david123',
-          rol: 'admin',
-        },
-      ];
-      this.guardarUsuaris();
+  constructor(private httpClient: HttpClient) {
+    // Check if user is already logged in
+    const storedUser = localStorage.getItem(this.STORAGE_KEY);
+    if (storedUser) {
+      this.usuariActual = JSON.parse(storedUser);
     }
   }
-  //Gaurdar localment els usuaris
-  private guardarUsuaris() {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuaris));
-  }
 
-  getUsuaris(): Usuari[] {
-    return this.usuaris;
-  }
-
-  //Validar el login
-  validarUsuari(correo: string, password: string): boolean {
-    return this.usuaris.some(
-      (usuari) => usuari.correo === correo && usuari.password === password
+  // Validar el login
+  validarUsuari(nick: string, password: string): Observable<boolean> {
+    return this.httpClient.post<{message: string}>(`${this.apiUrl}/auth/login`, { 
+      nick, 
+      password 
+    }).pipe(
+      map(response => {
+        if (response) {
+          // Since we don't get a user object, we'll create a minimal one with the nick
+          const user: Usuari = {
+            nick: nick,
+          };
+          this.usuariActual = user;
+          // Store user in localStorage
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
+          return true;
+        }
+        return false;
+      }),
+      catchError(error => {
+        console.error('Login error:', error);
+        return of(false);
+      })
     );
   }
-  //Validar el register
-  registrarUsuari(usuari: Usuari): boolean {
-    if (this.usuaris.some((u) => u.correo === usuari.correo)) {
-      return false;
-    }
-    this.usuaris.push(usuari);
-    this.guardarUsuaris();
-    return true;
+
+  // Validar el register
+  registrarUsuari(usuari: Usuari): Observable<boolean> {
+    return this.httpClient.post<{success: boolean, user?: Usuari}>(`${this.apiUrl}/auth/register`, usuari).pipe(
+      map(response => {
+        if (response.success && response.user) {
+          this.usuariActual = response.user;
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
+          return true;
+        }
+        return false;
+      }),
+      catchError(error => {
+        console.error('Registration error:', error);
+        return of(false);
+      })
+    );
+  }
+
+  // Get current logged in user
+  getUsuariActual(): Usuari | null {
+    return this.usuariActual;
+  }
+
+  // Logout
+  logout(): void {
+    this.usuariActual = null;
+    localStorage.removeItem(this.STORAGE_KEY);
   }
 }

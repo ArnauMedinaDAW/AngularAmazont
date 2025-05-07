@@ -70,7 +70,7 @@ export class CarritoService {
   
   obtenirTotalCarret(): number {
     return this.cartItems.reduce((total, item) => 
-      total + (item.product.price * item.quantity), 0);
+      total + (item.product.precio * item.quantity), 0);
   }
   
   obtenirQuantitatCarret(): number {

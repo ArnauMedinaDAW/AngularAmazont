@@ -1,7 +1,5 @@
-<main [ngClass]="{'dark': oscuro}">
-    
+<main>
   @if(!isFromCategories){
-
     <div class="container mt-4">
       <div class="row justify-content-center">
         <div class="col-md-6">
@@ -15,47 +13,74 @@
       </div>
     </div>
 
-    <div class="slider-container">
-      <button 
-        class="slider-btn prev"
-        (click)="anteriorSlide()"
-      >
-        <i class="fas fa-chevron-left"></i>
-      </button>
-    
-      <div class="row">
-        @for(product of grupProductes; track product.id){
-
-          <div class="product-card" (click)="verDetalles(product)">
-            <img [src]="product.img" [alt]="product.name" class="product-image">
-            <div class="product-info">
-              <h3>{{ product.name }}</h3>
-              <div class="price-container">
-                <span class="price">{{ product.price }}</span>
-                <span class="discount">
-                  {{ product.rate }}/10
-                </span>
-              </div>
-            </div>
-          </div> 
-        }
+    <!-- Loading indicator -->
+    @if(loading){
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando productos...</p>
       </div>
-    
-      <button 
-        class="slider-btn next" 
-        (click)="seguentSlide()"
-      >
-        <i class="fas fa-chevron-right"></i>
-      </button>
-    </div>
+    }
+
+    <!-- Error message -->
+    @if(error){
+      <div class="alert alert-danger text-center my-5">
+        {{ error }}
+      </div>
+    }
+
+    <!-- Products slider -->
+    @if(!loading && !error && productsFiltrats.length > 0){
+      <div class="slider-container">
+        <button 
+          class="slider-btn prev"
+          (click)="anteriorSlide()"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      
+        <div class="row">
+          @for(product of grupProductes; track product.id){
+            <div class="product-card" (click)="verDetalles(product)">
+              <img [src]="product.imagen" [alt]="product.nombre" class="product-image">
+              <div class="product-info">
+                <h3>{{ product.nombre }}</h3>
+                <div class="price-container">
+                  <span class="price">{{ product.precio }}€</span>
+                  <span class="discount">
+                    {{ product.nota }}/10
+                  </span>
+                </div>
+              </div>
+            </div> 
+          }
+        </div>
+      
+        <button 
+          class="slider-btn next" 
+          (click)="seguentSlide()"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    }
+
+    <!-- No products found -->
+    @if(!loading && !error && productsFiltrats.length === 0){
+      <div class="alert alert-info text-center my-5">
+        No se encontraron productos que coincidan con su búsqueda.
+      </div>
+    }
   }@else{
+    <!-- Product detail view remains the same -->
     <div class="product-detail-container">
       <div class="product-header">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
             <li class="breadcrumb-item"><a href="#">Productos</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.nombre }}</li>
           </ol>
         </nav>
       </div>
@@ -63,33 +88,33 @@
       <div class="product-main">
         <div class="product-gallery">
           <div class="main-image">
-            <img [src]="product.img" [alt]="product.name" class="img-fluid">
+            <img [src]="product.imagen" [alt]="product.nombre" class="img-fluid">
           </div>
           <div class="thumbnail-gallery">
-            <img [src]="product.img" [alt]="product.name" class="thumbnail active">
-            <img [src]="product.img" [alt]="product.name" class="thumbnail">
-            <img [src]="product.img" [alt]="product.name" class="thumbnail">
-            <img [src]="product.img" [alt]="product.name" class="thumbnail">
+            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail active">
+            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
+            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
+            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
           </div>
         </div>
 
         <div class="product-info">
           <div class="product-title">
-            <h1>{{ product.name }}</h1>
+            <h1>{{ product.nombre }}</h1>
             <div class="rating-badge">
               <i class="fas fa-star"></i>
-              <span>{{ product.rate }}/10</span>
+              <span>{{ product.nota }}/10</span>
             </div>
           </div>
 
           <div class="product-price">
-            <span class="current-price">{{ product.price }}€</span>
-            <span class="original-price">999€</span>
+            <span class="current-price">{{ product.precio }}€</span>
+            <span class="original-price">{{ product.precio * 1.2 | number:'1.2-2' }}€</span>
             <span class="discount-badge">-20%</span>
           </div>
 
           <div class="product-description">
-            <p>{{ product.description }}</p>
+            <p>{{ product.descripcion }}</p>
             <ul class="features-list">
               <li><i class="fas fa-check"></i> Garantía de 2 años</li>
               <li><i class="fas fa-check"></i> Envío gratuito</li>
@@ -97,7 +122,6 @@
             </ul>
           </div>
 
-          <!-- Find the product-actions div around line 100 and update the button -->
           <div class="product-actions">
             <div class="quantity-selector">
               <button class="btn-quantity" (click)="decrementQuantity()">-</button>
@@ -139,7 +163,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" [class.active]="showReviews" (click)="toggleReviews()" style="cursor: pointer">
-              <i class="bi bi-star"></i> Reseñas ({{comments.length}})
+              <!-- <i class="bi bi-star"></i> Reseñas ({{comments.length}}) -->
             </a>
           </li>
         </ul>
@@ -169,7 +193,7 @@
             <div class="reviews-summary">
               <div class="rating-overview">
                 <div class="overall-rating">
-                  <div class="rating-number">{{product.rate}}</div>
+                  <div class="rating-number">{{product.nota}}</div>
                   <div class="stars">
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
@@ -177,13 +201,13 @@
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-half"></i>
                   </div>
-                  <div class="total-reviews">{{comments.length}} reseñas</div>
+                  <!-- <div class="total-reviews">{{comments.length}} reseñas</div> -->
                 </div>
               </div>
             </div>
 
             <div class="reviews-list">
-              <div *ngFor="let comment of comments" class="review-item">
+              <!-- <div *ngFor="let comment of comments" class="review-item">
                 <div class="review-header">
                   <div class="reviewer-info">
                     <i class="bi bi-person-circle"></i>
@@ -199,13 +223,11 @@
                   </div>
                 </div>
                 <p class="review-text">{{comment.text}}</p>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
       </div>
     </div>
   }
-
-
 </main>

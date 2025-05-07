@@ -12,15 +12,15 @@ import { CarritoService, CartItem } from '../services/carrito.service';
   styleUrl: './proces-pagament.component.css'
 })
 export class ProcesPagamentComponent implements OnInit {
-  paymentForm!: FormGroup;
-  cartItems: CartItem[] = [];
+  formulariPagament!: FormGroup;
+  elementsCarret: CartItem[] = [];
   total: number = 0;
-  shippingCost: number = 0;
-  paymentMethods = ['Tarjeta de crédito', 'PayPal', 'Transferencia bancaria'];
-  selectedPaymentMethod: string = 'Tarjeta de crédito';
-  showCreditCardForm: boolean = true;
-  processingPayment: boolean = false;
-  paymentSuccess: boolean = false;
+  costEnviament: number = 0;
+  metodesPagament = ['Tarjeta de crédito', 'PayPal', 'Transferencia bancaria'];
+  metodePagamentSeleccionat: string = 'Tarjeta de crédito';
+  mostrarFormulariTarjeta: boolean = true;
+  processantPagament: boolean = false;
+  pagamentExitos: boolean = false;
   
   oscuro = input.required<boolean>();
   
@@ -29,83 +29,82 @@ export class ProcesPagamentComponent implements OnInit {
     private router: Router,
     private carritoService: CarritoService
   ) {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras.state) {
-      this.cartItems = navigation.extras.state['cartItems'];
-      this.total = navigation.extras.state['total'];
-      this.shippingCost = navigation.extras.state['shippingCost'];
+    const navegacio = this.router.getCurrentNavigation();
+    if (navegacio?.extras.state) {
+      this.elementsCarret = navegacio.extras.state['cartItems'];
+      this.total = navegacio.extras.state['total'];
+      this.costEnviament = navegacio.extras.state['shippingCost'];
     } else {
-      // If no state, redirect back to cart
       this.router.navigate(['/menu/carrito']);
     }
   }
-  
   ngOnInit(): void {
-    this.initForm();
+    this.inicialitzarFormulari();
+    window.scrollTo(0, 0);
   }
   
-  initForm(): void {
-    this.paymentForm = this.fb.group({
-      // Shipping address
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      postalCode: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
-      country: ['España', Validators.required],
+  inicialitzarFormulari(): void {
+    this.formulariPagament = this.fb.group({
+      // Adreça d'enviament
+      nomComplet: ['', [Validators.required, Validators.minLength(3)]],
+      adreca: ['', Validators.required],
+      ciutat: ['', Validators.required],
+      codiPostal: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
+      pais: ['España', Validators.required],
       
-      // Payment method
-      paymentMethod: [this.selectedPaymentMethod],
+      // Mètode de pagament
+      metodePagament: [this.metodePagamentSeleccionat],
       
-      // Credit card details
-      cardNumber: ['', [Validators.pattern(/^\d{16}$/)]],
-      cardName: [''],
-      expiryDate: [''],
+      // Detalls de la targeta
+      numeroTarjeta: ['', [Validators.pattern(/^\d{16}$/)]],
+      nomTarjeta: [''],
+      dataExpiracio: [''],
       cvv: ['', [Validators.pattern(/^\d{3,4}$/)]],
       
-      // Terms
-      acceptTerms: [false, Validators.requiredTrue]
+      // Termes
+      acceptarTermes: [false, Validators.requiredTrue]
     });
     
-    // Add conditional validation based on payment method
-    this.paymentForm.get('paymentMethod')?.valueChanges.subscribe(method => {
-      this.selectedPaymentMethod = method;
-      this.showCreditCardForm = method === 'Tarjeta de crédito';
+    // Afegir validació condicional basada en el mètode de pagament
+    this.formulariPagament.get('metodePagament')?.valueChanges.subscribe(metode => {
+      this.metodePagamentSeleccionat = metode;
+      this.mostrarFormulariTarjeta = metode === 'Tarjeta de crédito';
       
-      const cardControls = ['cardNumber', 'cardName', 'expiryDate', 'cvv'];
+      const controlsTarjeta = ['numeroTarjeta', 'nomTarjeta', 'dataExpiracio', 'cvv'];
       
-      if (this.showCreditCardForm) {
-        cardControls.forEach(control => {
-          this.paymentForm.get(control)?.setValidators([Validators.required]);
+      if (this.mostrarFormulariTarjeta) {
+        controlsTarjeta.forEach(control => {
+          this.formulariPagament.get(control)?.setValidators([Validators.required]);
         });
       } else {
-        cardControls.forEach(control => {
-          this.paymentForm.get(control)?.clearValidators();
+        controlsTarjeta.forEach(control => {
+          this.formulariPagament.get(control)?.clearValidators();
         });
       }
       
-      cardControls.forEach(control => {
-        this.paymentForm.get(control)?.updateValueAndValidity();
+      controlsTarjeta.forEach(control => {
+        this.formulariPagament.get(control)?.updateValueAndValidity();
       });
     });
   }
   
-  onSubmit(): void {
-    if (this.paymentForm.invalid) {
-      // Mark all fields as touched to show validation errors
-      Object.keys(this.paymentForm.controls).forEach(key => {
-        this.paymentForm.get(key)?.markAsTouched();
+  enviarFormulari(): void {
+    if (this.formulariPagament.invalid) {
+      // Marcar tots els camps com a tocats per mostrar errors de validació
+      Object.keys(this.formulariPagament.controls).forEach(key => {
+        this.formulariPagament.get(key)?.markAsTouched();
       });
       return;
     }
     
-    this.processingPayment = true;
+    this.processantPagament = true;
     
-    // Simulate payment processing
+    // Simular processament del pagament
     setTimeout(() => {
-      this.processingPayment = false;
-      this.paymentSuccess = true;
+      this.processantPagament = false;
+      this.pagamentExitos = true;
       
-      // After 2 seconds, complete the purchase and redirect
+      // Després de 3 segons, completar la compra i redirigir
       setTimeout(() => {
         this.carritoService.buidarCarret();
         this.router.navigate(['/menu/productes']);
@@ -113,7 +112,7 @@ export class ProcesPagamentComponent implements OnInit {
     }, 5000);
   }
   
-  cancelPayment(): void {
+  cancelarPagament(): void {
     this.router.navigate(['/menu/carrito']);
   }
 }
