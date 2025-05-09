@@ -118,7 +118,5 @@ export class ProductesComponent implements OnInit {
   
   addToCart(product: Product, quantity: number) {
     this.carritoService.afegirAlCarret(product, quantity);
-    // Show a confirmation message
-    alert(`${product.nombre} añadido al carrito`);
   }
 }

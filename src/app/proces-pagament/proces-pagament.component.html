@@ -27,8 +27,8 @@
                   
                   @for (item of elementsCarret; track item.product.id) {
                     <div class="d-flex justify-content-between mb-2">
-                      <span>{{ item.product.nombre }} x{{ item.quantity }}</span>
-                      <span>{{ (item.product.precio * item.quantity) | currency:'EUR' }}</span>
+                      <span>{{ item.product.nombre }} x{{ item.cantidad }}</span>
+                      <span>{{ (item.product.precio * item.cantidad) | currency:'EUR' }}</span>
                     </div>
                   }
                   

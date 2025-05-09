@@ -41,25 +41,25 @@
                       <td class="text-center align-middle">
                         <div class="d-flex justify-content-center">
                           <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="actualitzarQuantitat(item, item.quantity - 1)"
-                                  [disabled]="item.quantity <= 1">
+                                  (click)="actualitzarQuantitat(item, item.cantidad - 1)"
+                                  [disabled]="item.cantidad <= 1">
                             <i class="fas fa-minus"></i>
                           </button>
                           <input type="number" class="form-control mx-2" style="width: 60px;" 
-                                 min="1" max="10" [(ngModel)]="item.quantity" 
-                                 (change)="actualitzarQuantitat(item, item.quantity)">
+                                 min="1" max="50" [(ngModel)]="item.cantidad" 
+                                 (change)="actualitzarQuantitat(item, item.cantidad)">
                           <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="actualitzarQuantitat(item, item.quantity + 1)"
-                                  [disabled]="item.quantity >= 10">
+                                  (click)="actualitzarQuantitat(item, item.cantidad + 1)"
+                                  [disabled]="item.cantidad >= 50">
                             <i class="fas fa-plus"></i>
                           </button>
                         </div>
                       </td>
                       <td class="text-center align-middle">
-                        {{ (item.product.precio * item.quantity) | currency:'EUR' }}
+                        {{ (item.product.precio * item.cantidad) | currency:'EUR' }}
                       </td>
                       <td class="text-center align-middle">
-                        <button class="btn btn-sm btn-danger" (click)="eliminarProducte(item.product.id)">
+                        <button class="btn btn-sm btn-danger" (click)="eliminarProducte(item.id || 0)">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>

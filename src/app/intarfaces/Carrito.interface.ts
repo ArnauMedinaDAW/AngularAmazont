@@ -5,6 +5,6 @@ export interface CartItem {
     product: Product;
     cantidad: number;
     precio_total?: number;
-    id_user?: number;
+    iduser?: number;
     estado?: string;
 }

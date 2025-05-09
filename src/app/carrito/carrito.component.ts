@@ -46,8 +46,8 @@ export class CarritoComponent implements OnInit {
   
   // Actualitza la quantitat d'un producte
   actualitzarQuantitat(item: CartItem, novaQuantitat: number): void {
-    if (novaQuantitat > 0 && novaQuantitat <= 10) {
-      this.carritoService.actualitzarQuantitat(item.product.id, novaQuantitat);
+    if (novaQuantitat > 0 && novaQuantitat <= 50) {
+      this.carritoService.actualitzarQuantitat(item.id ||0 , novaQuantitat);
     }
   }
   

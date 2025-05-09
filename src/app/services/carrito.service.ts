@@ -5,6 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AutenticacioService } from './autenticacio.service';
 
+// Re-export the CartItem interface so components can import it from here
+export type { CartItem } from '../intarfaces/Carrito.interface';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +27,54 @@ export class CarritoService {
   }
   
   private carregarCarret() {
+    const usuari = this.authService.getUsuariActual();
+    
+    if (usuari && usuari.id) {
+      // User is logged in, get cart from API
+      this.httpClient.get<any[]>(`${this.apiUrl}/carrito/activo/${usuari.id}`)
+        .subscribe({
+          next: (response) => {
+            if (response && response.length > 0) {
+              // Transform API response to CartItem format
+              this.cartItems = response.map(item => ({
+                id: item.id,
+                product: {
+                  id: item.producto.id,
+                  nombre: item.producto.nombre,
+                  descripcion: item.producto.descripcion,
+                  imagen: item.producto.imagen,
+                  precio: parseFloat(item.producto.precio),
+                  stock: item.producto.stock,
+                  categoria_id: item.producto.categoria_id,
+                  nota: item.producto.nota
+                },
+                cantidad: item.cantidad,
+                precio_total: parseFloat(item.preciototal),
+                iduser: item.iduser,
+                estado: item.estado
+              }));
+              
+              this.cartSubject.next(this.cartItems);
+            } else {
+              // Empty cart
+              this.cartItems = [];
+              this.cartSubject.next(this.cartItems);
+            }
+          },
+          error: (error) => {
+            console.error('Error loading cart from API:', error);
+            // Fallback to localStorage if API fails
+            this.carregarCarretLocal();
+          }
+        });
+    } else {
+      // User not logged in, use localStorage
+      this.carregarCarretLocal();
+    }
+  }
+  
+  // Fallback method to load cart from localStorage
+  private carregarCarretLocal() {
     const savedCart = localStorage.getItem(this.STORAGE_KEY);
     if (savedCart) {
       this.cartItems = JSON.parse(savedCart);
@@ -59,10 +110,10 @@ export class CarritoService {
         iduser: usuari.id
       }).subscribe({
         next: (response) => {
-          console.log('Product added to cart in API:', response);
+          alert(`API carrito OK ` + response);
         },
         error: (error) => {
-          console.error('Error adding product to cart in API:', error);
+          alert(`API carrito OK ` + error);
         }
       });
     } else {
@@ -70,19 +121,64 @@ export class CarritoService {
     }
   }
   
-  eliminarDelCarret(productId: number) {
-    this.cartItems = this.cartItems.filter(item => item.product.id !== productId);
-    this.guardarCarret();
-  }
-  
-  actualitzarQuantitat(productId: number, quantity: number) {
-    const item = this.cartItems.find(item => item.product.id === productId);
-    if (item) {
-      item.cantidad = quantity;
-      this.guardarCarret();
+  eliminarDelCarret(cartItemId: number) {
+    // Find the item to get its product ID for local storage filtering
+    const itemToDelete = this.cartItems.find(item => item.id === cartItemId);
+    
+    if (itemToDelete) {
+      // If user is logged in, delete from API and reload cart
+      const usuari = this.authService.getUsuariActual();
+      if (usuari && usuari.id) {
+        this.httpClient.delete(`${this.apiUrl}/carrito/${cartItemId}`).subscribe({
+          next: (response) => {
+            console.log('Item successfully deleted from API cart');
+            // Reload the entire cart from API to ensure consistency
+            this.carregarCarret();
+          },
+          error: (error) => {
+            console.error('Error deleting item from API cart:', error);
+            // If API fails, just remove from local array
+            this.cartItems = this.cartItems.filter(item => item.id !== cartItemId);
+            this.guardarCarret();
+          }
+        });
+      } else {
+        // User not logged in, just update local storage
+        this.cartItems = this.cartItems.filter(item => item.id !== cartItemId);
+        this.guardarCarret();
+      }
     }
   }
   
+  actualitzarQuantitat(cartItemId: number, quantity: number) {
+    const item = this.cartItems.find(item => item.id === cartItemId);
+    if (item) {
+      // Update local cart item
+      item.cantidad = quantity;
+      // Calculate new total price
+      const precioTotal = item.product.precio * quantity;
+      
+      // If user is logged in, update via API
+      const usuari = this.authService.getUsuariActual();
+      if (usuari && usuari.id) {
+        this.httpClient.post(`${this.apiUrl}/carrito/updateCantidadPrecio`, {
+          id: cartItemId,
+          cantidad: quantity,
+        }).subscribe({
+          next: (response) => {
+            console.log('Cart item quantity updated successfully in API');
+            // Reload cart to ensure consistency
+            this.carregarCarret();
+          },
+          error: (error) => {
+            console.error('Error updating cart item quantity in API:', error);
+            // If API fails, at least update local storage
+            this.guardarCarret();
+          }
+        });
+      }
+    }
+  }
   buidarCarret() {
     this.cartItems = [];
     this.guardarCarret();
@@ -100,4 +196,5 @@ export class CarritoService {
   obtenirQuantitatCarret(): number {
     return this.cartItems.reduce((count, item) => count + item.cantidad, 0);
   }
+  
 }
