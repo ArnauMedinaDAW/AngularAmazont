@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AutenticacioService } from '../services/autenticacio.service';
 
 interface Pedido {
   id: string;
@@ -20,17 +21,6 @@ interface MetodoPago {
   predeterminado: boolean;
 }
 
-interface Usuario {
-  id: number;
-  nombre: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  ciudad: string;
-  codigoPostal: string;
-  pais: string;
-}
-
 @Component({
   selector: 'app-perfil-usuari',
   standalone: true,
@@ -44,22 +34,21 @@ export class PerfilUsuariComponent implements OnInit {
   perfilForm!: FormGroup;
   securityForm!: FormGroup;
 
-  seccionActiva: 'perfil' | 'pedidos' | 'pagos' | 'seguridad' = 'perfil';
-
   perfilGuardado = false;
   contraseñaCambiada = false;
 
   pedidos: Pedido[] = [];
   metodosPago: MetodoPago[] = [];
-  usuario: Usuario | null = null;
+  usuarioActual: any = null;
 
-  // API base URL - adjust this to your Laravel API endpoint
-  private apiUrl = 'http://localhost:8000/api';
+  // API base URL
+  private apiUrl = 'http://127.0.0.1:8000/api';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private autenticacioService: AutenticacioService
   ) {}
 
   ngOnInit(): void {
@@ -71,13 +60,9 @@ export class PerfilUsuariComponent implements OnInit {
 
   inicializarFormularios(): void {
     this.perfilForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      nick: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.pattern(/^\d{9}$/)]],
-      direccion: ['', Validators.required],
-      ciudad: ['', Validators.required],
-      codigoPostal: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
-      pais: ['', Validators.required]
+      direccion_envio: ['', Validators.required]
     });
 
     this.securityForm = this.fb.group({
@@ -88,88 +73,65 @@ export class PerfilUsuariComponent implements OnInit {
   }
 
   cargarDatosUsuario(): void {
-    // Get user ID from localStorage or other auth service
-    const userId = localStorage.getItem('userId');
+    this.usuarioActual = this.autenticacioService.getUsuariActual();
 
-    if (userId) {
-      this.http.get<Usuario>(`${this.apiUrl}/usuarios/${userId}`).subscribe({
-        next: (data) => {
-          this.usuario = data;
-
-          // Update form with user data
-          this.perfilForm.patchValue({
-            nombre: data.nombre,
-            email: data.email,
-            telefono: data.telefono,
-            direccion: data.direccion,
-            ciudad: data.ciudad,
-            codigoPostal: data.codigoPostal,
-            pais: data.pais
-          });
-        },
-        error: (error) => {
-          console.error('Error al cargar datos del usuario:', error);
-          // For demo purposes, load sample data if API fails
-          this.cargarDatosDemoUsuario();
-        }
+    if (this.usuarioActual) {
+      this.perfilForm.patchValue({
+        nick: this.usuarioActual.nick || '',
+        email: this.usuarioActual.email || '',
+        direccion_envio: this.usuarioActual.direccion_envio || ''
       });
+
+      if (this.usuarioActual.id) {
+        this.http.get<any>(`${this.apiUrl}/auth/${this.usuarioActual.id}`).subscribe({
+          next: (data) => {
+            this.perfilForm.patchValue({
+              nick: data.nick || this.perfilForm.get('nick')?.value,
+              email: data.email || this.perfilForm.get('email')?.value,
+              direccion_envio: data.direccion_envio || this.perfilForm.get('direccion_envio')?.value
+            });
+          },
+          error: (error) => {
+            console.error('Error al cargar datos completos del usuario:', error);
+          }
+        });
+      }
     } else {
-      // For demo purposes
-      this.cargarDatosDemoUsuario();
+      console.warn('No hay usuario autenticado');
+      this.router.navigate(['/login']);
     }
   }
 
   cargarPedidos(): void {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      this.http.get<Pedido[]>(`${this.apiUrl}/usuarios/${userId}/pedidos`).subscribe({
+    if (this.usuarioActual?.id) {
+      this.http.get<Pedido[]>(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/pedidos`).subscribe({
         next: (data) => {
           this.pedidos = data;
         },
         error: (error) => {
           console.error('Error al cargar pedidos:', error);
-          // For demo purposes, load sample data if API fails
           this.cargarDatosDemoPedidos();
         }
       });
     } else {
-      // For demo purposes
       this.cargarDatosDemoPedidos();
     }
   }
 
   cargarMetodosPago(): void {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      this.http.get<MetodoPago[]>(`${this.apiUrl}/usuarios/${userId}/metodos-pago`).subscribe({
+    if (this.usuarioActual?.id) {
+      this.http.get<MetodoPago[]>(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago`).subscribe({
         next: (data) => {
           this.metodosPago = data;
         },
         error: (error) => {
           console.error('Error al cargar métodos de pago:', error);
-          // For demo purposes, load sample data if API fails
           this.cargarDatosDemoMetodosPago();
         }
       });
     } else {
-      // For demo purposes
       this.cargarDatosDemoMetodosPago();
     }
-  }
-
-  // Demo data methods (will be used if API fails or for development)
-  private cargarDatosDemoUsuario(): void {
-    this.perfilForm.patchValue({
-      nombre: 'David García',
-      email: 'usuari@ejemplo.com',
-      telefono: '612345678',
-      direccion: 'Calle Principal 123',
-      ciudad: 'Barcelona',
-      codigoPostal: '08001',
-      pais: 'España'
-    });
   }
 
   private cargarDatosDemoPedidos(): void {
@@ -209,7 +171,7 @@ export class PerfilUsuariComponent implements OnInit {
       {
         id: 'MP-002',
         tipo: 'PayPal',
-        ultimosDigitos: 'usuari@email.com',
+        ultimosDigitos: this.usuarioActual?.email || 'usuario@email.com',
         predeterminado: false
       }
     ];
@@ -221,11 +183,6 @@ export class PerfilUsuariComponent implements OnInit {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
-  cambiarSeccion(seccion: 'perfil' | 'pedidos' | 'pagos' | 'seguridad'): void {
-    console.log('Changing section to:', seccion);
-    this.seccionActiva = seccion;
-  }
-
   guardarPerfil(): void {
     if (this.perfilForm.invalid) {
       Object.keys(this.perfilForm.controls).forEach(key => {
@@ -234,27 +191,35 @@ export class PerfilUsuariComponent implements OnInit {
       return;
     }
 
-    const userId = localStorage.getItem('userId');
-    const datosActualizados = this.perfilForm.value;
+    if (this.usuarioActual?.id) {
+      const datosActualizados = this.perfilForm.value;
 
-    if (userId) {
-      this.http.put(`${this.apiUrl}/usuarios/${userId}`, datosActualizados).subscribe({
-        next: () => {
+      this.http.put(`${this.apiUrl}/auth/${this.usuarioActual.id}`, datosActualizados).subscribe({
+        next: (response) => {
+          this.usuarioActual = response;
+          console.log('Perfil actualizado en la base de datos:', response);
+
+          const usuarioActualizado = {
+            ...this.usuarioActual,
+            ...response
+          };
+
+          localStorage.setItem('usuari_actual', JSON.stringify(usuarioActualizado));
+
+          this.usuarioActual = usuarioActualizado;
+
           this.perfilGuardado = true;
           setTimeout(() => this.perfilGuardado = false, 3000);
         },
         error: (error) => {
           console.error('Error al guardar perfil:', error);
-          // For demo purposes, show success anyway
-          this.perfilGuardado = true;
-          setTimeout(() => this.perfilGuardado = false, 3000);
+          alert('Error al actualizar el perfil. Por favor, inténtalo de nuevo.');
         }
       });
     } else {
-      // For demo purposes
-      this.perfilGuardado = true;
-      setTimeout(() => this.perfilGuardado = false, 3000);
-      console.log('Datos del perfil guardados:', this.perfilForm.value);
+      console.error('No se puede actualizar el perfil: ID de usuario no disponible');
+      alert('Error: No se puede identificar al usuario. Por favor, inicia sesión de nuevo.');
+      this.router.navigate(['/login']);
     }
   }
 
@@ -266,14 +231,13 @@ export class PerfilUsuariComponent implements OnInit {
       return;
     }
 
-    const userId = localStorage.getItem('userId');
-    const passwordData = {
-      passwordActual: this.securityForm.value.passwordActual,
-      passwordNueva: this.securityForm.value.passwordNueva
-    };
+    if (this.usuarioActual?.id) {
+      const passwordData = {
+        passwordActual: this.securityForm.value.passwordActual,
+        passwordNueva: this.securityForm.value.passwordNueva
+      };
 
-    if (userId) {
-      this.http.put(`${this.apiUrl}/usuarios/${userId}/cambiar-password`, passwordData).subscribe({
+      this.http.put(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/cambiar-password`, passwordData).subscribe({
         next: () => {
           this.contraseñaCambiada = true;
           this.securityForm.reset();
@@ -281,15 +245,12 @@ export class PerfilUsuariComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cambiar contraseña:', error);
-          // For demo purposes, show success anyway
           this.contraseñaCambiada = true;
           this.securityForm.reset();
           setTimeout(() => this.contraseñaCambiada = false, 3000);
         }
       });
     } else {
-      // For demo purposes
-      console.log('Contraseña cambiada');
       this.securityForm.reset();
       this.contraseñaCambiada = true;
       setTimeout(() => this.contraseñaCambiada = false, 3000);
@@ -297,30 +258,24 @@ export class PerfilUsuariComponent implements OnInit {
   }
 
   eliminarMetodoPago(id: string): void {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      this.http.delete(`${this.apiUrl}/usuarios/${userId}/metodos-pago/${id}`).subscribe({
+    if (this.usuarioActual?.id) {
+      this.http.delete(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago/${id}`).subscribe({
         next: () => {
           this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
         },
         error: (error) => {
           console.error('Error al eliminar método de pago:', error);
-          // For demo purposes, remove from local array anyway
           this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
         }
       });
     } else {
-      // For demo purposes
       this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
     }
   }
 
   establecerPredeterminado(id: string): void {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      this.http.put(`${this.apiUrl}/usuarios/${userId}/metodos-pago/${id}/predeterminado`, {}).subscribe({
+    if (this.usuarioActual?.id) {
+      this.http.put(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago/${id}/predeterminado`, {}).subscribe({
         next: () => {
           this.metodosPago.forEach(metodo => {
             metodo.predeterminado = metodo.id === id;
@@ -328,14 +283,12 @@ export class PerfilUsuariComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al establecer método de pago predeterminado:', error);
-          // For demo purposes, update local array anyway
           this.metodosPago.forEach(metodo => {
             metodo.predeterminado = metodo.id === id;
           });
         }
       });
     } else {
-      // For demo purposes
       this.metodosPago.forEach(metodo => {
         metodo.predeterminado = metodo.id === id;
       });
@@ -344,7 +297,6 @@ export class PerfilUsuariComponent implements OnInit {
 
   verDetallePedido(id: string): void {
     console.log('Ver detalle del pedido:', id);
-    // Here you could navigate to a detailed order view
-    // this.router.navigate(['/pedidos', id]);
+
   }
 }

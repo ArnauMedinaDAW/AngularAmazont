@@ -11,7 +11,7 @@ export class AutenticacioService {
   private readonly STORAGE_KEY = 'usuari_actual'; // Store current user
   private apiUrl = 'http://127.0.0.1:8000/api';
   private usuariActual: Usuari | null = null;
-  
+
   // Add a BehaviorSubject to track user state changes
   private usuariSubject = new BehaviorSubject<Usuari | null>(null);
   public usuari$ = this.usuariSubject.asObservable();
@@ -27,17 +27,14 @@ export class AutenticacioService {
 
   // Validar el login
   validarUsuari(nick: string, password: string): Observable<boolean> {
-    return this.httpClient.post<Usuari>(`${this.apiUrl}/auth/login`, { 
-      nick, 
-      password 
+    return this.httpClient.post<Usuari>(`${this.apiUrl}/auth/login`, {
+      nick,
+      password
     }).pipe(
       map(response => {
         if (response && response.id) {
-          // Store the user object directly from the API
           this.usuariActual = response;
-          // Store user in localStorage
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
-          // Emit the new user state
           this.usuariSubject.next(this.usuariActual);
           return true;
         }
@@ -57,7 +54,6 @@ export class AutenticacioService {
         if (response.success && response.user) {
           this.usuariActual = response.user;
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
-          // Emit the new user state
           this.usuariSubject.next(this.usuariActual);
           return true;
         }
@@ -70,7 +66,6 @@ export class AutenticacioService {
     );
   }
 
-  // Get current logged in user
   getUsuariActual(): Usuari | null {
     return this.usuariActual;
   }

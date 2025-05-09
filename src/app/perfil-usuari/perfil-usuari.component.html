@@ -6,10 +6,10 @@
     <h2>Información Personal</h2>
     <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
       <div class="form-group">
-        <label>Nombre:
-          <input formControlName="nombre" />
-          @if (perfilForm.get('nombre')?.invalid && perfilForm.get('nombre')?.touched) {
-            <span class="error-message">Nombre inválido</span>
+        <label>Nick:
+          <input formControlName="nick" />
+          @if (perfilForm.get('nick')?.invalid && perfilForm.get('nick')?.touched) {
+            <span class="error-message">Nick inválido</span>
           }
         </label>
       </div>
@@ -24,46 +24,10 @@
       </div>
 
       <div class="form-group">
-        <label>Teléfono:
-          <input formControlName="telefono" type="tel" />
-          @if (perfilForm.get('telefono')?.invalid && perfilForm.get('telefono')?.touched) {
-            <span class="error-message">Teléfono inválido</span>
-          }
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>Dirección:
-          <input formControlName="direccion" />
-          @if (perfilForm.get('direccion')?.invalid && perfilForm.get('direccion')?.touched) {
+        <label>Dirección de envío:
+          <input formControlName="direccion_envio" />
+          @if (perfilForm.get('direccion_envio')?.invalid && perfilForm.get('direccion_envio')?.touched) {
             <span class="error-message">Dirección inválida</span>
-          }
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>Ciudad:
-          <input formControlName="ciudad" />
-          @if (perfilForm.get('ciudad')?.invalid && perfilForm.get('ciudad')?.touched) {
-            <span class="error-message">Ciudad inválida</span>
-          }
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>Código Postal:
-          <input formControlName="codigoPostal" />
-          @if (perfilForm.get('codigoPostal')?.invalid && perfilForm.get('codigoPostal')?.touched) {
-            <span class="error-message">Código postal inválido</span>
-          }
-        </label>
-      </div>
-
-      <div class="form-group">
-        <label>País:
-          <input formControlName="pais" />
-          @if (perfilForm.get('pais')?.invalid && perfilForm.get('pais')?.touched) {
-            <span class="error-message">País inválido</span>
           }
         </label>
       </div>
@@ -166,8 +130,8 @@
         </label>
       </div>
 
-      <!-- <button type="submit" [disabled]="securityForm.invalid">Cambiar Contraseña</button>
-      @if (contraseñaCambiada) {
+      <button type="submit" [disabled]="securityForm.invalid">Cambiar Contraseña</button>
+      <!-- @if (contraseñaCambiada) {
         <p class="mensaje-exito">Contraseña actualizada con éxito.</p>
       } -->
     </form>

@@ -19,6 +19,10 @@ export const routes: Routes = [
     component: AutenticacioComponent
   },
   {
+    path: 'perfil',
+    component: PerfilUsuariComponent
+  },
+  {
     path: 'menu',
     component: MenuIniciComponent,
     children: [
@@ -34,10 +38,6 @@ export const routes: Routes = [
       {
         path: 'categories',
         component: CategoriesComponent
-      },
-      {
-        path: 'perfil',
-        component: PerfilUsuariComponent
       },
       {
         path: 'carrito',
