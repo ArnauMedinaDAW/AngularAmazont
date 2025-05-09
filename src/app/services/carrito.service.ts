@@ -180,8 +180,32 @@ export class CarritoService {
     }
   }
   buidarCarret() {
-    this.cartItems = [];
-    this.guardarCarret();
+    const usuari = this.authService.getUsuariActual();
+    
+    if (usuari && usuari.id && this.cartItems.length > 0) {
+      // Get all cart item IDs
+      const cartItemIds = this.cartItems
+        .filter(item => item.id !== undefined)
+        .map(item => item.id);
+      
+      if (cartItemIds.length > 0) {
+        // Call API to delete multiple cart items
+        this.httpClient.post(`${this.apiUrl}/carritos/eliminar-varios`, {
+          ids: cartItemIds
+        }).subscribe({
+          next: (response) => {
+            console.log('Cart successfully cleared via API');
+            // Clear local cart
+            this.cartItems = [];
+            this.guardarCarret();
+          },
+          error: (error) => {
+            console.error('Error clearing cart via API:', error);
+            // Still clear local cart even if API fails
+          }
+        });
+      }
+    }
   }
   
   obtenirElementsCarret(): CartItem[] {
