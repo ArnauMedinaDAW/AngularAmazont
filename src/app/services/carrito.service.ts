@@ -208,6 +208,32 @@ export class CarritoService {
     }
   }
   
+  finalitzarCompra() {
+    const usuari = this.authService.getUsuariActual();
+    
+    if (usuari && usuari.id && this.cartItems.length > 0) {
+      // Call API to finalize the purchase
+      return this.httpClient.put(`${this.apiUrl}/carrito/finalizar/${usuari.id}`, {})
+        .subscribe({
+          next: (response) => {
+            console.log('Purchase successfully finalized via API');
+            // Clear local cart after successful API call
+            this.cartItems = [];
+            this.guardarCarret();
+          },
+          error: (error) => {
+            console.error('Error finalizing purchase via API:', error);
+            // Don't clear cart if API fails
+          }
+        });
+    } else {
+      // If user not logged in or cart is empty, just clear local cart
+      this.cartItems = [];
+      this.guardarCarret();
+      return null;
+    }
+  }
+  
   obtenirElementsCarret(): CartItem[] {
     return this.cartItems;
   }

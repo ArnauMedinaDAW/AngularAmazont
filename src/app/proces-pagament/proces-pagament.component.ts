@@ -106,7 +106,8 @@ export class ProcesPagamentComponent implements OnInit {
       
       // Després de 3 segons, completar la compra i redirigir
       setTimeout(() => {
-        this.carritoService.buidarCarret();
+        // Use the new finalitzarCompra method instead of buidarCarret
+        this.carritoService.finalitzarCompra();
         this.router.navigate(['/menu/productes']);
       }, 3000);
     }, 5000);
