@@ -194,19 +194,13 @@ export class PerfilUsuariComponent implements OnInit {
     if (this.usuarioActual?.id) {
       const datosActualizados = this.perfilForm.value;
 
-      this.http.put(`${this.apiUrl}/auth/${this.usuarioActual.id}`, datosActualizados).subscribe({
+      // Use the authentication service to update the user
+      this.autenticacioService.actualizarUsuario(this.usuarioActual.id, datosActualizados).subscribe({
         next: (response) => {
-          this.usuarioActual = response;
           console.log('Perfil actualizado en la base de datos:', response);
 
-          const usuarioActualizado = {
-            ...this.usuarioActual,
-            ...response
-          };
-
-          localStorage.setItem('usuari_actual', JSON.stringify(usuarioActualizado));
-
-          this.usuarioActual = usuarioActualizado;
+          // Update the local user reference
+          this.usuarioActual = this.autenticacioService.getUsuariActual();
 
           this.perfilGuardado = true;
           setTimeout(() => this.perfilGuardado = false, 3000);
