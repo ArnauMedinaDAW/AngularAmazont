@@ -217,6 +217,10 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
+  // Change this line in your component properties
+  passwordChanged = false;
+
+  // And update the cambiarPassword method to use passwordChanged instead of contraseñaCambiada
   cambiarPassword(): void {
     if (this.securityForm.invalid) {
       Object.keys(this.securityForm.controls).forEach(key => {
@@ -227,27 +231,28 @@ export class PerfilUsuariComponent implements OnInit {
 
     if (this.usuarioActual?.id) {
       const passwordData = {
-        passwordActual: this.securityForm.value.passwordActual,
-        passwordNueva: this.securityForm.value.passwordNueva
+        id: this.usuarioActual.id,
+        password: this.securityForm.value.passwordNueva
       };
 
-      this.http.put(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/cambiar-password`, passwordData).subscribe({
-        next: () => {
-          this.contraseñaCambiada = true;
+      this.http.post(`${this.apiUrl}/auth/actualizar-contra`, passwordData).subscribe({
+        next: (response: any) => {
+          console.log('Contraseña actualizada correctamente:', response);
+          this.passwordChanged = true;
           this.securityForm.reset();
-          setTimeout(() => this.contraseñaCambiada = false, 3000);
+          setTimeout(() => this.passwordChanged = false, 3000);
         },
         error: (error) => {
           console.error('Error al cambiar contraseña:', error);
-          this.contraseñaCambiada = true;
+          this.passwordChanged = true;
           this.securityForm.reset();
-          setTimeout(() => this.contraseñaCambiada = false, 3000);
+          setTimeout(() => this.passwordChanged = false, 3000);
         }
       });
     } else {
-      this.securityForm.reset();
-      this.contraseñaCambiada = true;
-      setTimeout(() => this.contraseñaCambiada = false, 3000);
+      console.error('No se puede cambiar la contraseña: ID de usuario no disponible');
+      alert('Error: No se puede identificar al usuario. Por favor, inicia sesión de nuevo.');
+      this.router.navigate(['/login']);
     }
   }
 

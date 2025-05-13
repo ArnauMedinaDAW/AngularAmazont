@@ -111,4 +111,37 @@ export class AutenticacioService {
       })
     );
   }
+
+  actualizarContra(userId: string, userData: any): Observable<any> {
+    // Include the ID in the request body as required by the Laravel backend
+    const requestData = {
+      id: userId,
+      ...userData
+    };
+
+    return this.httpClient.post<any>(`${this.apiUrl}/auth/actualizar-contra`, requestData).pipe(
+      map(response => {
+        if (response && response.user) {
+          // Update the stored user data with the returned user object
+          this.usuariActual = {
+            ...this.usuariActual,
+            ...response.user
+          };
+
+          // Update localStorage
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
+
+          // Notify subscribers about the user update
+          this.usuariSubject.next(this.usuariActual);
+
+          return response.user;
+        }
+        return null;
+      }),
+      catchError(error => {
+        console.error('Error updating password:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }
