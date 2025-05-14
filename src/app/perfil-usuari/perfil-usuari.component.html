@@ -48,19 +48,16 @@
       <div class="pedidos-container">
         @for (pedido of pedidos; track pedido.id) {
           <div class="pedido-card">
-            <h3>{{ pedido.id }} - {{ pedido.estado }}</h3>
-            <p>Fecha: {{ pedido.fecha | date }}</p>
-            <p>Total: {{ pedido.total | currency:'EUR' }}</p>
-            <details>
+            <h3>Pedido #{{ pedido.id }} - {{ pedido.estado }}</h3>
+            <p>Total: {{ calcularTotalPedido(pedido) | currency:'EUR' }}</p>
+            <!-- <details>
               <summary>Ver productos</summary>
               <ul>
-                @for (prod of pedido.productos; track prod.nombre) {
-                  <li>
-                    {{ prod.nombre }} - {{ prod.cantidad }} x {{ prod.precio | currency:'EUR' }}
-                  </li>
-                }
+                <li>
+                  {{ pedido.producto.nombre }} - {{ pedido.cantidad }} x {{ pedido.producto.precio | currency:'EUR' }}
+                </li>
               </ul>
-            </details>
+            </details> -->
             <button (click)="verDetallePedido(pedido.id)">Ver Detalle</button>
           </div>
         }

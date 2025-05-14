@@ -121,20 +121,25 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
+  // Update the cargarPedidos method to use the API
   cargarPedidos(): void {
     if (this.usuarioActual?.id) {
-      this.http.get<Pedido[]>(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/pedidos`).subscribe({
+      this.http.get<any[]>(`${this.apiUrl}/carrito/historial/${this.usuarioActual.id}`).subscribe({
         next: (data) => {
+          console.log('Historial de pedidos cargado:', data);
           this.pedidos = data;
         },
         error: (error) => {
-          console.error('Error al cargar pedidos:', error);
-          this.cargarDatosDemoPedidos();
+          console.error('Error al cargar historial de pedidos:', error);
+          // Fallback to demo data if API fails
         }
       });
-    } else {
-      this.cargarDatosDemoPedidos();
     }
+  }
+
+  // Add a method to calculate the total for each order
+  calcularTotalPedido(pedido: any): number {
+    return pedido.cantidad * pedido.producto.precio;
   }
 
   cargarMetodosPago(): void {
@@ -149,31 +154,6 @@ export class PerfilUsuariComponent implements OnInit {
         }
       });
     }
-  }
-
-  private cargarDatosDemoPedidos(): void {
-    this.pedidos = [
-      {
-        id: 'PED-001',
-        fecha: new Date(2023, 11, 15),
-        total: 1250.99,
-        estado: 'Entregado',
-        productos: [
-          { nombre: 'Smartphone Samsung', cantidad: 1, precio: 500.00 },
-          { nombre: 'Auriculares Bluetooth', cantidad: 1, precio: 79.99 }
-        ]
-      },
-      {
-        id: 'PED-002',
-        fecha: new Date(2024, 0, 5),
-        total: 1899.99,
-        estado: 'En proceso',
-        productos: [
-          { nombre: 'Laptop HP', cantidad: 1, precio: 1200.00 },
-          { nombre: 'Monitor 27"', cantidad: 1, precio: 299.99 }
-        ]
-      }
-    ];
   }
 
   passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
