@@ -144,4 +144,46 @@ export class AutenticacioService {
       })
     );
   }
+
+  // Add this method to handle payment methods
+  getMetodosPago(userId: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`${this.apiUrl}/metodoPago?user_id=${userId}`).pipe(
+      catchError(error => {
+        console.error('Error fetching payment methods:', error);
+        return of([]);
+      })
+    );
+  }
+
+  addMetodoPago(userId: string, metodoPago: any): Observable<any> {
+    const requestData = {
+      ...metodoPago,
+      user_id: userId
+    };
+    
+    return this.httpClient.post<any>(`${this.apiUrl}/metodoPago`, requestData).pipe(
+      catchError(error => {
+        console.error('Error adding payment method:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  updateMetodoPago(metodoPagoId: string, metodoPago: any): Observable<any> {
+    return this.httpClient.put<any>(`${this.apiUrl}/metodoPago/${metodoPagoId}`, metodoPago).pipe(
+      catchError(error => {
+        console.error('Error updating payment method:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  deleteMetodoPago(metodoPagoId: string): Observable<any> {
+    return this.httpClient.delete<any>(`${this.apiUrl}/metodoPago/${metodoPagoId}`).pipe(
+      catchError(error => {
+        console.error('Error deleting payment method:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

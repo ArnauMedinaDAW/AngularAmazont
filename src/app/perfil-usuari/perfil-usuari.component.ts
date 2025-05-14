@@ -13,12 +13,15 @@ interface Pedido {
   productos: { nombre: string; cantidad: number; precio: number }[];
 }
 
+// Update the MetodoPago interface to match the Laravel model
 interface MetodoPago {
-  id: string;
+  id_metodo: string;
   tipo: string;
-  ultimosDigitos: string;
-  fechaExpiracion?: string;
-  predeterminado: boolean;
+  nombre: string;
+  num_tarjeta: string;
+  fecha_caducidad?: string;
+  codigo_validacion?: string;
+  predeterminado?: boolean;
 }
 
 @Component({
@@ -58,6 +61,13 @@ export class PerfilUsuariComponent implements OnInit {
     this.cargarMetodosPago();
   }
 
+  // Add these properties to your component class
+  metodoPagoForm!: FormGroup;
+  metodoPagoGuardado = false;
+  editandoMetodoPago = false;
+  metodoEditandoId: string | null = null;
+
+  // Update the inicializarFormularios method to include the payment method form
   inicializarFormularios(): void {
     this.perfilForm = this.fb.group({
       nick: ['', [Validators.required, Validators.minLength(3)]],
@@ -70,6 +80,15 @@ export class PerfilUsuariComponent implements OnInit {
       passwordNueva: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmar: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
+
+    // Add the payment method form
+    this.metodoPagoForm = this.fb.group({
+      tipo: ['', Validators.required],
+      nombre: ['', Validators.required],
+      num_tarjeta: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
+      fecha_caducidad: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
+      codigo_validacion: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]]
+    });
   }
 
   cargarDatosUsuario(): void {
@@ -120,17 +139,15 @@ export class PerfilUsuariComponent implements OnInit {
 
   cargarMetodosPago(): void {
     if (this.usuarioActual?.id) {
-      this.http.get<MetodoPago[]>(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago`).subscribe({
+      this.autenticacioService.getMetodosPago(this.usuarioActual.id).subscribe({
         next: (data) => {
+          console.log('Métodos de pago cargados:', data);
           this.metodosPago = data;
         },
         error: (error) => {
           console.error('Error al cargar métodos de pago:', error);
-          this.cargarDatosDemoMetodosPago();
         }
       });
-    } else {
-      this.cargarDatosDemoMetodosPago();
     }
   }
 
@@ -155,24 +172,6 @@ export class PerfilUsuariComponent implements OnInit {
           { nombre: 'Laptop HP', cantidad: 1, precio: 1200.00 },
           { nombre: 'Monitor 27"', cantidad: 1, precio: 299.99 }
         ]
-      }
-    ];
-  }
-
-  private cargarDatosDemoMetodosPago(): void {
-    this.metodosPago = [
-      {
-        id: 'MP-001',
-        tipo: 'Visa',
-        ultimosDigitos: '4567',
-        fechaExpiracion: '12/25',
-        predeterminado: true
-      },
-      {
-        id: 'MP-002',
-        tipo: 'PayPal',
-        ultimosDigitos: this.usuarioActual?.email || 'usuario@email.com',
-        predeterminado: false
       }
     ];
   }
@@ -256,42 +255,132 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  eliminarMetodoPago(id: string): void {
-    if (this.usuarioActual?.id) {
-      this.http.delete(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago/${id}`).subscribe({
-        next: () => {
-          this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
-        },
-        error: (error) => {
-          console.error('Error al eliminar método de pago:', error);
-          this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
-        }
+  // Add methods for managing payment methods
+  guardarMetodoPago(): void {
+    if (this.metodoPagoForm.invalid) {
+      Object.keys(this.metodoPagoForm.controls).forEach(key => {
+        this.metodoPagoForm.get(key)?.markAsTouched();
       });
+      return;
+    }
+
+    if (this.usuarioActual?.id) {
+      const metodoPago = this.metodoPagoForm.value;
+
+      if (this.editandoMetodoPago && this.metodoEditandoId) {
+        // Update existing payment method
+        this.autenticacioService.updateMetodoPago(this.metodoEditandoId, metodoPago).subscribe({
+          next: (response) => {
+            console.log('Método de pago actualizado:', response);
+            this.metodoPagoGuardado = true;
+            setTimeout(() => this.metodoPagoGuardado = false, 3000);
+            this.cargarMetodosPago();
+            this.resetMetodoPagoForm();
+          },
+          error: (error) => {
+            console.error('Error al actualizar método de pago:', error);
+            alert('Error al actualizar método de pago. Por favor, inténtalo de nuevo.');
+          }
+        });
+      } else {
+        // Add new payment method
+        this.autenticacioService.addMetodoPago(this.usuarioActual.id, metodoPago).subscribe({
+          next: (response) => {
+            console.log('Método de pago añadido:', response);
+            this.metodoPagoGuardado = true;
+            setTimeout(() => this.metodoPagoGuardado = false, 3000);
+            this.cargarMetodosPago();
+            this.resetMetodoPagoForm();
+          },
+          error: (error) => {
+            console.error('Error al añadir método de pago:', error);
+            alert('Error al añadir método de pago. Por favor, inténtalo de nuevo.');
+          }
+        });
+      }
     } else {
-      this.metodosPago = this.metodosPago.filter(metodo => metodo.id !== id);
+      console.error('No se puede guardar método de pago: ID de usuario no disponible');
+      alert('Error: No se puede identificar al usuario. Por favor, inicia sesión de nuevo.');
+      this.router.navigate(['/login']);
     }
   }
 
+  editarMetodoPago(metodo: MetodoPago): void {
+    this.editandoMetodoPago = true;
+    this.metodoEditandoId = metodo.id_metodo;
+
+    this.metodoPagoForm.patchValue({
+      tipo: metodo.tipo,
+      nombre: metodo.nombre,
+      num_tarjeta: metodo.num_tarjeta,
+      fecha_caducidad: metodo.fecha_caducidad || '',
+      codigo_validacion: metodo.codigo_validacion || ''
+    });
+  }
+
+  cancelarEdicion(): void {
+    this.editandoMetodoPago = false;
+    this.metodoEditandoId = null;
+    this.resetMetodoPagoForm();
+  }
+
+  resetMetodoPagoForm(): void {
+    this.metodoPagoForm.reset();
+    this.editandoMetodoPago = false;
+    this.metodoEditandoId = null;
+  }
+
+  // Update the eliminarMetodoPago method to use the API
+  eliminarMetodoPago(id: string): void {
+    if (this.usuarioActual?.id) {
+      this.autenticacioService.deleteMetodoPago(id).subscribe({
+        next: () => {
+          console.log('Método de pago eliminado correctamente');
+          this.metodosPago = this.metodosPago.filter(metodo => metodo.id_metodo !== id);
+        },
+        error: (error) => {
+          console.error('Error al eliminar método de pago:', error);
+          // For demo purposes, still remove it from the UI
+          this.metodosPago = this.metodosPago.filter(metodo => metodo.id_metodo !== id);
+        }
+      });
+    } else {
+      this.metodosPago = this.metodosPago.filter(metodo => metodo.id_metodo !== id);
+    }
+  }
+
+  // Update the establecerPredeterminado method to use the API
   establecerPredeterminado(id: string): void {
     if (this.usuarioActual?.id) {
-      this.http.put(`${this.apiUrl}/usuarios/${this.usuarioActual.id}/metodos-pago/${id}/predeterminado`, {}).subscribe({
+      this.http.put(`${this.apiUrl}/metodoPago/${id}/predeterminado`, {
+        user_id: this.usuarioActual.id
+      }).subscribe({
         next: () => {
           this.metodosPago.forEach(metodo => {
-            metodo.predeterminado = metodo.id === id;
+            metodo.predeterminado = metodo.id_metodo === id;
           });
         },
         error: (error) => {
           console.error('Error al establecer método de pago predeterminado:', error);
+          // For demo purposes, still update the UI
           this.metodosPago.forEach(metodo => {
-            metodo.predeterminado = metodo.id === id;
+            metodo.predeterminado = metodo.id_metodo === id;
           });
         }
       });
     } else {
       this.metodosPago.forEach(metodo => {
-        metodo.predeterminado = metodo.id === id;
+        metodo.predeterminado = metodo.id_metodo === id;
       });
     }
+  }
+
+  // Add a helper method to get the last 4 digits of a card number
+  obtenerUltimosDigitos(numeroTarjeta: string): string {
+    if (numeroTarjeta && numeroTarjeta.length >= 4) {
+      return numeroTarjeta.slice(-4);
+    }
+    return 'XXXX';
   }
 
   verDetallePedido(id: string): void {

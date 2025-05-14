@@ -71,25 +71,100 @@
   <!-- Métodos de pago -->
   <section class="seccion">
     <h2>Métodos de Pago</h2>
+
+    <!-- Replacing the debug info with a styled summary -->
+    <div class="metodos-resumen">
+      <p>Tienes <span class="metodos-count">{{ metodosPago.length }}</span> método(s) de pago guardado(s)</p>
+    </div>
+
+    <!-- Formulario para añadir método de pago -->
+    <form [formGroup]="metodoPagoForm" (ngSubmit)="guardarMetodoPago()" class="metodo-pago-form">
+      <h3>{{ editandoMetodoPago ? 'Editar' : 'Añadir' }} método de pago</h3>
+
+      <div class="form-group">
+        <label>Tipo:
+          <select formControlName="tipo">
+            <option value="Visa">Visa</option>
+            <option value="MasterCard">MasterCard</option>
+            <option value="PayPal">PayPal</option>
+            <option value="American Express">American Express</option>
+          </select>
+          @if (metodoPagoForm.get('tipo')?.invalid && metodoPagoForm.get('tipo')?.touched) {
+            <span class="error-message">Tipo requerido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Nombre en la tarjeta:
+          <input formControlName="nombre" />
+          @if (metodoPagoForm.get('nombre')?.invalid && metodoPagoForm.get('nombre')?.touched) {
+            <span class="error-message">Nombre requerido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Número de tarjeta:
+          <input formControlName="num_tarjeta" />
+          @if (metodoPagoForm.get('num_tarjeta')?.invalid && metodoPagoForm.get('num_tarjeta')?.touched) {
+            <span class="error-message">Número de tarjeta inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Fecha de caducidad:
+          <input formControlName="fecha_caducidad" placeholder="MM/YY" />
+          @if (metodoPagoForm.get('fecha_caducidad')?.invalid && metodoPagoForm.get('fecha_caducidad')?.touched) {
+            <span class="error-message">Fecha inválida</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Código de validación:
+          <input formControlName="codigo_validacion" type="password" maxlength="3" />
+          @if (metodoPagoForm.get('codigo_validacion')?.invalid && metodoPagoForm.get('codigo_validacion')?.touched) {
+            <span class="error-message">Código inválido</span>
+          }
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="metodoPagoForm.invalid">{{ editandoMetodoPago ? 'Actualizar' : 'Añadir' }}</button>
+        @if (editandoMetodoPago) {
+          <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+        }
+      </div>
+
+      @if (metodoPagoGuardado) {
+        <p class="mensaje-exito">Método de pago guardado correctamente.</p>
+      }
+    </form>
+
+    <!-- Lista de métodos de pago -->
     @if (metodosPago.length === 0) {
       <p>No tienes métodos de pago guardados.</p>
     } @else {
       <div class="metodos-pago-container">
-        @for (metodo of metodosPago; track metodo.id) {
+        @for (metodo of metodosPago; track metodo.id_metodo) {
           <div class="metodo-pago-card">
             <h3>{{ metodo.tipo }}</h3>
-            <p>{{ metodo.ultimosDigitos }}</p>
-            @if (metodo.fechaExpiracion) {
-              <p>Expira: {{ metodo.fechaExpiracion }}</p>
+            <p>{{ metodo.nombre }}</p>
+            <p>**** **** **** {{ obtenerUltimosDigitos(metodo.num_tarjeta) }}</p>
+            @if (metodo.fecha_caducidad) {
+              <p>Expira: {{ metodo.fecha_caducidad }}</p>
             }
             @if (metodo.predeterminado) {
               <span class="badge-predeterminado">Predeterminado</span>
             }
             <div class="metodo-actions">
               @if (!metodo.predeterminado) {
-                <button (click)="establecerPredeterminado(metodo.id)">Establecer como predeterminado</button>
+                <button (click)="establecerPredeterminado(metodo.id_metodo)">Establecer como predeterminado</button>
               }
-              <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id)">Eliminar</button>
+              <button (click)="editarMetodoPago(metodo)">Editar</button>
+              <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id_metodo)">Eliminar</button>
             </div>
           </div>
         }
