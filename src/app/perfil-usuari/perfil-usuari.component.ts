@@ -13,7 +13,6 @@ interface Pedido {
   productos: { nombre: string; cantidad: number; precio: number }[];
 }
 
-// Update the MetodoPago interface to match the Laravel model
 interface MetodoPago {
   id_metodo: string;
   tipo: string;
@@ -61,13 +60,11 @@ export class PerfilUsuariComponent implements OnInit {
     this.cargarMetodosPago();
   }
 
-  // Add these properties to your component class
   metodoPagoForm!: FormGroup;
   metodoPagoGuardado = false;
   editandoMetodoPago = false;
   metodoEditandoId: string | null = null;
 
-  // Update the inicializarFormularios method to include the payment method form
   inicializarFormularios(): void {
     this.perfilForm = this.fb.group({
       nick: ['', [Validators.required, Validators.minLength(3)]],
@@ -81,9 +78,8 @@ export class PerfilUsuariComponent implements OnInit {
       passwordConfirmar: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
 
-    // Add the payment method form
     this.metodoPagoForm = this.fb.group({
-      tipo: ['', Validators.required],
+      tipo: ['Visa', Validators.required],
       nombre: ['', Validators.required],
       num_tarjeta: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
       fecha_caducidad: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
@@ -121,7 +117,6 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  // Update the cargarPedidos method to use the API
   cargarPedidos(): void {
     if (this.usuarioActual?.id) {
       this.http.get<any[]>(`${this.apiUrl}/carrito/historial/${this.usuarioActual.id}`).subscribe({
@@ -131,13 +126,11 @@ export class PerfilUsuariComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar historial de pedidos:', error);
-          // Fallback to demo data if API fails
         }
       });
     }
   }
 
-  // Add a method to calculate the total for each order
   calcularTotalPedido(pedido: any): number {
     return pedido.cantidad * pedido.producto.precio;
   }
@@ -147,12 +140,20 @@ export class PerfilUsuariComponent implements OnInit {
       this.autenticacioService.getMetodosPago(this.usuarioActual.id).subscribe({
         next: (data) => {
           console.log('Métodos de pago cargados:', data);
-          this.metodosPago = data;
+          if (Array.isArray(data)) {
+            this.metodosPago = data;
+          } else {
+            console.warn('La respuesta no es un array:', data);
+            this.metodosPago = [];
+          }
         },
         error: (error) => {
           console.error('Error al cargar métodos de pago:', error);
+          this.metodosPago = [];
         }
       });
+    } else {
+      this.metodosPago = [];
     }
   }
 
@@ -173,12 +174,10 @@ export class PerfilUsuariComponent implements OnInit {
     if (this.usuarioActual?.id) {
       const datosActualizados = this.perfilForm.value;
 
-      // Use the authentication service to update the user
       this.autenticacioService.actualizarUsuario(this.usuarioActual.id, datosActualizados).subscribe({
         next: (response) => {
           console.log('Perfil actualizado en la base de datos:', response);
 
-          // Update the local user reference
           this.usuarioActual = this.autenticacioService.getUsuariActual();
 
           this.perfilGuardado = true;
@@ -196,10 +195,8 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  // Change this line in your component properties
   passwordChanged = false;
 
-  // And update the cambiarPassword method to use passwordChanged instead of contraseñaCambiada
   cambiarPassword(): void {
     if (this.securityForm.invalid) {
       Object.keys(this.securityForm.controls).forEach(key => {
@@ -235,7 +232,6 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  // Add methods for managing payment methods
   guardarMetodoPago(): void {
     if (this.metodoPagoForm.invalid) {
       Object.keys(this.metodoPagoForm.controls).forEach(key => {
@@ -246,9 +242,9 @@ export class PerfilUsuariComponent implements OnInit {
 
     if (this.usuarioActual?.id) {
       const metodoPago = this.metodoPagoForm.value;
+      console.log('Sending payment method data:', metodoPago);
 
       if (this.editandoMetodoPago && this.metodoEditandoId) {
-        // Update existing payment method
         this.autenticacioService.updateMetodoPago(this.metodoEditandoId, metodoPago).subscribe({
           next: (response) => {
             console.log('Método de pago actualizado:', response);
@@ -263,8 +259,14 @@ export class PerfilUsuariComponent implements OnInit {
           }
         });
       } else {
-        // Add new payment method
-        this.autenticacioService.addMetodoPago(this.usuarioActual.id, metodoPago).subscribe({
+        const paymentData = {
+          ...metodoPago,
+          user_id: this.usuarioActual.id.toString()
+        };
+
+        console.log('Adding payment method with data:', paymentData);
+
+        this.autenticacioService.addMetodoPago(this.usuarioActual.id, paymentData).subscribe({
           next: (response) => {
             console.log('Método de pago añadido:', response);
             this.metodoPagoGuardado = true;
@@ -274,7 +276,8 @@ export class PerfilUsuariComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al añadir método de pago:', error);
-            alert('Error al añadir método de pago. Por favor, inténtalo de nuevo.');
+            console.error('Error details:', error.error);
+            alert(`Error al añadir método de pago: ${error.error?.message || 'Por favor, inténtalo de nuevo.'}`);
           }
         });
       }
@@ -310,7 +313,6 @@ export class PerfilUsuariComponent implements OnInit {
     this.metodoEditandoId = null;
   }
 
-  // Update the eliminarMetodoPago method to use the API
   eliminarMetodoPago(id: string): void {
     if (this.usuarioActual?.id) {
       this.autenticacioService.deleteMetodoPago(id).subscribe({
@@ -320,7 +322,6 @@ export class PerfilUsuariComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al eliminar método de pago:', error);
-          // For demo purposes, still remove it from the UI
           this.metodosPago = this.metodosPago.filter(metodo => metodo.id_metodo !== id);
         }
       });
@@ -329,7 +330,6 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  // Update the establecerPredeterminado method to use the API
   establecerPredeterminado(id: string): void {
     if (this.usuarioActual?.id) {
       this.http.put(`${this.apiUrl}/metodoPago/${id}/predeterminado`, {
@@ -342,7 +342,6 @@ export class PerfilUsuariComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al establecer método de pago predeterminado:', error);
-          // For demo purposes, still update the UI
           this.metodosPago.forEach(metodo => {
             metodo.predeterminado = metodo.id_metodo === id;
           });
@@ -355,7 +354,6 @@ export class PerfilUsuariComponent implements OnInit {
     }
   }
 
-  // Add a helper method to get the last 4 digits of a card number
   obtenerUltimosDigitos(numeroTarjeta: string): string {
     if (numeroTarjeta && numeroTarjeta.length >= 4) {
       return numeroTarjeta.slice(-4);

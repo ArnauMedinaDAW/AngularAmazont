@@ -74,13 +74,10 @@ export class AutenticacioService {
   logout(): void {
     this.usuariActual = null;
     localStorage.removeItem(this.STORAGE_KEY);
-    // Emit null to indicate logout
     this.usuariSubject.next(null);
   }
 
-  // Add this method after getUsuariActual()
   actualizarUsuario(userId: string, userData: any): Observable<any> {
-    // Include the ID in the request body as required by the Laravel backend
     const requestData = {
       id: userId,
       ...userData
@@ -89,16 +86,13 @@ export class AutenticacioService {
     return this.httpClient.post<any>(`${this.apiUrl}/auth/actualizar-perfil`, requestData).pipe(
       map(response => {
         if (response && response.user) {
-          // Update the stored user data with the returned user object
           this.usuariActual = {
             ...this.usuariActual,
             ...response.user
           };
 
-          // Update localStorage
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
 
-          // Notify subscribers about the user update
           this.usuariSubject.next(this.usuariActual);
 
           return response.user;
@@ -113,7 +107,6 @@ export class AutenticacioService {
   }
 
   actualizarContra(userId: string, userData: any): Observable<any> {
-    // Include the ID in the request body as required by the Laravel backend
     const requestData = {
       id: userId,
       ...userData
@@ -122,16 +115,13 @@ export class AutenticacioService {
     return this.httpClient.post<any>(`${this.apiUrl}/auth/actualizar-contra`, requestData).pipe(
       map(response => {
         if (response && response.user) {
-          // Update the stored user data with the returned user object
           this.usuariActual = {
             ...this.usuariActual,
             ...response.user
           };
 
-          // Update localStorage
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.usuariActual));
 
-          // Notify subscribers about the user update
           this.usuariSubject.next(this.usuariActual);
 
           return response.user;
@@ -145,9 +135,8 @@ export class AutenticacioService {
     );
   }
 
-  // Add this method to handle payment methods
   getMetodosPago(userId: string): Observable<any[]> {
-    return this.httpClient.get<any[]>(`${this.apiUrl}/metodoPago?user_id=${userId}`).pipe(
+    return this.httpClient.get<any[]>(`${this.apiUrl}/metodoPago/user/${userId}`).pipe(
       catchError(error => {
         console.error('Error fetching payment methods:', error);
         return of([]);
@@ -158,10 +147,14 @@ export class AutenticacioService {
   addMetodoPago(userId: string, metodoPago: any): Observable<any> {
     const requestData = {
       ...metodoPago,
-      user_id: userId
+      user_id: userId.toString()
     };
-    
+
     return this.httpClient.post<any>(`${this.apiUrl}/metodoPago`, requestData).pipe(
+      map(response => {
+        console.log('Payment method added:', response);
+        return response.data;
+      }),
       catchError(error => {
         console.error('Error adding payment method:', error);
         return throwError(() => error);
@@ -170,7 +163,13 @@ export class AutenticacioService {
   }
 
   updateMetodoPago(metodoPagoId: string, metodoPago: any): Observable<any> {
-    return this.httpClient.put<any>(`${this.apiUrl}/metodoPago/${metodoPagoId}`, metodoPago).pipe(
+    const { user_id, ...updateData } = metodoPago;
+
+    return this.httpClient.put<any>(`${this.apiUrl}/metodoPago/${metodoPagoId}`, updateData).pipe(
+      map(response => {
+        console.log('Payment method updated:', response);
+        return response.data;
+      }),
       catchError(error => {
         console.error('Error updating payment method:', error);
         return throwError(() => error);
@@ -180,6 +179,10 @@ export class AutenticacioService {
 
   deleteMetodoPago(metodoPagoId: string): Observable<any> {
     return this.httpClient.delete<any>(`${this.apiUrl}/metodoPago/${metodoPagoId}`).pipe(
+      map(response => {
+        console.log('Payment method deleted:', response);
+        return response.data;
+      }),
       catchError(error => {
         console.error('Error deleting payment method:', error);
         return throwError(() => error);
