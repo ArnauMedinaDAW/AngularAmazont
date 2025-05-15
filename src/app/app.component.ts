@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { ThemeService } from './services/theme.service';
 import { CarritoService } from './services/carrito.service';
 import { AutenticacioService } from './services/autenticacio.service';
@@ -25,7 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private themeService: ThemeService,
     private carritoService: CarritoService,
-    private autenticacioService: AutenticacioService
+    private autenticacioService: AutenticacioService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -62,5 +63,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onActivate(event: any) {
     // You can handle component activation here if needed
+  }
+
+  logout(): void {
+    this.autenticacioService.logout();
+    // Navigate to authentication component
+    this.router.navigate(['/autenticacio']);
   }
 }

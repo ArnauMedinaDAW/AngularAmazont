@@ -46,11 +46,23 @@ header {
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.settings-btn:hover i,
+.cart-btn:hover i {
+  color: #ff9900;
 }
 
 .dark .settings-btn i,
 .dark .cart-btn i {
   color: white;
+}
+
+.dark .settings-btn:hover i,
+.dark .cart-btn:hover i {
+  color: #ff9900;
 }
 
 /* Header title styles */
@@ -200,4 +212,26 @@ router-outlet {
 
 .dark .admin-btn:hover i {
   color: #ff9900;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: var(--accent-color);
+}
+
+.dark .logout-btn {
+  color: var(--dark-text-color);
+}
+
+.dark .logout-btn:hover {
+  color: var(--dark-accent-color);
 }

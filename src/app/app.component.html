@@ -6,8 +6,12 @@
         <i class="fas fa-user"></i>
       </button>
       <!-- Admin icon - only visible for admin users -->
-      <button *ngIf="usuariActual && usuariActual.rol === 'admin'" class="admin-btn img" [routerLink]="['/admin-productes']">
+      <button *ngIf="usuariActual && usuariActual.role === 'admin'" class="admin-btn img" [routerLink]="['/admin-productes']">
         <i class="fas fa-cog"></i>
+      </button>
+      <!-- Logout button - only visible when user is logged in -->
+      <button *ngIf="usuariActual" class="logout-btn img" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
     <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>

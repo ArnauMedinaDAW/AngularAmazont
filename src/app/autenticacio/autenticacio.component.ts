@@ -75,12 +75,12 @@ export class AutenticacioComponent implements OnInit {
   onRegistro() {
     if (this.registroForm.valid) {
       this.loading = true;
-      const { nom, correo, password, rol } = this.registroForm.value;
+      const { nom, correo, password, role } = this.registroForm.value;
       const usuari: Usuari = { 
         nick:nom, 
         email: correo,
         password, 
-        rol 
+        role
       };
 
       this.autenticacioService.registrarUsuari(usuari).subscribe({
