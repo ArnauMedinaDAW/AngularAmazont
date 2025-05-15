@@ -1,13 +1,17 @@
-<div>
+<div [ngClass]="{'dark': oscuro}" class="app-container">
   <header>
     <div class="header-left">
       <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
       <button class="settings-btn img" [routerLink]="['/perfil']">
-        <i class="fas fa-cog"></i>
+        <i class="fas fa-user"></i>
       </button>
     </div>
     <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>
-    <h1 class="header-title"><em>AMAZONT</em></h1>
+    
+    <h1 class="header-title">
+      <span class="title-highlight">AMAZONT</span>
+      <span class="title-tagline">Tu tienda de confianza</span>
+    </h1>
 
     <div class="header-right margin">
       <button class="cart-btn img" [routerLink]="['/menu/carrito']">
@@ -15,7 +19,7 @@
         <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
       </button>
       <div class="theme-switch ms-3" id="themeSwitch" [class.active]="oscuro" (click)="canviarTema()">
-        <span class="switch-label">{{ oscuro ? 'Oscuro' : 'Claro' }}</span>
+        <i class="bi" [ngClass]="oscuro ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
         <div class="switch">
           <div class="slider"></div>
         </div>

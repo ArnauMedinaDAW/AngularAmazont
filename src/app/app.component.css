@@ -21,10 +21,12 @@ header {
   background-color: #f8f9fa;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   z-index: 1000;
+  transition: background-color 0.3s ease;
 }
 
 .dark header {
   background-color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .header-left, .header-right {
@@ -51,12 +53,62 @@ header {
   color: white;
 }
 
+/* Header title styles */
+/* Enhanced Header title styles */
+.header-title {
+  margin: 0;
+  font-size: 2.2rem;
+  text-align: center;
+  flex-grow: 1;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-highlight {
+  color: #ff9900;
+  font-weight: 800;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+
+.title-tagline {
+  font-size: 0.9rem;
+  color: #555;
+  font-style: italic;
+  margin-top: -5px;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+}
+
+/* Dark mode styles for the enhanced header title */
+.dark .title-highlight {
+  color: #ff9900;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.dark .title-tagline {
+  color: #aaa;
+}
+
+.dark .header-title {
+  color: #ff9900; /* Same color in dark mode, but could be adjusted if needed */
+}
+
 /* Theme Switch Styles */
 .theme-switch {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+}
+
+.dark .theme-switch {
+  color: #e0e0e0;
 }
 
 .switch {
@@ -91,25 +143,12 @@ header {
   transform: translateX(20px);
 }
 
-.dark .theme-switch {
-  color: #e0e0e0;
-}
-
 .dark .theme-switch.active .switch {
   background-color: #007bff;
 }
 
 .dark .theme-switch.active .slider {
   transform: translateX(20px);
-}
-
-/* Router outlet styles */
-router-outlet {
-  display: block;
-  width: 100%;
-  flex: 1;
-  margin: 0;
-  padding: 0;
 }
 
 /* Cart badge styles */
@@ -132,11 +171,11 @@ router-outlet {
   position: relative;
 }
 
-/* Header title styles */
-.header-title {
+/* Router outlet styles */
+router-outlet {
+  display: block;
+  width: 100%;
+  flex: 1;
   margin: 0;
-  font-size: 2rem;
-  color: #ff9900;
-  text-align: center;
-  flex-grow: 1;
+  padding: 0;
 }

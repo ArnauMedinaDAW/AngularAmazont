@@ -5,11 +5,8 @@ body {
   font-family: Arial, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-/* Estilos para modo oscuro */
-body.dark, .dark {
-  background-color: #121212;
-  color: #e0e0e0;
+.dark  {
+  background-color: #1e1e1e;
 }
 
 .dark .mt-5 {
@@ -40,17 +37,10 @@ body.dark, .dark {
   color: #bbb;
 }
 
-.dark h6 {
+.dark {
   color: #ffffff;
 }
 
-.dark p {
-  color: #cccccc;
-}
-
-.dark .text-muted {
-  color: #aaaaaa !important;
-}
 
 /* Estilos para el contenedor principal */
 .container {
@@ -69,10 +59,3 @@ body.dark, .dark {
 }
 
 /* Estilos para el contenedor de búsqueda */
-.search-container {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}

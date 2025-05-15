@@ -1,5 +1,4 @@
 @media (max-width: 768px) {
-  
 
   .auth-buttons {
     display: flex;
@@ -29,8 +28,6 @@
   }
 }
 
-
-
 :host {
   display: flex;
   flex-direction: column;
@@ -39,16 +36,23 @@
   overflow-x: hidden;
 }
 
-.dark {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-}
-
 main {
   width: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+main.dark {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0;
+}
+
+.dark main {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0;
 }
 
 .row {
@@ -69,6 +73,11 @@ main {
   overflow-y: auto;
 }
 
+.dark .col-3 {
+  background-color: #2d2d2d;
+  border-right-color: #444;
+}
+
 .col-9 {
   padding: 0;
   margin-left: 250px;
@@ -79,10 +88,6 @@ main {
   width: 100%;
   padding-bottom: 80px;
   overflow-x: hidden;
-}
-
-.dark main {
-  background-color: #1e1e1e;
 }
 
 .dark img {
@@ -136,6 +141,7 @@ main {
 
 .dark .categories-menu {
   background-color: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .menu-item {
@@ -148,6 +154,10 @@ main {
 
 .menu-item:hover {
   background-color: #f0f0f0;
+}
+
+.dark .menu-item:hover {
+  background-color: #333;
 }
 
 .menu-section {
@@ -181,6 +191,7 @@ footer {
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 .dark footer {
@@ -208,51 +219,6 @@ footer {
   color: #e0e0e0;
 }
 
-/* Estilo para el switch de tema */
-.theme-switch {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.switch {
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 20px;
-  position: relative;
-  transition: background-color 0.3s ease;
-}
-
-.switch:hover {
-  background-color: #bbb;
-}
-
-.switch .slider {
-  width: 18px;
-  height: 18px;
-  background-color: #fff;
-  border-radius: 50%;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: all 0.3s ease;
-}
-
-.dark .theme-switch {
-  color: #e0e0e0;
-}
-
-.dark .theme-switch.active .switch {
-  background-color: #007bff;
-}
-
-.dark .theme-switch.active .slider {
-  transform: translateX(20px);
-}
-
-
 /* Button styling and animations */
 .menu-btn {
   transition: all 0.3s ease;
@@ -275,6 +241,10 @@ footer {
 .dark .menu-btn {
   background-color: #343a40;
   border-color: #343a40;
+}
+
+.dark .menu-btn:hover {
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1) !important;
 }
 
 .dark .menu-btn.active {
