@@ -5,6 +5,10 @@
       <button class="settings-btn img" [routerLink]="['/perfil']">
         <i class="fas fa-user"></i>
       </button>
+      <!-- Admin icon - only visible for logged in users -->
+      <button *ngIf="usuariActual" class="admin-btn img" [routerLink]="['/admin-productes']">
+        <i class="fas fa-cog"></i>
+      </button>
     </div>
     <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>
     

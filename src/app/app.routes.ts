@@ -6,6 +6,7 @@ import { MenuIniciComponent } from './menu-inici/menu-inici.component';
 import { CarritoComponent } from './carrito/carrito.component';
 import { ProcesPagamentComponent } from './proces-pagament/proces-pagament.component';
 import { PerfilUsuariComponent } from './perfil-usuari/perfil-usuari.component';
+import { AdminProductesComponent } from './admin-productes/admin-productes.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'perfil',
     component: PerfilUsuariComponent
+  },
+  {
+    path: 'admin-productes',
+    component: AdminProductesComponent
   },
   {
     path: 'menu',

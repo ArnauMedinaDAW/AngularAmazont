@@ -1,0 +1,229 @@
+<div class="admin-container" [ngClass]="{'dark': oscuro}">
+  <div class="container mt-4">
+    <h2 class="mb-4">Administración de Productos</h2>
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Lista de Productos</h4>
+            <button class="btn btn-primary" (click)="toggleCreateForm()">
+              <i class="fas fa-plus me-2"></i>Añadir Producto
+            </button>
+          </div>
+          <div class="card-body">
+            <!-- Create Product Form -->
+            <div *ngIf="showCreateForm" class="mb-4">
+              <div class="card" [ngClass]="{'bg-dark text-white': oscuro}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5>Nuevo Producto</h5>
+                  <button class="btn btn-sm btn-secondary" (click)="toggleCreateForm()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <form (ngSubmit)="createProduct()">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="nombre" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombre" 
+                               [(ngModel)]="newProduct.nombre" name="nombre" required>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="imagen" class="form-label">URL de Imagen *</label>
+                        <input type="text" class="form-control" id="imagen" 
+                               [(ngModel)]="newProduct.imagen" name="imagen" required>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="descripcion" class="form-label">Descripción</label>
+                      <textarea class="form-control" id="descripcion" rows="3" 
+                                [(ngModel)]="newProduct.descripcion" name="descripcion"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-4 mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="precio" 
+                               [(ngModel)]="newProduct.precio" name="precio" 
+                               min="0" step="0.01">
+                      </div>
+                      <div class="col-md-4 mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="stock" 
+                               [(ngModel)]="newProduct.stock" name="stock" 
+                               min="0" step="1">
+                      </div>
+                      <div class="col-md-4 mb-3">
+                        <label for="categoria_id" class="form-label">Categoría</label>
+                        <input type="number" class="form-control" id="categoria_id" 
+                               [(ngModel)]="newProduct.categoria_id" name="categoria_id" 
+                               min="1" step="1">
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="nota" class="form-label">Nota (0-5)</label>
+                      <input type="number" class="form-control" id="nota" 
+                             [(ngModel)]="newProduct.nota" name="nota" 
+                             min="0" max="5" step="0.1">
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                      <button type="button" class="btn btn-secondary me-2" (click)="toggleCreateForm()">Cancelar</button>
+                      <button type="submit" class="btn btn-success">Guardar Producto</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Loading spinner -->
+            <div *ngIf="loading" class="text-center py-5">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <p class="mt-2">Cargando productos...</p>
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="error" class="alert alert-danger">
+              {{ error }}
+            </div>
+            
+            <!-- Products table -->
+            <div *ngIf="!loading && !error" class="table-responsive">
+              <table class="table table-hover" [ngClass]="{'table-dark': oscuro}">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of products; let i = index">
+                    <th scope="row">{{ i + 1 }}</th>
+                    
+                    <!-- Image column -->
+                    <td>
+                      <div *ngIf="editingProductId !== product.id">
+                        <img [src]="product.imagen" alt="{{ product.nombre }}" class="product-thumbnail">
+                      </div>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="text" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.imagen" 
+                               placeholder="URL de la imagen">
+                      </div>
+                    </td>
+                    
+                    <!-- Name column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">{{ product.nombre }}</span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="text" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.nombre" 
+                               placeholder="Nombre del producto">
+                      </div>
+                    </td>
+                    
+                    <!-- Description column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">{{ product.descripcion | slice:0:50 }}{{ product.descripcion && product.descripcion.length > 50 ? '...' : '' }}</span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <textarea class="form-control form-control-sm" 
+                                 [(ngModel)]="editingProduct.descripcion" 
+                                 placeholder="Descripción del producto" rows="2"></textarea>
+                      </div>
+                    </td>
+                    
+                    <!-- Price column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">{{ product.precio | currency:'EUR' }}</span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="number" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.precio" 
+                               min="0" step="0.01"
+                               placeholder="Precio">
+                      </div>
+                    </td>
+                    
+                    <!-- Stock column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">{{ product.stock }}</span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="number" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.stock" 
+                               min="0" step="1"
+                               placeholder="Stock">
+                      </div>
+                    </td>
+                    
+                    <!-- Category column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">{{ product.categoria_id }}</span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="number" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.categoria_id" 
+                               min="1" step="1"
+                               placeholder="Categoría">
+                      </div>
+                    </td>
+                    
+                    <!-- Rating column -->
+                    <td>
+                      <span *ngIf="editingProductId !== product.id">
+                        <div class="d-flex align-items-center">
+                          {{ product.nota | number:'1.1-1' }} 
+                          <i class="fas fa-star text-warning ms-1"></i>
+                        </div>
+                      </span>
+                      <div *ngIf="editingProductId === product.id" class="form-group">
+                        <input type="number" class="form-control form-control-sm" 
+                               [(ngModel)]="editingProduct.nota" 
+                               min="0" max="5" step="0.1"
+                               placeholder="Nota (0-5)">
+                      </div>
+                    </td>
+                    
+                    <!-- Actions column -->
+                    <td>
+                      <div *ngIf="editingProductId !== product.id" class="btn-group">
+                        <button class="btn btn-sm btn-info me-1" (click)="startEditing(product)">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteProduct(product)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                      <div *ngIf="editingProductId === product.id" class="btn-group">
+                        <button class="btn btn-sm btn-success me-1" (click)="saveProduct()">
+                          <i class="fas fa-save"></i>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- No products message -->
+            <div *ngIf="!loading && !error && products.length === 0" class="alert alert-info">
+              No hay productos disponibles. Añade un nuevo producto para comenzar.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
