@@ -12,7 +12,7 @@
             </button>
           </div>
           <div class="card-body">
-            <!-- Create Product Form -->
+            <!-- Formulari de Creació de Producte -->
             <div *ngIf="showCreateForm" class="mb-4">
               <div class="card" [ngClass]="{'bg-dark text-white': oscuro}">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -79,18 +79,18 @@
               </div>
             </div>
             
-            <!-- Loading spinner -->
+            <!-- Indicador de càrrega -->
             <div *ngIf="loading" class="text-center py-5">
               <div class="spinner-border" role="status">
               </div>
             </div>
             
-            <!-- Error message -->
+            <!-- Missatge d'error -->
             <div *ngIf="error" class="alert alert-danger">
               {{ error }}
             </div>
             
-            <!-- Products table -->
+            <!-- Taula de productes -->
             <div *ngIf="!loading && !error" class="table-responsive">
               <table class="table table-hover" [ngClass]="{'table-dark': oscuro}">
                 <thead>
@@ -110,7 +110,7 @@
                   <tr *ngFor="let product of products; let i = index">
                     <th scope="row">{{ i + 1 }}</th>
                     
-                    <!-- Image column -->
+                    <!-- Columna d'imatge -->
                     <td>
                       <div *ngIf="editingProductId !== product.id">
                         <img [src]="product.imagen" alt="{{ product.nombre }}" class="product-thumbnail">
@@ -122,7 +122,7 @@
                       </div>
                     </td>
                     
-                    <!-- Name column -->
+                    <!-- Columna de nom -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">{{ product.nombre }}</span>
                       <div *ngIf="editingProductId === product.id" class="form-group">
@@ -132,7 +132,7 @@
                       </div>
                     </td>
                     
-                    <!-- Description column -->
+                    <!-- Columna de descripció -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">{{ product.descripcion | slice:0:50 }}{{ product.descripcion && product.descripcion.length > 50 ? '...' : '' }}</span>
                       <div *ngIf="editingProductId === product.id" class="form-group">
@@ -142,7 +142,7 @@
                       </div>
                     </td>
                     
-                    <!-- Price column -->
+                    <!-- Columna de preu -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">{{ product.precio | currency:'EUR' }}</span>
                       <div *ngIf="editingProductId === product.id" class="form-group">
@@ -153,7 +153,7 @@
                       </div>
                     </td>
                     
-                    <!-- Stock column -->
+                    <!-- Columna d'estoc -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">{{ product.stock }}</span>
                       <div *ngIf="editingProductId === product.id" class="form-group">
@@ -164,7 +164,7 @@
                       </div>
                     </td>
                     
-                    <!-- Category column -->
+                    <!-- Columna de categoria -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">{{ product.categoria_id }}</span>
                       <div *ngIf="editingProductId === product.id" class="form-group">
@@ -175,7 +175,7 @@
                       </div>
                     </td>
                     
-                    <!-- Rating column -->
+                    <!-- Columna de valoració -->
                     <td>
                       <span *ngIf="editingProductId !== product.id">
                         <div class="d-flex align-items-center">
@@ -191,7 +191,7 @@
                       </div>
                     </td>
                     
-                    <!-- Actions column -->
+                    <!-- Columna d'accions -->
                     <td>
                       <div *ngIf="editingProductId !== product.id" class="btn-group">
                         <button class="btn btn-sm btn-info me-1" (click)="startEditing(product)">
@@ -215,7 +215,7 @@
               </table>
             </div>
             
-            <!-- No products message -->
+            <!-- Missatge de cap producte disponible -->
             <div *ngIf="!loading && !error && products.length === 0" class="alert alert-info">
               No hay productos disponibles. Añade un nuevo producto para comenzar.
             </div>

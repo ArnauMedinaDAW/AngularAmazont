@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './admin-productes.component.html',
   styleUrls: ['./admin-productes.component.css']
 })
-export class AdminProductesComponent implements OnInit, OnDestroy {
+export class AdminProductesComponent implements OnInit {
   oscuro: boolean = false;
   products: Product[] = [];
   loading: boolean = true;
@@ -30,12 +30,12 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to theme changes
+    // Subscriu-se als canvis del tema
     this.themeSubscription = this.themeService.darkMode$.subscribe(isDark => {
       this.oscuro = isDark;
     });
     
-    // Load products
+    // Carrega els productes
     this.loadProducts();
   }
 
@@ -74,7 +74,7 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
 
     this.productesService.updateProduct(productToUpdate).subscribe({
       next: (updatedProduct) => {
-        // Update the product in the local array
+        // Actualitza el producte a l'array local
         const index = this.products.findIndex(p => p.id === updatedProduct.id);
         if (index !== -1) {
           this.products[index] = updatedProduct;
@@ -83,27 +83,19 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error updating product:', error);
-        // You could add error handling here, like showing a message to the user
+        // Podries afegir gestió d'errors aquí, com mostrar un missatge a l'usuari
       }
     });
   }
 
-  ngOnDestroy(): void {
-    // Clean up subscriptions
-    if (this.themeSubscription) {
-      this.themeSubscription.unsubscribe();
-    }
-    if (this.productsSubscription) {
-      this.productsSubscription.unsubscribe();
-    }
-  }
 
-  // Add this method to handle product deletion
+
+  // Mètode per gestionar l'eliminació de productes
   deleteProduct(product: Product): void {
     if (confirm(`¿Estás seguro de que deseas eliminar el producto "${product.nombre}"?`)) {
       this.productesService.deleteProduct(product.id).subscribe({
         next: () => {
-          // Remove the product from the local array
+          // Elimina el producte de l'array local
           this.products = this.products.filter(p => p.id !== product.id);
         },
         error: (error) => {
@@ -114,7 +106,7 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Add these properties
+  // Propietats per al formulari de creació
   showCreateForm: boolean = false;
   newProduct: Partial<Product> = {
     nombre: '',
@@ -122,15 +114,15 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
     imagen: '',
     precio: 0,
     stock: 0,
-    categoria_id: 1, // Default category
+    categoria_id: 1, // Categoria per defecte
     nota: 0
   };
 
-  // Add this method to toggle the create form
+  // Mètode per mostrar/ocultar el formulari de creació
   toggleCreateForm(): void {
     this.showCreateForm = !this.showCreateForm;
     if (!this.showCreateForm) {
-      // Reset the form when closing
+      // Reinicia el formulari quan es tanca
       this.newProduct = {
         nombre: '',
         descripcion: '',
@@ -143,7 +135,7 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Add this method to create a new product
+  // Mètode per crear un nou producte
   createProduct(): void {
     if (!this.newProduct.nombre || !this.newProduct.imagen) {
       alert('Por favor, complete al menos el nombre y la URL de la imagen.');
@@ -152,9 +144,9 @@ export class AdminProductesComponent implements OnInit, OnDestroy {
 
     this.productesService.createProduct(this.newProduct).subscribe({
       next: (createdProduct) => {
-        // Add the new product to the local array
+        // Afegeix el nou producte a l'array local
         this.products.push(createdProduct);
-        this.toggleCreateForm(); // Close the form
+        this.toggleCreateForm(); // Tanca el formulari
       },
       error: (error) => {
         console.error('Error creating product:', error);
