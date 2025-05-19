@@ -155,10 +155,8 @@ export class CarritoService {
     if (item) {
       // Update local cart item
       item.cantidad = quantity;
-      // Calculate new total price
       const precioTotal = item.product.precio * quantity;
       
-      // If user is logged in, update via API
       const usuari = this.authService.getUsuariActual();
       if (usuari && usuari.id) {
         this.httpClient.post(`${this.apiUrl}/carrito/updateCantidadPrecio`, {
@@ -167,12 +165,10 @@ export class CarritoService {
         }).subscribe({
           next: (response) => {
             console.log('Cart item quantity updated successfully in API');
-            // Reload cart to ensure consistency
             this.carregarCarret();
           },
           error: (error) => {
             console.error('Error updating cart item quantity in API:', error);
-            // If API fails, at least update local storage
             this.guardarCarret();
           }
         });
@@ -183,25 +179,21 @@ export class CarritoService {
     const usuari = this.authService.getUsuariActual();
     
     if (usuari && usuari.id && this.cartItems.length > 0) {
-      // Get all cart item IDs
       const cartItemIds = this.cartItems
         .filter(item => item.id !== undefined)
         .map(item => item.id);
       
       if (cartItemIds.length > 0) {
-        // Call API to delete multiple cart items
         this.httpClient.post(`${this.apiUrl}/carritos/eliminar-varios`, {
           ids: cartItemIds
         }).subscribe({
           next: (response) => {
             console.log('Cart successfully cleared via API');
-            // Clear local cart
             this.cartItems = [];
             this.guardarCarret();
           },
           error: (error) => {
             console.error('Error clearing cart via API:', error);
-            // Still clear local cart even if API fails
           }
         });
       }
@@ -212,22 +204,18 @@ export class CarritoService {
     const usuari = this.authService.getUsuariActual();
     
     if (usuari && usuari.id && this.cartItems.length > 0) {
-      // Call API to finalize the purchase
       return this.httpClient.put(`${this.apiUrl}/carrito/finalizar/${usuari.id}`, {})
         .subscribe({
           next: (response) => {
             console.log('Purchase successfully finalized via API');
-            // Clear local cart after successful API call
             this.cartItems = [];
             this.guardarCarret();
           },
           error: (error) => {
             console.error('Error finalizing purchase via API:', error);
-            // Don't clear cart if API fails
           }
         });
     } else {
-      // If user not logged in or cart is empty, just clear local cart
       this.cartItems = [];
       this.guardarCarret();
       return null;

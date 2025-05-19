@@ -2,7 +2,7 @@
   <header>
     <div class="header-left">
       <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
-      <button class="settings-btn img" [routerLink]="['/perfil']">
+      <button *ngIf="usuariActual" class="settings-btn img" [routerLink]="['/perfil']">
         <i class="fas fa-user"></i>
       </button>
       <!-- Admin icon - only visible for admin users -->
@@ -17,12 +17,12 @@
     <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>
     
     <h1 class="header-title">
-      <span class="title-highlight">AMAZONT</span>
+      <span class="title-highlight">AMAZONT MISTERY BOXES</span>
       <span class="title-tagline">Tu tienda de confianza</span>
     </h1>
 
     <div class="header-right margin">
-      <button class="cart-btn img" [routerLink]="['/menu/carrito']">
+      <button *ngIf="usuariActual" class="cart-btn img" [routerLink]="['/menu/carrito']">
         <i class="fas fa-shopping-cart"></i>
         <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
       </button>

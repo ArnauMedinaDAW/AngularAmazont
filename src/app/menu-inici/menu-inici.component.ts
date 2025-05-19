@@ -20,11 +20,9 @@ export class MenuIniciComponent implements OnInit, OnDestroy {
   constructor(private themeService: ThemeService) {}
 
   ngOnInit() {
-    // Subscribe to theme changes from the ThemeService
     this.themeSubscription = this.themeService.darkMode$.subscribe(isDark => {
       this.oscuro = isDark;
       
-      // Update child component if it exists
       if (this.componentActual && 'oscuro' in this.componentActual) {
         this.componentActual.oscuro = this.oscuro;
       }
@@ -32,21 +30,18 @@ export class MenuIniciComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up subscription to prevent memory leaks
     if (this.themeSubscription) {
       this.themeSubscription.unsubscribe();
     }
   }
 
   canviarTema() {
-    // Use the ThemeService to toggle dark mode
     this.themeService.toggleDarkMode();
   }
 
   onActivate(component: any) {
     this.componentActual = component;
 
-    // Set the dark mode value on the activated component
     if ('oscuro' in component) {
       component.oscuro = this.oscuro;
     }

@@ -58,7 +58,7 @@
                 </li>
               </ul>
             </details> -->
-            <button (click)="verDetallePedido(pedido.id)">Ver Detalle</button>
+            <!-- <button (click)="verDetallePedido(pedido.id)">Ver Detalle</button> -->
           </div>
         }
       </div>
@@ -157,9 +157,9 @@
               <span class="badge-predeterminado">Predeterminado</span>
             }
             <div class="metodo-actions">
-              @if (!metodo.predeterminado) {
+              <!-- @if (!metodo.predeterminado) {
                 <button (click)="establecerPredeterminado(metodo.id_metodo)">Establecer como predeterminado</button>
-              }
+              } -->
               <button (click)="editarMetodoPago(metodo)">Editar</button>
               <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id_metodo)">Eliminar</button>
             </div>
