@@ -615,3 +615,166 @@ summary:hover {
 .mensaje-exito {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Add dark mode styles for user profile */
+.dark .profile-container {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark .profile-header {
+  background-color: #222;
+  border-color: #444;
+}
+
+.dark .profile-avatar {
+  border-color: #444;
+  background-color: #222;
+}
+
+.dark .profile-name {
+  color: #e0e0e0;
+}
+
+.dark .profile-email {
+  color: #aaa;
+}
+
+.dark .profile-stats {
+  background-color: #222;
+  border-color: #444;
+}
+
+.dark .stat-value {
+  color: #e0e0e0;
+}
+
+.dark .stat-label {
+  color: #aaa;
+}
+
+.dark .profile-section {
+  background-color: #222;
+  border-color: #444;
+}
+
+.dark .profile-section h3 {
+  color: #e0e0e0;
+  border-bottom-color: #444;
+}
+
+.dark .profile-section p {
+  color: #ccc;
+}
+
+.dark .profile-section .btn {
+  background-color: #444;
+  color: #e0e0e0;
+  border-color: #555;
+}
+
+.dark .profile-section .btn:hover {
+  background-color: #555;
+}
+
+.dark .order-item {
+  border-color: #444;
+}
+
+.dark .order-date {
+  color: #aaa;
+}
+
+.dark .order-status {
+  background-color: #444;
+}
+
+.dark .order-status.completed {
+  background-color: #2c5f2d;
+}
+
+.dark .order-status.processing {
+  background-color: #2d4263;
+}
+
+.dark .order-status.shipped {
+  background-color: #4d3c77;
+}
+
+.dark .order-total {
+  color: #e0e0e0;
+}
+
+.dark .address-card {
+  background-color: #222;
+  border-color: #444;
+}
+
+.dark .address-card h4 {
+  color: #e0e0e0;
+}
+
+.dark .address-card p {
+  color: #ccc;
+}
+
+.dark .address-type {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+.dark .form-control {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+.dark .form-control:focus {
+  background-color: #3a3a3a;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+.dark .form-label {
+  color: #e0e0e0;
+}
+
+.dark .nav-tabs {
+  border-bottom-color: #444;
+}
+
+.dark .nav-link {
+  color: #aaa;
+}
+
+.dark .nav-link.active {
+  background-color: #333;
+  border-color: #444 #444 #333;
+  color: #e0e0e0;
+}
+
+.dark .nav-link:hover:not(.active) {
+  border-color: #555 #555 #444;
+  background-color: #2a2a2a;
+}
+
+.dark .table {
+  color: #e0e0e0;
+}
+
+.dark .table th {
+  border-color: #444;
+  background-color: #222;
+}
+
+.dark .table td {
+  border-color: #444;
+}
+
+.dark .table-striped tbody tr:nth-of-type(odd) {
+  background-color: #2a2a2a;
+}
+
+.dark .table-hover tbody tr:hover {
+  background-color: #333;
+}

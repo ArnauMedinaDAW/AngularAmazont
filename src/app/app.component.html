@@ -1,7 +1,7 @@
 <div [ngClass]="{'dark': oscuro}" class="app-container">
   <header>
     <div class="header-left">
-      <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" >
+      <img [src]="'logo_amazont.png'" alt="Amazont Logo" class="logo" [routerLink]="['/menu/productes']" style="cursor: pointer;">
       <button *ngIf="usuariActual" class="settings-btn img" [routerLink]="['/perfil']">
         <i class="fas fa-user"></i>
       </button>
@@ -11,20 +11,20 @@
       <button *ngIf="usuariActual" class="logout-btn img" (click)="logout()">
         <i class="fas fa-sign-out-alt"></i>
       </button>
+      <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>
     </div>
-    <span *ngIf="usuariActual?.nick">Hola, {{ usuariActual?.nick }}</span>
 
-    <h1 class="header-title">
-      <span class="title-highlight">AMAZONT MISTERY BOXES</span>
-      <span class="title-tagline">Tu tienda de confianza</span>
+    <h1 class="header-title text-center ms-n5">
+      <span class="title-highlight d-block">AMAZONT MISTERY BOXES</span>
+      <span class="title-tagline d-block">Tu tienda de confianza</span>
     </h1>
 
     <div class="header-right margin">
-      <button *ngIf="usuariActual" class="cart-btn img" [routerLink]="['/menu/carrito']">
+      <button *ngIf="usuariActual" class="cart-btn img me-5" [routerLink]="['/menu/carrito']">
         <i class="fas fa-shopping-cart"></i>
         <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
       </button>
-      <div class="theme-switch ms-3" id="themeSwitch" [class.active]="oscuro" (click)="canviarTema()">
+      <div class="theme-switch ms-2" id="themeSwitch" [class.active]="oscuro" (click)="canviarTema()">
         <i class="bi" [ngClass]="oscuro ? 'bi-moon-fill' : 'bi-sun-fill'"></i>
         <div class="switch">
           <div class="slider"></div>

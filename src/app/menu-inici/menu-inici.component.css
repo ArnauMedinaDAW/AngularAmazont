@@ -251,3 +251,35 @@ footer {
   background-color: #212529;
   border-color: #212529;
 }
+
+
+/* Footer responsive styles */
+.footer-responsive {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 15px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.dark .footer-responsive {
+  background-color: #333;
+  color: #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Make footer position relative on mobile */
+@media (max-width: 768px) {
+  .footer-responsive {
+    position: relative;
+    margin-top: 30px;
+  }
+
+  /* Add padding to main content to prevent footer overlap */
+  main {
+    padding-bottom: 0;
+  }
+}

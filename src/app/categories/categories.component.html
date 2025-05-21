@@ -1,10 +1,10 @@
 <main [ngClass]="{'dark': oscuro}" role="main">
   <div class="container">
-    <h1 id="categories-heading" class="mb-4" style="text-align: center;">Categorías de Productos</h1>
+    <h1 id="categories-heading" class="mb-4 text-center">Categorías de Productos</h1>
 
-    <div class="row">
+    <div class="row justify-content-center">
       @if(loading){
-        <div class="text-center my-5" aria-live="polite" role="status">
+        <div class="text-center my-5 col-12" aria-live="polite" role="status">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Cargando...</span>
           </div>
@@ -13,19 +13,19 @@
       }
 
       @if(error){
-        <div class="alert alert-danger text-center my-5" role="alert" aria-live="assertive">
+        <div class="alert alert-danger text-center my-5 col-12" role="alert" aria-live="assertive">
           <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
           {{ error }}
         </div>
       }
 
       @if(!loading && !error){
-        <section aria-labelledby="categories-heading" class="categories-section">
-          <div class="row">
+        <section aria-labelledby="categories-heading" class="categories-section col-12">
+          <div class="row justify-content-center">
             @for (categoria of categories; track categoria.id) {
-              <div class="col-4">
-                <article class="card mb-4 shadow-sm category-card">
-                  <div class="card-body">
+              <div class="col-md-4 col-sm-6 col-12 d-flex justify-content-center">
+                <article class="card mb-4 shadow-sm category-card w-100">
+                  <div class="card-body text-center">
                     <h2 class="card-title h5">
                       <button class="category-button" (click)="selectCategory(categoria)"
                               (keydown.enter)="selectCategory(categoria)"
@@ -33,7 +33,7 @@
                         {{ categoria.nombre }}
                       </button>
                     </h2>
-                    <div class="row">
+                    <div class="row justify-content-center">
                       @if(categoria.img && categoria.img.length > 0){
                         @for (imatge of categoria.img; track imatge) {
                           <div class="col-4 mb-2">
@@ -55,9 +55,9 @@
       }
 
       @if(selectedCategory){
-        <section aria-labelledby="products-heading" class="products-section">
-          <div class="row">
-            <div class="col-12 mb-4 mt-4">
+        <section aria-labelledby="products-heading" class="products-section col-12">
+          <div class="row justify-content-center">
+            <div class="col-12 mb-4 mt-4 text-center">
               <h2 id="products-heading">Productos en: {{ selectedCategory.nombre }}</h2>
             </div>
 
@@ -65,29 +65,29 @@
 
             <div class="col-12 mb-4">
               <div class="sorting-controls" role="group" aria-label="Opciones de ordenación">
-                <div class="row">
-                  <div class="col-3">
-                    <button class="btn btn-primary" (click)="sortByPrice('asc')" aria-label="Ordenar por precio de menor a mayor">
+                <div class="row justify-content-center">
+                  <div class="col-lg-3 col-md-6 col-12 mb-2">
+                    <button class="btn btn-primary w-100 fs-6" (click)="sortByPrice('asc')" aria-label="Ordenar por precio de menor a mayor">
                       <i class="fas fa-sort-amount-down-alt me-2" aria-hidden="true"></i>
-                      Ordenar por Precio Ascendente
+                      <span class="small">Ordenar por Precio Ascendente</span>
                     </button>
                   </div>
-                  <div class="col-3">
-                    <button class="btn btn-primary" (click)="sortByPrice('desc')" aria-label="Ordenar por precio de mayor a menor">
+                  <div class="col-lg-3 col-md-6 col-12 mb-2">
+                    <button class="btn btn-primary w-100 fs-6" (click)="sortByPrice('desc')" aria-label="Ordenar por precio de mayor a menor">
                       <i class="fas fa-sort-amount-down me-2" aria-hidden="true"></i>
-                      Ordenar por Precio Descendente
+                      <span class="small">Ordenar por Precio Descendente</span>
                     </button>
                   </div>
-                  <div class="col-3">
-                    <button class="btn btn-primary" (click)="sortByRate('asc')" aria-label="Ordenar por valoración de menor a mayor">
+                  <div class="col-lg-3 col-md-6 col-12 mb-2">
+                    <button class="btn btn-primary w-100 fs-6" (click)="sortByRate('asc')" aria-label="Ordenar por valoración de menor a mayor">
                       <i class="fas fa-star me-2" aria-hidden="true"></i>
-                      Ordenar por Valoración Ascendente
+                      <span class="small">Ordenar por Valoración Ascendente</span>
                     </button>
                   </div>
-                  <div class="col-3">
-                    <button class="btn btn-primary" (click)="sortByRate('desc')" aria-label="Ordenar por valoración de mayor a menor">
+                  <div class="col-lg-3 col-md-6 col-12 mb-2">
+                    <button class="btn btn-primary w-100 fs-6" (click)="sortByRate('desc')" aria-label="Ordenar por valoración de mayor a menor">
                       <i class="fas fa-star-half-alt me-2" aria-hidden="true"></i>
-                      Ordenar por Valoración Descendente
+                      <span class="small">Ordenar por Valoración Descendente</span>
                     </button>
                   </div>
                 </div>
@@ -95,10 +95,10 @@
             </div>
           </div>
 
-          <div class="product-list row" role="list" aria-label="Lista de productos">
+          <div class="product-list row justify-content-center" role="list" aria-label="Lista de productos">
             @for (product of selectedCategory.product; track product.id) {
-              <div class="product-card col-3" role="listitem">
-                <article class="card h-100">
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-4 d-flex justify-content-center" role="listitem">
+                <article class="card h-100 w-100">
                   <div class="card-body d-flex flex-column"
                        (click)="goToProduct(product)"
                        (keydown.enter)="goToProduct(product)"
@@ -122,7 +122,7 @@
           </div>
         </section>
       }
-      </div>
+    </div>
   </div>
 </main>
 
