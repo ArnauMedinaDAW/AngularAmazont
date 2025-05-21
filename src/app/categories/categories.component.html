@@ -1,79 +1,128 @@
-<main>
-  <div class="row">
-    @if(loading){
-      <div class="text-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Cargando...</span>
-        </div>
-        <p class="mt-2">Cargando categorías...</p>
-      </div>
-    }
+<main [ngClass]="{'dark': oscuro}" role="main">
+  <div class="container">
+    <h1 id="categories-heading" class="mb-4" style="text-align: center;">Categorías de Productos</h1>
 
-    @if(error){
-      <div class="alert alert-danger text-center my-5">
-        {{ error }}
-      </div>
-    }
-
-    @if(!loading && !error){
-      @for (categoria of categories; track categoria.id) {
-        <div class="col-4">
-          <div class="card mb-4 shadow-sm">
-            <p (click)="selectCategory(categoria)" style="cursor: pointer; font-weight: bold;">{{ categoria.nombre }}</p>
-            <div class="row">
-              @if(categoria.img && categoria.img.length > 0){
-                @for (imatge of categoria.img; track imatge) {
-                  <div class="col-4 mb-2">
-                    <img [src]="imatge">
-                  </div>
-                }
-              }@else if(categoria.imagen){
-                <div class="col-12 mb-2">
-                  <img [src]="categoria.imagen" class="img-fluid">
-                </div>
-              }
-            </div>
+    <div class="row">
+      @if(loading){
+        <div class="text-center my-5" aria-live="polite" role="status">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
           </div>
+          <p class="mt-2">Cargando categorías...</p>
         </div>
       }
-    }
 
-    @if(selectedCategory){
+      @if(error){
+        <div class="alert alert-danger text-center my-5" role="alert" aria-live="assertive">
+          <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
+          {{ error }}
+        </div>
+      }
 
-      <div class="row">
-        <div class="col-12 mb-4 mt-4">
-        <h3>Productos en: {{ selectedCategory.nombre }}</h3>
-
-        </div>
-        <div class="mb-4"></div>
-        <div class="col-3">
-          <button class="btn btn-primary" (click)="sortByPrice('asc')">Ordenar por Precio Ascendente</button>
-        </div>
-        <div class="col-3">
-          <button class="btn btn-primary" (click)="sortByPrice('desc')">Ordenar por Precio Descendente</button>
-        </div>
-        <div class="col-3">
-          <button class="btn btn-primary" (click)="sortByRate('asc')">Ordenar por Valoración Ascendente</button>
-        </div>
-        <div class="col-3">
-          <button class="btn btn-primary" (click)="sortByRate('desc')">Ordenar por Valoración Descendente</button>
-        </div>
-      </div>
-      <div class="product-list row" >
-        @for (product of selectedCategory.product; track product.id) {
-          <div class="product-card col-3" (click)="goToProduct(product)" style="text-decoration: none; color: inherit; cursor: pointer;">
-            <img [src]="product.imagen" [alt]="product.nombre">
-            <p class="product-name">{{ product.nombre }}</p>
-            <span class="product-price">{{ product.precio }}€</span>
-            <span class="discount">
-              {{ product.nota }}/10
-            </span>
-            <p class="product-description">{{ product.descripcion }}</p>
+      @if(!loading && !error){
+        <section aria-labelledby="categories-heading" class="categories-section">
+          <div class="row">
+            @for (categoria of categories; track categoria.id) {
+              <div class="col-4">
+                <article class="card mb-4 shadow-sm category-card">
+                  <div class="card-body">
+                    <h2 class="card-title h5">
+                      <button class="category-button" (click)="selectCategory(categoria)"
+                              (keydown.enter)="selectCategory(categoria)"
+                              tabindex="0" [attr.aria-label]="'Ver productos de la categoría ' + categoria.nombre">
+                        {{ categoria.nombre }}
+                      </button>
+                    </h2>
+                    <div class="row">
+                      @if(categoria.img && categoria.img.length > 0){
+                        @for (imatge of categoria.img; track imatge) {
+                          <div class="col-4 mb-2">
+                            <img [src]="imatge" [alt]="'Imagen de categoría ' + categoria.nombre" class="img-fluid">
+                          </div>
+                        }
+                      }@else if(categoria.imagen){
+                        <div class="col-12 mb-2">
+                          <img [src]="categoria.imagen" [alt]="'Imagen de categoría ' + categoria.nombre" class="img-fluid">
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </article>
+              </div>
+            }
           </div>
-        }
-      </div>
+        </section>
+      }
 
-    }
+      @if(selectedCategory){
+        <section aria-labelledby="products-heading" class="products-section">
+          <div class="row">
+            <div class="col-12 mb-4 mt-4">
+              <h2 id="products-heading">Productos en: {{ selectedCategory.nombre }}</h2>
+            </div>
+
+            <div class="mb-4"></div>
+
+            <div class="col-12 mb-4">
+              <div class="sorting-controls" role="group" aria-label="Opciones de ordenación">
+                <div class="row">
+                  <div class="col-3">
+                    <button class="btn btn-primary" (click)="sortByPrice('asc')" aria-label="Ordenar por precio de menor a mayor">
+                      <i class="fas fa-sort-amount-down-alt me-2" aria-hidden="true"></i>
+                      Ordenar por Precio Ascendente
+                    </button>
+                  </div>
+                  <div class="col-3">
+                    <button class="btn btn-primary" (click)="sortByPrice('desc')" aria-label="Ordenar por precio de mayor a menor">
+                      <i class="fas fa-sort-amount-down me-2" aria-hidden="true"></i>
+                      Ordenar por Precio Descendente
+                    </button>
+                  </div>
+                  <div class="col-3">
+                    <button class="btn btn-primary" (click)="sortByRate('asc')" aria-label="Ordenar por valoración de menor a mayor">
+                      <i class="fas fa-star me-2" aria-hidden="true"></i>
+                      Ordenar por Valoración Ascendente
+                    </button>
+                  </div>
+                  <div class="col-3">
+                    <button class="btn btn-primary" (click)="sortByRate('desc')" aria-label="Ordenar por valoración de mayor a menor">
+                      <i class="fas fa-star-half-alt me-2" aria-hidden="true"></i>
+                      Ordenar por Valoración Descendente
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-list row" role="list" aria-label="Lista de productos">
+            @for (product of selectedCategory.product; track product.id) {
+              <div class="product-card col-3" role="listitem">
+                <article class="card h-100">
+                  <div class="card-body d-flex flex-column"
+                       (click)="goToProduct(product)"
+                       (keydown.enter)="goToProduct(product)"
+                       tabindex="0"
+                       role="button"
+                       [attr.aria-label]="'Ver detalles de ' + product.nombre">
+                    <img [src]="product.imagen" [alt]="'Imagen de ' + product.nombre" class="img-fluid mb-3">
+                    <h3 class="product-name h5">{{ product.nombre }}</h3>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                      <span class="product-price fw-bold">{{ product.precio }}€</span>
+                      <span class="product-rating badge bg-primary">
+                        <i class="fas fa-star me-1" aria-hidden="true"></i>
+                        <span [attr.aria-label]="'Valoración ' + product.nota + ' de 10'">{{ product.nota }}/10</span>
+                      </span>
+                    </div>
+                    <p class="product-description text-muted small mt-2">{{ product.descripcion }}</p>
+                  </div>
+                </article>
+              </div>
+            }
+          </div>
+        </section>
+      }
+      </div>
   </div>
 </main>
 

@@ -1,116 +1,136 @@
-
-
-<main [ngClass]="{'dark': oscuro}" class="container py-5">
+<main [ngClass]="{'dark': oscuro}" class="container py-5" role="main">
   <div class="row">
     <div class="col-12">
-      <h2 class="mb-4"><i class="bi bi-cart3 me-2"></i>Mi Carrito de Compras</h2>
-      
+      <h1 class="mb-4" id="cart-title">
+        <i class="bi bi-cart3 me-2" aria-hidden="true"></i>Mi Carrito de Compras
+      </h1>
+
       @if (cartItems.length === 0) {
-        <div class="alert alert-info">
-          <i class="bi bi-info-circle me-2"></i>Tu carrito está vacío
+        <div class="alert alert-info" role="alert" aria-live="polite">
+          <i class="bi bi-info-circle me-2" aria-hidden="true"></i>Tu carrito está vacío
         </div>
-        <button class="btn btn-primary" (click)="continuarComprant()">
-          <i class="bi bi-arrow-left me-2"></i>Continuar comprando
+        <button class="btn btn-primary" (click)="continuarComprant()" aria-label="Continuar comprando">
+          <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Continuar comprando
         </button>
       } @else {
-        <div class="card shadow-sm mb-4">
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th scope="col" width="100">Producto</th>
-                    <th scope="col">Descripción</th>
-                    <th scope="col" class="text-center">Precio</th>
-                    <th scope="col" class="text-center">Cantidad</th>
-                    <th scope="col" class="text-center">Subtotal</th>
-                    <th scope="col" class="text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (item of cartItems; track item.product.id) {
+        <section aria-labelledby="cart-title">
+          <div class="card shadow-sm mb-4">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0" aria-label="Productos en el carrito">
+                  <caption class="visually-hidden">Lista de productos en tu carrito de compras</caption>
+                  <thead class="table-light">
                     <tr>
-                      <td>
-                        <img [src]="item.product.imagen" [alt]="item.product.nombre" class="img-fluid" style="max-width: 80px;">
-                      </td>
-                      <td>
-                        <h6 class="mb-1">{{ item.product.nombre }}</h6>
-                        <small class="text-muted">{{ item.product.descripcion | slice:0:60 }}...</small>
-                      </td>
-                      <td class="text-center align-middle">{{ item.product.precio | currency:'EUR' }}</td>
-                      <td class="text-center align-middle">
-                        <div class="d-flex justify-content-center">
-                          <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="actualitzarQuantitat(item, item.cantidad - 1)"
-                                  [disabled]="item.cantidad <= 1">
-                            <i class="fas fa-minus"></i>
-                          </button>
-                          <input type="number" class="form-control mx-2" style="width: 60px;" 
-                                 min="1" max="50" [(ngModel)]="item.cantidad" 
-                                 (change)="actualitzarQuantitat(item, item.cantidad)">
-                          <button class="btn btn-sm btn-outline-secondary" 
-                                  (click)="actualitzarQuantitat(item, item.cantidad + 1)"
-                                  [disabled]="item.cantidad >= 50">
-                            <i class="fas fa-plus"></i>
-                          </button>
-                        </div>
-                      </td>
-                      <td class="text-center align-middle">
-                        {{ (item.product.precio * item.cantidad) | currency:'EUR' }}
-                      </td>
-                      <td class="text-center align-middle">
-                        <button class="btn btn-sm btn-danger" (click)="eliminarProducte(item.id || 0)">
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </td>
+                      <th scope="col" width="100">Producto</th>
+                      <th scope="col">Descripción</th>
+                      <th scope="col" class="text-center">Precio</th>
+                      <th scope="col" class="text-center">Cantidad</th>
+                      <th scope="col" class="text-center">Subtotal</th>
+                      <th scope="col" class="text-center">Acciones</th>
                     </tr>
-                  }
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    @for (item of cartItems; track item.product.id) {
+                      <tr>
+                        <td>
+                          <img [src]="item.product.imagen" [alt]="'Imagen de ' + item.product.nombre" class="img-fluid" style="max-width: 80px;">
+                        </td>
+                        <td>
+                          <h6 class="mb-1">{{ item.product.nombre }}</h6>
+                          <small class="text-muted">{{ item.product.descripcion | slice:0:60 }}...</small>
+                        </td>
+                        <td class="text-center align-middle">{{ item.product.precio | currency:'EUR' }}</td>
+                        <td class="text-center align-middle">
+                          <div class="d-flex justify-content-center" role="group" aria-label="Controles de cantidad">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    (click)="actualitzarQuantitat(item, item.cantidad - 1)"
+                                    [disabled]="item.cantidad <= 1"
+                                    aria-label="Disminuir cantidad">
+                              <i class="fas fa-minus" aria-hidden="true"></i>
+                              <span class="visually-hidden">Disminuir</span>
+                            </button>
+                            <!-- <label for="quantity-{{item.product.id}}" class="visually-hidden">Cantidad de {{item.product.nombre}}</label> -->
+                            <input type="number" id="quantity-{{item.product.id}}" class="form-control mx-2" style="width: 60px;"
+                                   min="1" max="50" [(ngModel)]="item.cantidad"
+                                   (change)="actualitzarQuantitat(item, item.cantidad)"
+                                   aria-label="Cantidad" aria-live="polite">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    (click)="actualitzarQuantitat(item, item.cantidad + 1)"
+                                    [disabled]="item.cantidad >= 50"
+                                    aria-label="Aumentar cantidad">
+                              <i class="fas fa-plus" aria-hidden="true"></i>
+                              <span class="visually-hidden">Aumentar</span>
+                            </button>
+                          </div>
+                        </td>
+                        <td class="text-center align-middle" aria-live="polite">
+                          {{ (item.product.precio * item.cantidad) | currency:'EUR' }}
+                        </td>
+                        <td class="text-center align-middle">
+                          <button class="btn btn-sm btn-danger"
+                                  (click)="eliminarProducte(item.id || 0)"
+                                  [attr.aria-label]="'Eliminar ' + item.product.nombre + ' del carrito'">
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                            <span class="visually-hidden">Eliminar</span>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-        
+        </section>
+
         <div class="row">
           <div class="col-md-6">
             <div class="d-flex gap-2">
-              <button class="btn btn-outline-primary" (click)="continuarComprant()">
-                <i class="bi bi-arrow-left me-2"></i>Continuar comprando
+              <button class="btn btn-outline-primary"
+                      (click)="continuarComprant()"
+                      aria-label="Continuar comprando">
+                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Continuar comprando
               </button>
-              <button class="btn btn-outline-danger" (click)="buidarCarret()">
-                <i class="bi bi-trash me-2"></i>Vaciar carrito
+              <button class="btn btn-outline-danger"
+                      (click)="buidarCarret()"
+                      aria-label="Vaciar carrito">
+                <i class="bi bi-trash me-2" aria-hidden="true"></i>Vaciar carrito
               </button>
             </div>
           </div>
-          
+
           <div class="col-md-6">
-            <div class="card shadow-sm">
+            <aside class="card shadow-sm" aria-labelledby="order-summary-title">
               <div class="card-body">
-                <h5 class="card-title mb-3">Resumen del pedido</h5>
-                <div class="d-flex justify-content-between mb-2">
-                  <span>Subtotal:</span>
-                  <span>{{ total | currency:'EUR' }}</span>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                  <span>Gastos de envío:</span>
-                  <span>{{ shippingCost | currency:'EUR' }}</span>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-3 fw-bold">
-                  <span>Total:</span>
-                  <span>{{ (total + shippingCost) | currency:'EUR' }}</span>
-                </div>
-                <button class="btn btn-success w-100" (click)="iniciarProcesPagament()">
-                  <i class="bi bi-credit-card me-2"></i>Proceder al pago
+                <h2 class="card-title h5 mb-3" id="order-summary-title">Resumen del pedido</h2>
+                <dl class="mb-0">
+                  <div class="d-flex justify-content-between mb-2">
+                    <dt>Subtotal:</dt>
+                    <dd>{{ total | currency:'EUR' }}</dd>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <dt>Gastos de envío:</dt>
+                    <dd>{{ shippingCost | currency:'EUR' }}</dd>
+                  </div>
+                  <hr aria-hidden="true">
+                  <div class="d-flex justify-content-between mb-3 fw-bold">
+                    <dt>Total:</dt>
+                    <dd aria-live="polite">{{ (total + shippingCost) | currency:'EUR' }}</dd>
+                  </div>
+                </dl>
+                <button class="btn btn-success w-100"
+                        (click)="iniciarProcesPagament()"
+                        [attr.aria-label]="'Proceder al pago por un total de ' + ((total + shippingCost) | currency:'EUR')">
+                  <i class="bi bi-credit-card me-2" aria-hidden="true"></i>Proceder al pago
                 </button>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       }
     </div>
   </div>
-  
+
   <!-- Router outlet for payment process -->
   <router-outlet></router-outlet>
 </main>
