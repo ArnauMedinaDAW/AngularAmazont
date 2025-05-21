@@ -724,57 +724,61 @@ summary:hover {
 }
 
 .dark .form-control {
-  background-color: #333;
-  border-color: #444;
-  color: #e0e0e0;
-}
-
-.dark .form-control:focus {
-  background-color: #3a3a3a;
-  border-color: #555;
-  color: #e0e0e0;
-}
-
-.dark .form-label {
-  color: #e0e0e0;
-}
-
-.dark .nav-tabs {
-  border-bottom-color: #444;
-}
-
-.dark .nav-link {
-  color: #aaa;
-}
-
-.dark .nav-link.active {
-  background-color: #333;
-  border-color: #444 #444 #333;
-  color: #e0e0e0;
-}
-
-.dark .nav-link:hover:not(.active) {
-  border-color: #555 #555 #444;
-  background-color: #2a2a2a;
-}
-
-.dark .table {
-  color: #e0e0e0;
-}
-
-.dark .table th {
-  border-color: #444;
-  background-color: #222;
-}
-
-.dark .table td {
-  border-color: #444;
-}
-
-.dark .table-striped tbody tr:nth-of-type(odd) {
-  background-color: #2a2a2a;
-}
-
-.dark .table-hover tbody tr:hover {
-  background-color: #333;
+  /* Additional dark mode styles */
+  .dark select {
+    background-color: #333;
+    border-color: #444;
+    color: #e0e0e0;
+  }
+  
+  .dark select option {
+    background-color: #333;
+    color: #e0e0e0;
+  }
+  
+  .dark button {
+    background-color: #0d6efd;
+  }
+  
+  .dark button:hover {
+    background-color: #0b5ed7;
+  }
+  
+  .dark button:disabled {
+    background-color: #444;
+    color: #999;
+  }
+  
+  .dark .btn-eliminar {
+    background-color: #dc3545;
+  }
+  
+  .dark .btn-eliminar:hover {
+    background-color: #bb2d3b;
+  }
+  
+  .dark .form-actions button {
+    margin-right: 10px;
+  }
+  
+  .dark .metodo-pago-card {
+    background-color: #2d2d2d;
+  }
+  
+  .dark .badge-predeterminado {
+    background-color: #198754;
+  }
+  
+  .dark .metodos-resumen {
+    color: #e0e0e0;
+  }
+  
+  .dark .metodos-count {
+    color: #9ecbff;
+    font-weight: bold;
+  }
+  
+  .dark hr {
+    border-color: #444;
+  }
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CarritoService, CartItem } from '../services/carrito.service';
+import { ThemeService } from '../services/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-proces-pagament',
@@ -11,7 +13,7 @@ import { CarritoService, CartItem } from '../services/carrito.service';
   templateUrl: './proces-pagament.component.html',
   styleUrl: './proces-pagament.component.css'
 })
-export class ProcesPagamentComponent implements OnInit {
+export class ProcesPagamentComponent implements OnInit, OnDestroy {
   formulariPagament!: FormGroup;
   elementsCarret: CartItem[] = [];
   total: number = 0;
@@ -22,12 +24,14 @@ export class ProcesPagamentComponent implements OnInit {
   processantPagament: boolean = false;
   pagamentExitos: boolean = false;
   
-  oscuro = input.required<boolean>();
+  oscuro = signal<boolean>(false);
+  private themeSubscription: Subscription | null = null;
   
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private carritoService: CarritoService
+    private carritoService: CarritoService,
+    private themeService: ThemeService
   ) {
     const navegacio = this.router.getCurrentNavigation();
     if (navegacio?.extras.state) {
@@ -38,9 +42,25 @@ export class ProcesPagamentComponent implements OnInit {
       this.router.navigate(['/menu/carrito']);
     }
   }
+  
   ngOnInit(): void {
     this.inicialitzarFormulari();
     window.scrollTo(0, 0);
+    
+    // Subscribe to theme changes
+    this.themeSubscription = this.themeService.darkMode$.subscribe(isDark => {
+      this.oscuro.set(isDark);
+    });
+    
+    // Initialize with current theme state
+    this.oscuro.set(this.themeService.isDarkMode());
+  }
+  
+  ngOnDestroy(): void {
+    // Clean up subscription when component is destroyed
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
   }
   
   inicialitzarFormulari(): void {

@@ -1,9 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AutenticacioService } from '../services/autenticacio.service';
+import { ThemeService } from '../services/theme.service';
+import { Subscription } from 'rxjs';
 
 interface Pedido {
   id: string;
@@ -30,8 +32,10 @@ interface MetodoPago {
   templateUrl: './perfil-usuari.component.html',
   styleUrls: ['./perfil-usuari.component.css']
 })
-export class PerfilUsuariComponent implements OnInit {
-  @Input() oscuro!: boolean;
+export class PerfilUsuariComponent implements OnInit, OnDestroy {
+  // Change from Input to signal
+  oscuro = signal<boolean>(false);
+  private themeSubscription: Subscription | null = null;
 
   perfilForm!: FormGroup;
   securityForm!: FormGroup;
@@ -50,7 +54,8 @@ export class PerfilUsuariComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
-    private autenticacioService: AutenticacioService
+    private autenticacioService: AutenticacioService,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +63,21 @@ export class PerfilUsuariComponent implements OnInit {
     this.cargarDatosUsuario();
     this.cargarPedidos();
     this.cargarMetodosPago();
+    
+    // Subscribe to theme changes
+    this.themeSubscription = this.themeService.darkMode$.subscribe(isDark => {
+      this.oscuro.set(isDark);
+    });
+    
+    // Initialize with current theme state
+    this.oscuro.set(this.themeService.isDarkMode());
+  }
+  
+  ngOnDestroy(): void {
+    // Clean up subscription when component is destroyed
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
   }
 
   metodoPagoForm!: FormGroup;
