@@ -1,234 +1,244 @@
-<main>
+<main [ngClass]="{'dark': oscuro}" role="main">
   @if(!isFromCategories){
-    <div class="container mt-4">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="input-group">
-            <input #searchInput type="text" class="form-control" placeholder="Buscar productos tecnológicos...">
-            <button class="btn btn-primary" (click)="buscarProducte(searchInput.value)">
-              <i class="fas fa-search"></i>
-            </button>
+    <section class="products-search-section" aria-labelledby="search-heading">
+      <h1 id="search-heading" class="visually-hidden" style="text-align: center;">Búsqueda de productos</h1>
+      <div class="container mt-4">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="input-group">
+              <!-- <label for="searchInput" class="visually-hidden">Buscar productos</label> -->
+              <input #searchInput id="searchInput" type="text" class="form-control" placeholder="Buscar productos..." aria-describedby="search-button">
+              <button id="search-button" class="btn btn-primary" (click)="buscarProducte(searchInput.value)" aria-label="Buscar">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <span class="visually-hidden">Buscar</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Loading indicator -->
-    @if(loading){
-      <div class="text-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Cargando...</span>
+      @if(loading){
+        <div class="text-center my-5" aria-live="polite" role="status">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2">Cargando productos...</p>
         </div>
-        <p class="mt-2">Cargando productos...</p>
-      </div>
-    }
+      }
 
-    <!-- Error message -->
-    @if(error){
-      <div class="alert alert-danger text-center my-5">
-        {{ error }}
-      </div>
-    }
-
-    <!-- Products slider -->
-    @if(!loading && !error && productsFiltrats.length > 0){
-      <div class="slider-container">
-        <button 
-          class="slider-btn prev"
-          (click)="anteriorSlide()"
-        >
-          <i class="fas fa-chevron-left"></i>
-        </button>
-      
-        <div class="row">
-          @for(product of grupProductes; track product.id){
-            <div class="product-card" (click)="verDetalles(product)">
-              <img [src]="product.imagen" [alt]="product.nombre" class="product-image">
-              <div class="product-info">
-                <h3>{{ product.nombre }}</h3>
-                <div class="price-container">
-                  <span class="price">{{ product.precio }}€</span>
-                  <span class="discount">
-                    {{ product.nota }}/10
-                  </span>
-                </div>
-              </div>
-            </div> 
-          }
+      @if(error){
+        <div class="alert alert-danger text-center my-5" role="alert" aria-live="assertive">
+          <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
+          {{ error }}
         </div>
-      
-        <button 
-          class="slider-btn next" 
-          (click)="seguentSlide()"
-        >
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-    }
+      }
 
-    <!-- No products found -->
-    @if(!loading && !error && productsFiltrats.length === 0){
-      <div class="alert alert-info text-center my-5">
-        No se encontraron productos que coincidan con su búsqueda.
-      </div>
-    }
+      <!-- Products slider -->
+      @if(!loading && !error && productsFiltrats.length > 0){
+        <section class="products-section" aria-labelledby="products-heading">
+          <h2 id="products-heading" class="visually-hidden" style="text-align: center;">Productos disponibles</h2>
+          <div class="slider-container" role="region" aria-roledescription="carrusel" aria-label="Productos disponibles">
+            <button
+              class="slider-btn prev"
+              (click)="anteriorSlide()"
+              aria-label="Ver productos anteriores"
+              tabindex="0"
+            >
+              <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+
+            <div class="row">
+              @for(product of grupProductes; track product.id){
+                <article class="product-card" (click)="verDetalles(product)" (keydown.enter)="verDetalles(product)" tabindex="0" role="button" [attr.aria-label]="'Ver detalles de ' + product.nombre">
+                  <img [src]="product.imagen" [alt]="'Imagen de ' + product.nombre" class="product-image">
+                  <div class="product-info">
+                    <h3>{{ product.nombre }}</h3>
+                    <div class="price-container">
+                      <span class="price">{{ product.precio }}€</span>
+                      <span class="discount">
+                        <i class="fas fa-star me-1" aria-hidden="true"></i>
+                        <span [attr.aria-label]="'Valoración ' + product.nota + ' de 10'">{{ product.nota }}/10</span>
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+
+            <button
+              class="slider-btn next"
+              (click)="seguentSlide()"
+              aria-label="Ver productos siguientes"
+              tabindex="0"
+            >
+              <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- No products found -->
+      @if(!loading && !error && productsFiltrats.length === 0){
+        <div class="alert alert-info text-center my-5" role="alert" aria-live="polite">
+          <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+          No se encontraron productos que coincidan con su búsqueda.
+        </div>
+      }
+    </section>
   }@else{
-    <!-- Product detail view remains the same -->
-    <div class="product-detail-container">
+    <!-- Product detail view -->
+    <article class="product-detail-container" aria-labelledby="product-title">
       <div class="product-header">
-        <nav aria-label="breadcrumb">
+        <nav aria-label="Ruta de navegación">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="#">Productos</a></li>
+            <li class="breadcrumb-item"><a href="#" aria-label="Ir a inicio">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="#" aria-label="Ver todos los productos">Productos</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ product.nombre }}</li>
           </ol>
         </nav>
       </div>
 
       <div class="product-main">
-        <div class="product-gallery">
+        <section class="product-gallery" aria-label="Galería de imágenes del producto">
           <div class="main-image">
-            <img [src]="product.imagen" [alt]="product.nombre" class="img-fluid">
+            <img [src]="product.imagen" [alt]="'Imagen principal de ' + product.nombre" class="img-fluid">
           </div>
-          <div class="thumbnail-gallery">
-            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail active">
-            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
-            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
-            <img [src]="product.imagen" [alt]="product.nombre" class="thumbnail">
+          <div class="thumbnail-gallery" role="list" aria-label="Imágenes adicionales del producto">
+            <img [src]="product.imagen" [alt]="'Vista 1 de ' + product.nombre" class="thumbnail active" role="listitem" tabindex="0">
+            <img [src]="product.imagen" [alt]="'Vista 2 de ' + product.nombre" class="thumbnail" role="listitem" tabindex="0">
+            <img [src]="product.imagen" [alt]="'Vista 3 de ' + product.nombre" class="thumbnail" role="listitem" tabindex="0">
+            <img [src]="product.imagen" [alt]="'Vista 4 de ' + product.nombre" class="thumbnail" role="listitem" tabindex="0">
           </div>
-        </div>
+        </section>
 
-        <div class="product-info">
-          <div class="product-title">
-            <h1>{{ product.nombre }}</h1>
-            <div class="rating-badge">
-              <i class="fas fa-star"></i>
-              <span>{{ product.nota }}/10</span>
+        <section class="product-info">
+          <header class="product-title">
+            <h1 id="product-title">{{ product.nombre }}</h1>
+            <div class="rating-badge" aria-label="Valoración del producto">
+              <i class="fas fa-star" aria-hidden="true"></i>
+              <span [attr.aria-label]="'Valoración ' + product.nota + ' de 10'">{{ product.nota }}/10</span>
             </div>
-          </div>
+          </header>
 
-          <div class="product-price">
-            <span class="current-price">{{ product.precio }}€</span>
-            <span class="original-price">{{ product.precio * 1.2 | number:'1.2-2' }}€</span>
-            <span class="discount-badge">-20%</span>
+          <div class="product-price" aria-label="Información de precio">
+            <span class="current-price" [attr.aria-label]="'Precio actual ' + product.precio + ' euros'">{{ product.precio }}€</span>
+            <span class="original-price" [attr.aria-label]="'Precio original ' + (product.precio * 1.2 | number:'1.2-2') + ' euros'">{{ product.precio * 1.2 | number:'1.2-2' }}€</span>
+            <span class="discount-badge" [attr.aria-label]="'Descuento del 20 por ciento'">
+              <i class="fas fa-tag me-1" aria-hidden="true"></i>-20%
+            </span>
           </div>
 
           <div class="product-description">
             <p>{{ product.descripcion }}</p>
-            <ul class="features-list">
-              <li><i class="fas fa-check"></i> Garantía de 2 años</li>
-              <li><i class="fas fa-check"></i> Envío gratuito</li>
-              <li><i class="fas fa-check"></i> Devolución en 30 días</li>
+            <ul class="features-list" aria-label="Características principales">
+              <li><i class="fas fa-check" aria-hidden="true"></i> Garantía de 2 años</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Envío gratuito</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Devolución en 30 días</li>
             </ul>
           </div>
 
           <div class="product-actions">
-            <div class="quantity-selector">
-              <button class="btn-quantity" (click)="decrementQuantity()">-</button>
-              <span class="quantity-value">{{quantity}}</span>
-              <button class="btn-quantity" (click)="incrementQuantity()">+</button>
+            <div class="quantity-selector" role="group" aria-label="Selector de cantidad">
+              <button class="btn-quantity" (click)="decrementQuantity()" aria-label="Disminuir cantidad">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+                <span class="visually-hidden">Disminuir</span>
+              </button>
+              <span class="quantity-value" aria-live="polite" [attr.aria-label]="'Cantidad: ' + quantity">{{quantity}}</span>
+              <button class="btn-quantity" (click)="incrementQuantity()" aria-label="Aumentar cantidad">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+                <span class="visually-hidden">Aumentar</span>
+              </button>
             </div>
-            <button class="btn-add-cart" (click)="addToCart(product, quantity)">
-              <i class="bi bi-cart-plus"></i>
+            <button class="btn-add-cart" (click)="addToCart(product, quantity)" [attr.aria-label]="'Añadir ' + quantity + ' unidades al carrito'">
+              <i class="bi bi-cart-plus" aria-hidden="true"></i>
               Añadir al carrito
             </button>
-            <button class="btn-wishlist">
-              <i class="bi bi-heart"></i>
+            <button class="btn-wishlist" aria-label="Añadir a favoritos">
+              <i class="bi bi-heart" aria-hidden="true"></i>
+              <span class="visually-hidden">Añadir a favoritos</span>
             </button>
           </div>
 
-          <div class="product-meta">
-            <div class="meta-item">
-              <i class="bi bi-truck"></i>
+          <div class="product-meta" role="list" aria-label="Información adicional">
+            <div class="meta-item" role="listitem">
+              <i class="bi bi-truck" aria-hidden="true"></i>
               <span>Envío gratis</span>
             </div>
-            <div class="meta-item">
-              <i class="bi bi-shield-check"></i>
+            <div class="meta-item" role="listitem">
+              <i class="bi bi-shield-check" aria-hidden="true"></i>
               <span>Garantía 2 años</span>
             </div>
-            <div class="meta-item">
-              <i class="bi bi-arrow-repeat"></i>
+            <div class="meta-item" role="listitem">
+              <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
               <span>Devolución gratis</span>
             </div>
-           
           </div>
-        </div>
+        </section>
       </div>
 
       <div class="product-details-tabs">
-        <ul class="nav nav-tabs">
-          <li class="nav-item">
-            <a class="nav-link" [class.active]="!showReviews" (click)="showReviews = false" style="cursor: pointer">
-              <i class="bi bi-info-circle"></i> Descripción
+        <ul class="nav nav-tabs" role="tablist" aria-label="Detalles del producto">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" [class.active]="!showReviews" (click)="showReviews = false"
+               style="cursor: pointer" role="tab" id="description-tab"
+               [attr.aria-selected]="!showReviews" tabindex="0"
+               (keydown.enter)="showReviews = false">
+              <i class="bi bi-info-circle" aria-hidden="true"></i> Descripción
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [class.active]="showReviews" (click)="toggleReviews()" style="cursor: pointer">
-              <!-- <i class="bi bi-star"></i> Reseñas ({{comments.length}}) -->
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" [class.active]="showReviews" (click)="toggleReviews()"
+               style="cursor: pointer" role="tab" id="reviews-tab"
+               [attr.aria-selected]="showReviews" tabindex="0"
+               (keydown.enter)="toggleReviews()">
+              <i class="bi bi-star" aria-hidden="true"></i> Reseñas
             </a>
           </li>
         </ul>
 
         <div class="tab-content">
-          <div *ngIf="!showReviews">
-            <div class="features-grid">
-              <div class="feature-item">
-                <i class="bi bi-shield-check"></i>
+          <div *ngIf="!showReviews" role="tabpanel" aria-labelledby="description-tab" id="description-panel">
+            <div class="features-grid" role="list" aria-label="Características destacadas">
+              <div class="feature-item" role="listitem">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
                 <h4>Calidad Premium</h4>
                 <p>Producto de alta calidad con materiales seleccionados</p>
               </div>
-              <div class="feature-item">
-                <i class="bi bi-lightning"></i>
+              <div class="feature-item" role="listitem">
+                <i class="bi bi-lightning" aria-hidden="true"></i>
                 <h4>Rendimiento</h4>
                 <p>Diseñado para ofrecer el máximo rendimiento</p>
               </div>
-              <div class="feature-item">
-                <i class="bi bi-gear"></i>
+              <div class="feature-item" role="listitem">
+                <i class="bi bi-gear" aria-hidden="true"></i>
                 <h4>Garantía</h4>
                 <p>2 años de garantía en todos los componentes</p>
               </div>
             </div>
           </div>
 
-          <div *ngIf="showReviews" class="reviews-section">
+          <div *ngIf="showReviews" class="reviews-section" role="tabpanel" aria-labelledby="reviews-tab" id="reviews-panel">
             <div class="reviews-summary">
               <div class="rating-overview">
                 <div class="overall-rating">
-                  <div class="rating-number">{{product.nota}}</div>
-                  <div class="stars">
+                  <div class="rating-number" [attr.aria-label]="'Valoración media ' + product.nota + ' de 10'">{{product.nota}}</div>
+                  <div class="stars" aria-hidden="true">
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-half"></i>
                   </div>
-                  <!-- <div class="total-reviews">{{comments.length}} reseñas</div> -->
                 </div>
               </div>
             </div>
 
-            <div class="reviews-list">
-              <!-- <div *ngFor="let comment of comments" class="review-item">
-                <div class="review-header">
-                  <div class="reviewer-info">
-                    <i class="bi bi-person-circle"></i>
-                    <div>
-                      <h5>{{comment.user}}</h5>
-                      <div class="review-stars">
-                        <i *ngFor="let i of [1,2,3,4,5]" 
-                           class="bi" 
-                           [ngClass]="i <= comment.rating ? 'bi-star-fill' : 'bi-star'">
-                        </i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p class="review-text">{{comment.text}}</p>
-              </div> -->
+            <div class="reviews-list" role="list" aria-label="Listado de reseñas">
+              <!-- Commented out review items -->
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   }
 </main>

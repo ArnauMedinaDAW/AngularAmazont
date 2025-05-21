@@ -1,12 +1,12 @@
-<div [ngClass]="{'dark': oscuro}" class="payment-process-container py-4">
+<main [ngClass]="{'dark': oscuro}" class="payment-process-container py-4" role="main">
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h3 class="mb-4"><i class="fas fa-credit-card me-2"></i>Proceso de Pago</h3>
-        
+        <h1 class="mb-4" id="payment-title"><i class="fas fa-credit-card me-2" aria-hidden="true"></i>Proceso de Pago</h1>
+
         @if (pagamentExitos) {
-          <div class="payment-success text-center py-5">
-            <div class="success-animation mb-4">
+          <section class="payment-success text-center py-5" aria-live="polite" role="status">
+            <div class="success-animation mb-4" aria-hidden="true">
               <div class="checkmark-circle">
                 <div class="background"></div>
                 <div class="checkmark draw"></div>
@@ -15,165 +15,220 @@
             <h2 class="mb-3">¡Pago realizado con éxito!</h2>
             <p class="mb-4">Gracias por tu compra. Recibirás un correo electrónico con los detalles de tu pedido.</p>
             <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
             </div>
             <p class="mt-2">Redirigiendo a la tienda...</p>
-          </div>
+          </section>
         } @else {
           <div class="row">
             <div class="col-md-4 order-md-2 mb-4">
-              <div class="card shadow-sm">
+              <aside class="card shadow-sm" aria-labelledby="order-summary-title">
                 <div class="card-body">
-                  <h5 class="card-title mb-3">Resumen del pedido</h5>
-                  
-                  @for (item of elementsCarret; track item.product.id) {
+                  <h2 class="card-title h5 mb-3" id="order-summary-title">Resumen del pedido</h2>
+
+                  <ul class="list-unstyled" aria-label="Productos en tu pedido">
+                    @for (item of elementsCarret; track item.product.id) {
+                      <li class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.nombre }} x{{ item.cantidad }}</span>
+                        <span>{{ (item.product.precio * item.cantidad) | currency:'EUR' }}</span>
+                      </li>
+                    }
+                  </ul>
+
+                  <hr aria-hidden="true">
+
+                  <dl>
                     <div class="d-flex justify-content-between mb-2">
-                      <span>{{ item.product.nombre }} x{{ item.cantidad }}</span>
-                      <span>{{ (item.product.precio * item.cantidad) | currency:'EUR' }}</span>
+                      <dt>Subtotal:</dt>
+                      <dd>{{ total | currency:'EUR' }}</dd>
                     </div>
-                  }
-                  
-                  <hr>
-                  
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal:</span>
-                    <span>{{ total | currency:'EUR' }}</span>
-                  </div>
-                  <div class="d-flex justify-content-between mb-2">
-                    <span>Gastos de envío:</span>
-                    <span>{{ costEnviament | currency:'EUR' }}</span>
-                  </div>
-                  <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                      <dt>Gastos de envío:</dt>
+                      <dd>{{ costEnviament | currency:'EUR' }}</dd>
+                    </div>
+                  </dl>
+                  <hr aria-hidden="true">
                   <div class="d-flex justify-content-between mb-3 fw-bold">
                     <span>Total:</span>
-                    <span>{{ (total + costEnviament) | currency:'EUR' }}</span>
+                    <span aria-live="polite">{{ (total + costEnviament) | currency:'EUR' }}</span>
                   </div>
                 </div>
-              </div>
+              </aside>
             </div>
-            
+
             <!-- Payment form -->
             <div class="col-md-8 order-md-1">
               @if (processantPagament) {
-                <div class="text-center py-5">
+                <div class="text-center py-5" aria-live="polite" role="status">
                   <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Cargando...</span>
                   </div>
-                  <h4>Procesando tu pago</h4>
+                  <h2 class="h4">Procesando tu pago</h2>
                   <p>Por favor, espera un momento mientras procesamos tu pago...</p>
                 </div>
               } @else {
-                <form [formGroup]="formulariPagament" (ngSubmit)="enviarFormulari()">
+                <form [formGroup]="formulariPagament" (ngSubmit)="enviarFormulari()" aria-labelledby="payment-title">
                   <!-- Shipping address -->
-                  <h5 class="mb-3">Dirección de envío</h5>
-                  <div class="row g-3 mb-4">
-                    <div class="col-12">
-                      <label for="nomComplet" class="form-label">Nombre completo</label>
-                      <input type="text" class="form-control" id="nomComplet" formControlName="nomComplet">
-                      @if (formulariPagament.get('nomComplet')?.invalid && formulariPagament.get('nomComplet')?.touched) {
-                        <div class="text-danger mt-1">Nombre completo es requerido</div>
-                      }
+                  <section aria-labelledby="shipping-address-title">
+                    <h2 class="h5 mb-3" id="shipping-address-title">Dirección de envío</h2>
+                    <div class="row g-3 mb-4">
+                      <div class="col-12">
+                        <label for="nomComplet" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="nomComplet" formControlName="nomComplet"
+                               aria-required="true" aria-describedby="nomComplet-error">
+                        @if (formulariPagament.get('nomComplet')?.invalid && formulariPagament.get('nomComplet')?.touched) {
+                          <div class="text-danger mt-1" id="nomComplet-error" role="alert">
+                            <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                            Nombre completo es requerido
+                          </div>
+                        }
+                      </div>
+
+                      <div class="col-12">
+                        <label for="adreca" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="adreca" formControlName="adreca"
+                               placeholder="Calle, número, piso..." aria-required="true" aria-describedby="adreca-error">
+                        @if (formulariPagament.get('adreca')?.invalid && formulariPagament.get('adreca')?.touched) {
+                          <div class="text-danger mt-1" id="adreca-error" role="alert">
+                            <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                            Dirección es requerida
+                          </div>
+                        }
+                      </div>
+
+                      <div class="col-md-6">
+                        <label for="ciutat" class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" id="ciutat" formControlName="ciutat"
+                               aria-required="true" aria-describedby="ciutat-error">
+                        @if (formulariPagament.get('ciutat')?.invalid && formulariPagament.get('ciutat')?.touched) {
+                          <div class="text-danger mt-1" id="ciutat-error" role="alert">
+                            <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                            Ciudad es requerida
+                          </div>
+                        }
+                      </div>
+
+                      <div class="col-md-6">
+                        <label for="codiPostal" class="form-label">Código postal</label>
+                        <input type="text" class="form-control" id="codiPostal" formControlName="codiPostal"
+                               aria-required="true" aria-describedby="codiPostal-error">
+                        @if (formulariPagament.get('codiPostal')?.invalid && formulariPagament.get('codiPostal')?.touched) {
+                          <div class="text-danger mt-1" id="codiPostal-error" role="alert">
+                            <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                            Código postal válido es requerido (5 dígitos)
+                          </div>
+                        }
+                      </div>
+
+                      <div class="col-12">
+                        <label for="pais" class="form-label">País</label>
+                        <input type="text" class="form-control" id="pais" formControlName="pais"
+                               aria-required="true" aria-describedby="pais-error">
+                        @if (formulariPagament.get('pais')?.invalid && formulariPagament.get('pais')?.touched) {
+                          <div class="text-danger mt-1" id="pais-error" role="alert">
+                            <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                            País es requerido
+                          </div>
+                        }
+                      </div>
                     </div>
-                    
-                    <div class="col-12">
-                      <label for="adreca" class="form-label">Dirección</label>
-                      <input type="text" class="form-control" id="adreca" formControlName="adreca" placeholder="Calle, número, piso...">
-                      @if (formulariPagament.get('adreca')?.invalid && formulariPagament.get('adreca')?.touched) {
-                        <div class="text-danger mt-1">Dirección es requerida</div>
-                      }
-                    </div>
-                    
-                    <div class="col-md-6">
-                      <label for="ciutat" class="form-label">Ciudad</label>
-                      <input type="text" class="form-control" id="ciutat" formControlName="ciutat">
-                      @if (formulariPagament.get('ciutat')?.invalid && formulariPagament.get('ciutat')?.touched) {
-                        <div class="text-danger mt-1">Ciudad es requerida</div>
-                      }
-                    </div>
-                    
-                    <div class="col-md-6">
-                      <label for="codiPostal" class="form-label">Código postal</label>
-                      <input type="text" class="form-control" id="codiPostal" formControlName="codiPostal">
-                      @if (formulariPagament.get('codiPostal')?.invalid && formulariPagament.get('codiPostal')?.touched) {
-                        <div class="text-danger mt-1">Código postal válido es requerido (5 dígitos)</div>
-                      }
-                    </div>
-                    
-                    <div class="col-12">
-                      <label for="pais" class="form-label">País</label>
-                      <input type="text" class="form-control" id="pais" formControlName="pais">
-                      @if (formulariPagament.get('pais')?.invalid && formulariPagament.get('pais')?.touched) {
-                        <div class="text-danger mt-1">País es requerido</div>
-                      }
-                    </div>
-                  </div>
-                  
+                  </section>
+
                   <!-- Payment method -->
-                  <h5 class="mb-3">Método de pago</h5>
-                  <div class="mb-4">
-                    <div class="form-check mb-2" *ngFor="let method of metodesPagament">
-                      <input class="form-check-input" type="radio" [id]="method" formControlName="metodePagament" [value]="method">
-                      <label class="form-check-label" [for]="method">
-                        {{ method }}
-                      </label>
+                  <section aria-labelledby="payment-method-title">
+                    <h2 class="h5 mb-3" id="payment-method-title">Método de pago</h2>
+                    <div class="mb-4" role="radiogroup" aria-labelledby="payment-method-title">
+                      <div class="form-check mb-2" *ngFor="let method of metodesPagament">
+                        <input class="form-check-input" type="radio" [id]="'payment-' + method"
+                               formControlName="metodePagament" [value]="method"
+                               aria-required="true">
+                        <label class="form-check-label" [for]="'payment-' + method">
+                          {{ method }}
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                  
+                  </section>
+
                   <!-- Credit card details -->
                   @if (mostrarFormulariTarjeta) {
-                    <div class="credit-card-form mb-4">
+                    <section class="credit-card-form mb-4" aria-labelledby="card-details-title">
+                      <h2 class="h5 mb-3 visually-hidden" id="card-details-title">Detalles de la tarjeta</h2>
                       <div class="row g-3">
                         <div class="col-12">
                           <label for="numeroTarjeta" class="form-label">Número de tarjeta</label>
-                          <input type="text" class="form-control" id="numeroTarjeta" formControlName="numeroTarjeta" placeholder="1234 5678 9012 3456">
+                          <input type="text" class="form-control" id="numeroTarjeta" formControlName="numeroTarjeta"
+                                 placeholder="1234 5678 9012 3456" aria-required="true" aria-describedby="numeroTarjeta-error">
                           @if (formulariPagament.get('numeroTarjeta')?.invalid && formulariPagament.get('numeroTarjeta')?.touched) {
-                            <div class="text-danger mt-1">Número de tarjeta válido es requerido (16 dígitos)</div>
+                            <div class="text-danger mt-1" id="numeroTarjeta-error" role="alert">
+                              <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                              Número de tarjeta válido es requerido (16 dígitos)
+                            </div>
                           }
                         </div>
-                        
+
                         <div class="col-12">
                           <label for="nomTarjeta" class="form-label">Nombre en la tarjeta</label>
-                          <input type="text" class="form-control" id="nomTarjeta" formControlName="nomTarjeta">
+                          <input type="text" class="form-control" id="nomTarjeta" formControlName="nomTarjeta"
+                                 aria-required="true" aria-describedby="nomTarjeta-error">
                           @if (formulariPagament.get('nomTarjeta')?.invalid && formulariPagament.get('nomTarjeta')?.touched) {
-                            <div class="text-danger mt-1">Nombre en la tarjeta es requerido</div>
+                            <div class="text-danger mt-1" id="nomTarjeta-error" role="alert">
+                              <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                              Nombre en la tarjeta es requerido
+                            </div>
                           }
                         </div>
-                        
+
                         <div class="col-md-6">
                           <label for="dataExpiracio" class="form-label">Fecha de expiración</label>
-                          <input type="text" class="form-control" id="dataExpiracio" formControlName="dataExpiracio" placeholder="MM/AA">
+                          <input type="text" class="form-control" id="dataExpiracio" formControlName="dataExpiracio"
+                                 placeholder="MM/AA" aria-required="true" aria-describedby="dataExpiracio-error">
                           @if (formulariPagament.get('dataExpiracio')?.invalid && formulariPagament.get('dataExpiracio')?.touched) {
-                            <div class="text-danger mt-1">Fecha de expiración es requerida</div>
+                            <div class="text-danger mt-1" id="dataExpiracio-error" role="alert">
+                              <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                              Fecha de expiración es requerida
+                            </div>
                           }
                         </div>
-                        
+
                         <div class="col-md-6">
                           <label for="cvv" class="form-label">CVV</label>
-                          <input type="text" class="form-control" id="cvv" formControlName="cvv" placeholder="123">
+                          <input type="text" class="form-control" id="cvv" formControlName="cvv"
+                                 placeholder="123" aria-required="true" aria-describedby="cvv-error">
                           @if (formulariPagament.get('cvv')?.invalid && formulariPagament.get('cvv')?.touched) {
-                            <div class="text-danger mt-1">CVV válido es requerido (3-4 dígitos)</div>
+                            <div class="text-danger mt-1" id="cvv-error" role="alert">
+                              <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                              CVV válido es requerido (3-4 dígitos)
+                            </div>
                           }
                         </div>
                       </div>
-                    </div>
+                    </section>
                   }
-                  
+
                   <!-- Terms and conditions -->
                   <div class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox" id="acceptarTermes" formControlName="acceptarTermes">
+                    <input class="form-check-input" type="checkbox" id="acceptarTermes"
+                           formControlName="acceptarTermes" aria-required="true" aria-describedby="acceptarTermes-error">
                     <label class="form-check-label" for="acceptarTermes">
                       Acepto los términos y condiciones
                     </label>
                     @if (formulariPagament.get('acceptarTermes')?.invalid && formulariPagament.get('acceptarTermes')?.touched) {
-                      <div class="text-danger mt-1">Debes aceptar los términos y condiciones</div>
+                      <div class="text-danger mt-1" id="acceptarTermes-error" role="alert">
+                        <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
+                        Debes aceptar los términos y condiciones
+                      </div>
                     }
                   </div>
-                  
+
                   <!-- Submit buttons -->
                   <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-secondary" (click)="cancelarPagament()">
-                      <i class="fas fa-arrow-left me-2"></i>Volver al carrito
+                    <button type="button" class="btn btn-outline-secondary" (click)="cancelarPagament()"
+                            [attr.aria-label]="'Volver al carrito de compras'">
+                      <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>Volver al carrito
                     </button>
-                    <button type="submit" class="btn btn-success" [disabled]="formulariPagament.invalid">
-                      <i class="fas fa-check me-2"></i>Confirmar compra
+                    <button type="submit" class="btn btn-success" [disabled]="formulariPagament.invalid"
+                            [attr.aria-label]="'Confirmar compra por un total de ' + (total + costEnviament | currency:'EUR')">
+                      <i class="fas fa-check me-2" aria-hidden="true"></i>Confirmar compra
                     </button>
                   </div>
                 </form>
@@ -184,4 +239,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

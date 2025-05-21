@@ -1,5 +1,5 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
+<main class="container mt-5" role="main">
+  <section class="row justify-content-center">
     <div class="col-md-6">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
@@ -7,173 +7,244 @@
         </div>
         <div class="card-body p-4">
           @if(!mostrarRegistro){
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" aria-labelledby="form-title">
               <div class="mb-4">
                 <label for="nick" class="form-label fw-bold">Nombre de usuario</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="nick" 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-person"></i></span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nick"
                     formControlName="nick"
-                    placeholder="Tu nombre de usuario">
+                    placeholder="Tu nombre de usuario"
+                    aria-required="true"
+                    aria-describedby="nick-error">
                 </div>
-                @if(loginControls['nick'].errors?.['required'] && loginControls['nick'].touched){
-                  <div class="text-danger mt-1 small">El nombre de usuario es requerido</div>
-                }
-                @if(loginControls['nick'].errors?.['minlength'] && loginControls['nick'].touched){
-                  <div class="text-danger mt-1 small">El nombre de usuario debe tener al menos 3 caracteres</div>
-                }
+                <div id="nick-error" aria-live="polite">
+                  @if(loginControls['nick'].errors?.['required'] && loginControls['nick'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      El nombre de usuario es requerido
+                    </div>
+                  }
+                  @if(loginControls['nick'].errors?.['minlength'] && loginControls['nick'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      El nombre de usuario debe tener al menos 3 caracteres
+                    </div>
+                  }
+                </div>
               </div>
               <div class="mb-4">
                 <label for="password" class="form-label fw-bold">Contraseña</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                  <input 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock"></i></span>
+                  <input
                     [type]="mostrarPassword ? 'text' : 'password'"
-                    class="form-control" 
-                    id="password" 
+                    class="form-control"
+                    id="password"
                     formControlName="password"
-                    placeholder="••••••••">
-                  <button 
-                    class="btn btn-outline-secondary" 
-                    type="button" 
-                    (click)="togglePasswordVisibility()">
-                    <i class="bi" [ngClass]="mostrarPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    placeholder="••••••••"
+                    aria-required="true"
+                    aria-describedby="password-error">
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="togglePasswordVisibility()"
+                    aria-label="Mostrar u ocultar contraseña"
+                    [attr.aria-pressed]="mostrarPassword">
+                    <i class="bi" [ngClass]="mostrarPassword ? 'bi-eye-slash' : 'bi-eye'" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña' }}</span>
                   </button>
                 </div>
-                @if(loginControls['password'].errors?.['required'] && loginControls['password'].touched){
-                  <div class="text-danger mt-1 small">La contraseña es requerida</div>
-                }
-                @if(loginControls['password'].errors?.['minlength'] && loginControls['password'].touched){
-                  <div class="text-danger mt-1 small">La contraseña debe tener al menos 6 caracteres</div>
-                }
+                <div id="password-error" aria-live="polite">
+                  @if(loginControls['password'].errors?.['required'] && loginControls['password'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      La contraseña es requerida
+                    </div>
+                  }
+                  @if(loginControls['password'].errors?.['minlength'] && loginControls['password'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      La contraseña debe tener al menos 6 caracteres
+                    </div>
+                  }
+                </div>
               </div>
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg" [disabled]="!loginForm.valid || loading">
+                <button type="submit" class="btn btn-primary btn-lg" [disabled]="!loginForm.valid || loading" aria-live="polite">
                   @if(loading){
                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Iniciando sesión...
                   } @else {
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                    <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>Iniciar Sesión
                   }
                 </button>
               </div>
             </form>
           } @else {
-            <form [formGroup]="registroForm" (ngSubmit)="onRegistro()">
+            <form [formGroup]="registroForm" (ngSubmit)="onRegistro()" aria-labelledby="form-title">
               <div class="mb-4">
-                <label for="nick" class="form-label fw-bold">Nombre de usuario</label>
+                <label for="reg-nick" class="form-label fw-bold">Nombre de usuario</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="nick" 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-person"></i></span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="reg-nick"
                     formControlName="nick"
-                    placeholder="Tu nombre de usuario">
+                    placeholder="Tu nombre de usuario"
+                    aria-required="true"
+                    aria-describedby="reg-nick-error">
                 </div>
-                @if(registroControls['nick'].errors?.['required'] && registroControls['nick'].touched){
-                  <div class="text-danger mt-1 small">El nombre de usuario es requerido</div>
-                }
-                @if(registroControls['nick'].errors?.['minlength'] && registroControls['nick'].touched){
-                  <div class="text-danger mt-1 small">El nombre de usuario debe tener al menos 3 caracteres</div>
-                }
+                <div id="reg-nick-error" aria-live="polite">
+                  @if(registroControls['nick'].errors?.['required'] && registroControls['nick'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      El nombre de usuario es requerido
+                    </div>
+                  }
+                  @if(registroControls['nick'].errors?.['minlength'] && registroControls['nick'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      El nombre de usuario debe tener al menos 3 caracteres
+                    </div>
+                  }
+                </div>
               </div>
               <div class="mb-4">
                 <label for="email" class="form-label fw-bold">Correo electrónico</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                  <input 
-                    type="email" 
-                    class="form-control" 
-                    id="email" 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
                     formControlName="email"
-                    placeholder="ejemplo@correo.com">
+                    placeholder="ejemplo@correo.com"
+                    aria-required="true"
+                    aria-describedby="email-error">
                 </div>
-                @if(registroControls['email'].errors?.['required'] && registroControls['email'].touched){
-                  <div class="text-danger mt-1 small">El correo es requerido</div>
-                }
-                @if(registroControls['email'].errors?.['email'] && registroControls['email'].touched){
-                  <div class="text-danger mt-1 small">Ingrese un correo válido</div>
-                }
+                <div id="email-error" aria-live="polite">
+                  @if(registroControls['email'].errors?.['required'] && registroControls['email'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      El correo es requerido
+                    </div>
+                  }
+                  @if(registroControls['email'].errors?.['email'] && registroControls['email'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      Ingrese un correo válido
+                    </div>
+                  }
+                </div>
               </div>
-              <!-- Rest of the registration form remains the same -->
               <div class="mb-4">
                 <label for="passwordRegistro" class="form-label fw-bold">Contraseña</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                  <input 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock"></i></span>
+                  <input
                     [type]="mostrarPasswordRegistro ? 'text' : 'password'"
-                    class="form-control" 
-                    id="passwordRegistro" 
+                    class="form-control"
+                    id="passwordRegistro"
                     formControlName="password"
-                    placeholder="••••••••">
-                  <button 
-                    class="btn btn-outline-secondary" 
-                    type="button" 
-                    (click)="togglePasswordVisibilityRegistro()">
-                    <i class="bi" [ngClass]="mostrarPasswordRegistro ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    placeholder="••••••••"
+                    aria-required="true"
+                    aria-describedby="reg-password-error">
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="togglePasswordVisibilityRegistro()"
+                    aria-label="Mostrar u ocultar contraseña"
+                    [attr.aria-pressed]="mostrarPasswordRegistro">
+                    <i class="bi" [ngClass]="mostrarPasswordRegistro ? 'bi-eye-slash' : 'bi-eye'" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ mostrarPasswordRegistro ? 'Ocultar contraseña' : 'Mostrar contraseña' }}</span>
                   </button>
                 </div>
-                @if(registroControls['password'].errors?.['required'] && registroControls['password'].touched){
-                  <div class="text-danger mt-1 small">La contraseña es requerida</div>
-                }
-                @if(registroControls['password'].errors?.['minlength'] && registroControls['password'].touched){
-                  <div class="text-danger mt-1 small">La contraseña debe tener al menos 6 caracteres</div>
-                }
+                <div id="reg-password-error" aria-live="polite">
+                  @if(registroControls['password'].errors?.['required'] && registroControls['password'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      La contraseña es requerida
+                    </div>
+                  }
+                  @if(registroControls['password'].errors?.['minlength'] && registroControls['password'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      La contraseña debe tener al menos 6 caracteres
+                    </div>
+                  }
+                </div>
               </div>
               <div class="mb-4">
                 <label for="confirmarPassword" class="form-label fw-bold">Confirmar Contraseña</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                  <input 
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock-fill"></i></span>
+                  <input
                     [type]="mostrarPasswordRegistro ? 'text' : 'password'"
-                    class="form-control" 
-                    id="confirmarPassword" 
+                    class="form-control"
+                    id="confirmarPassword"
                     formControlName="confirmarPassword"
-                    placeholder="••••••••">
+                    placeholder="••••••••"
+                    aria-required="true"
+                    aria-describedby="confirmar-password-error">
                 </div>
-                @if(registroForm.errors?.['mismatch'] && registroControls['confirmarPassword'].touched){
-                  <div class="text-danger mt-1 small">Las contraseñas no coinciden</div>
-                }
+                <div id="confirmar-password-error" aria-live="polite">
+                  @if(registroForm.errors?.['mismatch'] && registroControls['confirmarPassword'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      Las contraseñas no coinciden
+                    </div>
+                  }
+                </div>
               </div>
               <div class="mb-4">
                 <label for="rol" class="form-label fw-bold">Rol</label>
                 <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                  <select 
-                    class="form-select" 
-                    id="rol" 
-                    formControlName="rol">
+                  <span class="input-group-text" aria-hidden="true"><i class="bi bi-person-badge"></i></span>
+                  <select
+                    class="form-select"
+                    id="rol"
+                    formControlName="rol"
+                    aria-describedby="rol-description">
                     <option value="usuari">Usuario</option>
                     <option value="admin">Administrador</option>
                   </select>
                 </div>
+                <div id="rol-description" class="form-text visually-hidden">Seleccione su tipo de usuario</div>
               </div>
 
               <div class="mb-4 form-check">
-                <input 
-                  type="checkbox" 
-                  class="form-check-input" 
-                  id="terminos" 
-                  formControlName="terminos">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="terminos"
+                  formControlName="terminos"
+                  aria-required="true"
+                  aria-describedby="terminos-error">
                 <label class="form-check-label" for="terminos">
                   Acepto los <a href="#" class="text-primary">términos y condiciones</a>
                 </label>
-                @if(registroControls['terminos'].errors?.['required'] && registroControls['terminos'].touched){
-                  <div class="text-danger mt-1 small">Debes aceptar los términos y condiciones</div>
-                }
+                <div id="terminos-error" aria-live="polite">
+                  @if(registroControls['terminos'].errors?.['required'] && registroControls['terminos'].touched){
+                    <div class="text-danger mt-1 small">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                      Debes aceptar los términos y condiciones
+                    </div>
+                  }
+                </div>
               </div>
 
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success btn-lg" [disabled]="!registroForm.valid || loading">
+                <button type="submit" class="btn btn-success btn-lg" [disabled]="!registroForm.valid || loading" aria-live="polite">
                   @if(loading){
                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Registrando...
                   } @else {
-                    <i class="bi bi-person-plus me-2"></i>Registrarse
+                    <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Registrarse
                   }
                 </button>
               </div>
@@ -181,19 +252,19 @@
           }
 
           @if(errorMessage){
-            <div class="alert alert-danger mt-4">
-              <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+            <div class="alert alert-danger mt-4" role="alert" aria-live="assertive">
+              <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ errorMessage }}
             </div>
           }
 
           <div class="d-grid gap-2 mt-4">
-            <button (click)="toggleFormulario()" class="btn btn-outline-secondary" [disabled]="loading">
-              <i class="bi bi-arrow-repeat me-2"></i>
+            <button (click)="toggleFormulario()" class="btn btn-outline-secondary" [disabled]="loading" aria-controls="form-title">
+              <i class="bi bi-arrow-repeat me-2" aria-hidden="true"></i>
               {{ mostrarRegistro ? 'Volver al Login' : 'Registrar nuevo usuario' }}
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>

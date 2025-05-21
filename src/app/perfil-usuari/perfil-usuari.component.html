@@ -1,53 +1,64 @@
-<!-- <div class="contenedor-principal" [ngClass]="{'dark': oscuro()}"> -->
-  <h1>Perfil de Usuario</h1>
+<main class="contenedor-principal" [ngClass]="{'dark': oscuro}" role="main">
+  <h1 id="perfil-titulo">Perfil de Usuario</h1>
 
   <!-- Información personal -->
-  <section class="seccion">
-    <h2>Información Personal</h2>
-    <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+  <section class="seccion" aria-labelledby="info-personal-titulo">
+    <h2 id="info-personal-titulo">Información Personal</h2>
+    <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" aria-labelledby="info-personal-titulo">
       <div class="form-group">
-        <label>Nick:
-          <input formControlName="nick" />
-          @if (perfilForm.get('nick')?.invalid && perfilForm.get('nick')?.touched) {
-            <span class="error-message">Nick inválido</span>
-          }
-        </label>
+        <label for="nick">Nick:</label>
+        <input id="nick" formControlName="nick" aria-required="true" aria-describedby="nick-error" />
+        @if (perfilForm.get('nick')?.invalid && perfilForm.get('nick')?.touched) {
+          <span id="nick-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Nick inválido
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Email:
-          <input formControlName="email" type="email" />
-          @if (perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched) {
-            <span class="error-message">Email inválido</span>
-          }
-        </label>
+        <label for="email">Email:</label>
+        <input id="email" formControlName="email" type="email" aria-required="true" aria-describedby="email-error" />
+        @if (perfilForm.get('email')?.invalid && perfilForm.get('email')?.touched) {
+          <span id="email-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Email inválido
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Dirección de envío:
-          <input formControlName="direccion_envio" />
-          @if (perfilForm.get('direccion_envio')?.invalid && perfilForm.get('direccion_envio')?.touched) {
-            <span class="error-message">Dirección inválida</span>
-          }
-        </label>
+        <label for="direccion">Dirección de envío:</label>
+        <input id="direccion" formControlName="direccion_envio" aria-required="true" aria-describedby="direccion-error" />
+        @if (perfilForm.get('direccion_envio')?.invalid && perfilForm.get('direccion_envio')?.touched) {
+          <span id="direccion-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Dirección inválida
+          </span>
+        }
       </div>
 
-      <button type="submit" [disabled]="perfilForm.invalid">Guardar Perfil</button>
+      <button type="submit" [disabled]="perfilForm.invalid" aria-label="Guardar información personal">
+        <i class="bi bi-save" aria-hidden="true"></i> Guardar Perfil
+      </button>
       @if (perfilGuardado) {
-        <p class="mensaje-exito">Perfil guardado correctamente.</p>
+        <p class="mensaje-exito" role="status" aria-live="polite">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          Perfil guardado correctamente.
+        </p>
       }
     </form>
   </section>
 
   <!-- Historial de pedidos -->
-  <section class="seccion">
-    <h2>Historial de Pedidos</h2>
+  <section class="seccion" aria-labelledby="historial-titulo">
+    <h2 id="historial-titulo">Historial de Pedidos</h2>
     @if (pedidos.length === 0) {
       <p>No tienes pedidos realizados.</p>
     } @else {
-      <div class="pedidos-container">
+      <div class="pedidos-container" role="list">
         @for (pedido of pedidos; track pedido.id) {
-          <div class="pedido-card">
+          <div class="pedido-card" role="listitem">
             <h3>Pedido #{{ pedido.id }} - {{ pedido.estado }}</h3>
             <p>Total: {{ calcularTotalPedido(pedido) | currency:'EUR' }}</p>
             <!-- <details>
@@ -66,77 +77,99 @@
   </section>
 
   <!-- Métodos de pago -->
-  <section class="seccion">
-    <h2>Métodos de Pago</h2>
+  <section class="seccion" aria-labelledby="metodos-pago-titulo">
+    <h2 id="metodos-pago-titulo">Métodos de Pago</h2>
 
     <!-- Replacing the debug info with a styled summary -->
-    <div class="metodos-resumen">
-      <p>Tienes <span class="metodos-count">{{ metodosPago.length }}</span> método(s) de pago guardado(s)</p>
+    <div class="metodos-resumen" aria-live="polite">
+      <p>
+        <i class="bi bi-credit-card" aria-hidden="true"></i>
+        Tienes <span class="metodos-count">{{ metodosPago.length }}</span> método(s) de pago guardado(s)
+      </p>
     </div>
 
     <!-- Formulario para añadir método de pago -->
-    <form [formGroup]="metodoPagoForm" (ngSubmit)="guardarMetodoPago()" class="metodo-pago-form">
-      <h3>{{ editandoMetodoPago ? 'Editar' : 'Añadir' }} método de pago</h3>
+    <form [formGroup]="metodoPagoForm" (ngSubmit)="guardarMetodoPago()" class="metodo-pago-form" aria-labelledby="form-metodo-titulo">
+      <h3 id="form-metodo-titulo">{{ editandoMetodoPago ? 'Editar' : 'Añadir' }} método de pago</h3>
 
       <div class="form-group">
-        <label>Tipo:
-          <select formControlName="tipo">
-            <option value="Visa">Visa</option>
-            <option value="MasterCard">MasterCard</option>
-            <option value="PayPal">PayPal</option>
-            <option value="American Express">American Express</option>
-          </select>
-          @if (metodoPagoForm.get('tipo')?.invalid && metodoPagoForm.get('tipo')?.touched) {
-            <span class="error-message">Tipo requerido</span>
-          }
-        </label>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" formControlName="tipo" aria-required="true" aria-describedby="tipo-error">
+          <option value="Visa">Visa</option>
+          <option value="MasterCard">MasterCard</option>
+          <option value="PayPal">PayPal</option>
+          <option value="American Express">American Express</option>
+        </select>
+        @if (metodoPagoForm.get('tipo')?.invalid && metodoPagoForm.get('tipo')?.touched) {
+          <span id="tipo-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Tipo requerido
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Nombre en la tarjeta:
-          <input formControlName="nombre" />
-          @if (metodoPagoForm.get('nombre')?.invalid && metodoPagoForm.get('nombre')?.touched) {
-            <span class="error-message">Nombre requerido</span>
-          }
-        </label>
+        <label for="nombre-tarjeta">Nombre en la tarjeta:</label>
+        <input id="nombre-tarjeta" formControlName="nombre" aria-required="true" aria-describedby="nombre-tarjeta-error" />
+        @if (metodoPagoForm.get('nombre')?.invalid && metodoPagoForm.get('nombre')?.touched) {
+          <span id="nombre-tarjeta-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Nombre requerido
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Número de tarjeta:
-          <input formControlName="num_tarjeta" />
-          @if (metodoPagoForm.get('num_tarjeta')?.invalid && metodoPagoForm.get('num_tarjeta')?.touched) {
-            <span class="error-message">Número de tarjeta inválido</span>
-          }
-        </label>
+        <label for="num-tarjeta">Número de tarjeta:</label>
+        <input id="num-tarjeta" formControlName="num_tarjeta" aria-required="true" aria-describedby="num-tarjeta-error" />
+        @if (metodoPagoForm.get('num_tarjeta')?.invalid && metodoPagoForm.get('num_tarjeta')?.touched) {
+          <span id="num-tarjeta-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Número de tarjeta inválido
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Fecha de caducidad:
-          <input formControlName="fecha_caducidad" placeholder="MM/YY" />
-          @if (metodoPagoForm.get('fecha_caducidad')?.invalid && metodoPagoForm.get('fecha_caducidad')?.touched) {
-            <span class="error-message">Fecha inválida</span>
-          }
-        </label>
+        <label for="fecha-caducidad">Fecha de caducidad:</label>
+        <input id="fecha-caducidad" formControlName="fecha_caducidad" placeholder="MM/YY" aria-required="true" aria-describedby="fecha-caducidad-error" />
+        @if (metodoPagoForm.get('fecha_caducidad')?.invalid && metodoPagoForm.get('fecha_caducidad')?.touched) {
+          <span id="fecha-caducidad-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Fecha inválida
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Código de validación:
-          <input formControlName="codigo_validacion" type="password" maxlength="3" />
-          @if (metodoPagoForm.get('codigo_validacion')?.invalid && metodoPagoForm.get('codigo_validacion')?.touched) {
-            <span class="error-message">Código inválido</span>
-          }
-        </label>
+        <label for="codigo-validacion">Código de validación:</label>
+        <input id="codigo-validacion" formControlName="codigo_validacion" type="password" maxlength="3" aria-required="true" aria-describedby="codigo-validacion-error" />
+        @if (metodoPagoForm.get('codigo_validacion')?.invalid && metodoPagoForm.get('codigo_validacion')?.touched) {
+          <span id="codigo-validacion-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Código inválido
+          </span>
+        }
       </div>
 
       <div class="form-actions">
-        <button type="submit" [disabled]="metodoPagoForm.invalid">{{ editandoMetodoPago ? 'Actualizar' : 'Añadir' }}</button>
+        <button type="submit" [disabled]="metodoPagoForm.invalid" [attr.aria-label]="editandoMetodoPago ? 'Actualizar método de pago' : 'Añadir método de pago'">
+          <i class="bi bi-save" aria-hidden="true"></i>
+          {{ editandoMetodoPago ? 'Actualizar' : 'Añadir' }}
+        </button>
         @if (editandoMetodoPago) {
-          <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+          <button type="button" (click)="cancelarEdicion()" [attr.aria-label]="'Cancelar edición'">
+            <i class="bi bi-x-circle" aria-hidden="true"></i>
+            Cancelar
+          </button>
         }
       </div>
 
       @if (metodoPagoGuardado) {
-        <p class="mensaje-exito">Método de pago guardado correctamente.</p>
+        <p class="mensaje-exito" role="status" aria-live="polite">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          Método de pago guardado correctamente.
+        </p>
       }
     </form>
 
@@ -144,24 +177,36 @@
     @if (metodosPago.length === 0) {
       <p>No tienes métodos de pago guardados.</p>
     } @else {
-      <div class="metodos-pago-container">
+      <div class="metodos-pago-container" role="list" aria-label="Métodos de pago guardados">
         @for (metodo of metodosPago; track metodo.id_metodo) {
-          <div class="metodo-pago-card">
+          <div class="metodo-pago-card" role="listitem">
             <h3>{{ metodo.tipo }}</h3>
             <p>{{ metodo.nombre }}</p>
-            <p>**** **** **** {{ obtenerUltimosDigitos(metodo.num_tarjeta) }}</p>
+            <p>
+              <span class="visually-hidden">Número de tarjeta terminado en</span>
+              **** **** **** {{ obtenerUltimosDigitos(metodo.num_tarjeta) }}
+            </p>
             @if (metodo.fecha_caducidad) {
               <p>Expira: {{ metodo.fecha_caducidad }}</p>
             }
             @if (metodo.predeterminado) {
-              <span class="badge-predeterminado">Predeterminado</span>
+              <span class="badge-predeterminado" role="status">
+                <i class="bi bi-star-fill" aria-hidden="true"></i>
+                Predeterminado
+              </span>
             }
             <div class="metodo-actions">
               <!-- @if (!metodo.predeterminado) {
                 <button (click)="establecerPredeterminado(metodo.id_metodo)">Establecer como predeterminado</button>
               } -->
-              <button (click)="editarMetodoPago(metodo)">Editar</button>
-              <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id_metodo)">Eliminar</button>
+              <button (click)="editarMetodoPago(metodo)" [attr.aria-label]="'Editar método de pago ' + metodo.tipo">
+                <i class="bi bi-pencil" aria-hidden="true"></i>
+                Editar
+              </button>
+              <button class="btn-eliminar" (click)="eliminarMetodoPago(metodo.id_metodo)" [attr.aria-label]="'Eliminar método de pago ' + metodo.tipo">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+                Eliminar
+              </button>
             </div>
           </div>
         }
@@ -170,41 +215,51 @@
   </section>
 
   <!-- Seguridad -->
-  <section class="seccion">
-    <h2>Seguridad de la Cuenta</h2>
-    <form [formGroup]="securityForm" (ngSubmit)="cambiarPassword()">
+  <section class="seccion" aria-labelledby="seguridad-titulo">
+    <h2 id="seguridad-titulo">Seguridad de la Cuenta</h2>
+    <form [formGroup]="securityForm" (ngSubmit)="cambiarPassword()" aria-labelledby="seguridad-titulo">
       <div class="form-group">
-        <label>Contraseña Actual:
-          <input type="password" formControlName="passwordActual" />
-          @if (securityForm.get('passwordActual')?.invalid && securityForm.get('passwordActual')?.touched) {
-            <span class="error-message">Contraseña actual requerida</span>
-          }
-        </label>
+        <label for="password-actual">Contraseña Actual:</label>
+        <input id="password-actual" type="password" formControlName="passwordActual" aria-required="true" aria-describedby="password-actual-error" />
+        @if (securityForm.get('passwordActual')?.invalid && securityForm.get('passwordActual')?.touched) {
+          <span id="password-actual-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Contraseña actual requerida
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Nueva Contraseña:
-          <input type="password" formControlName="passwordNueva" />
-          @if (securityForm.get('passwordNueva')?.invalid && securityForm.get('passwordNueva')?.touched) {
-            <span class="error-message">La contraseña debe tener al menos 8 caracteres</span>
-          }
-        </label>
+        <label for="password-nueva">Nueva Contraseña:</label>
+        <input id="password-nueva" type="password" formControlName="passwordNueva" aria-required="true" aria-describedby="password-nueva-error" />
+        @if (securityForm.get('passwordNueva')?.invalid && securityForm.get('passwordNueva')?.touched) {
+          <span id="password-nueva-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            La contraseña debe tener al menos 8 caracteres
+          </span>
+        }
       </div>
 
       <div class="form-group">
-        <label>Confirmar Nueva Contraseña:
-          <input type="password" formControlName="passwordConfirmar" />
-          @if ((securityForm.get('passwordConfirmar')?.invalid || securityForm.hasError('passwordMismatch')) && securityForm.get('passwordConfirmar')?.touched) {
-            <span class="error-message">
-              Las contraseñas no coinciden
-            </span>
-          }
-        </label>
+        <label for="password-confirmar">Confirmar Nueva Contraseña:</label>
+        <input id="password-confirmar" type="password" formControlName="passwordConfirmar" aria-required="true" aria-describedby="password-confirmar-error" />
+        @if ((securityForm.get('passwordConfirmar')?.invalid || securityForm.hasError('passwordMismatch')) && securityForm.get('passwordConfirmar')?.touched) {
+          <span id="password-confirmar-error" class="error-message" role="alert">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            Las contraseñas no coinciden
+          </span>
+        }
       </div>
 
-      <button type="submit" [disabled]="securityForm.invalid">Cambiar Contraseña</button>
+      <button type="submit" [disabled]="securityForm.invalid" aria-label="Cambiar contraseña">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        Cambiar Contraseña
+      </button>
       @if (passwordChanged) {
-        <p class="mensaje-exito">Contraseña actualizada con éxito.</p>
+        <p class="mensaje-exito" role="status" aria-live="polite">
+          <i class="bi bi-check-circle" aria-hidden="true"></i>
+          Contraseña actualizada con éxito.
+        </p>
       }
     </form>
   </section>

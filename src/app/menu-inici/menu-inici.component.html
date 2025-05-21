@@ -1,30 +1,32 @@
-<main [ngClass]="{'dark': oscuro}">
+<main [ngClass]="{'dark': oscuro}" role="main">
   <div class="container">
     <div class="row">
       <div class="menu-container py-3">
-        <div class="menu-buttons d-flex justify-content-center gap-4">
-          <button class="menu-btn btn btn-primary btn-lg shadow-sm mr-4" 
-                  routerLink="productes" 
-                  routerLinkActive="active">
-            <i class="fas fa-box-open me-2"></i>
+        <nav class="menu-buttons d-flex justify-content-center gap-4" aria-label="Navegación principal">
+          <button class="menu-btn btn btn-primary btn-lg shadow-sm mr-4"
+                  routerLink="productes"
+                  routerLinkActive="active"
+                  aria-label="Ver todos los productos">
+            <i class="fas fa-box-open me-2" aria-hidden="true"></i>
             <span>TODOS LOS PRODUCTOS</span>
           </button>
-          <button class="menu-btn btn btn-primary btn-lg shadow-sm" 
-                  routerLink="categories" 
-                  routerLinkActive="active">
-            <i class="fas fa-tags me-2"></i>
+          <button class="menu-btn btn btn-primary btn-lg shadow-sm"
+                  routerLink="categories"
+                  routerLinkActive="active"
+                  aria-label="Ver todas las categorías">
+            <i class="fas fa-tags me-2" aria-hidden="true"></i>
             <span>TODAS LAS CATEGORÍAS</span>
           </button>
-        </div>
+        </nav>
       </div>
     </div>
   </div>
 
-  <div class="content-area">
+  <div class="content-area" role="region" aria-label="Contenido principal">
     <router-outlet (activate)="onActivate($event)"></router-outlet>
   </div>
 
-  <footer>
+  <footer role="contentinfo">
     <div class="contact-info">
       <div class="info-item">
         <i class="fas fa-map-marker-alt"></i>

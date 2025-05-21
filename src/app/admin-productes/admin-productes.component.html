@@ -1,227 +1,267 @@
-<div class="admin-container" [ngClass]="{'dark': oscuro}">
+<div class="admin-container" [ngClass]="{'dark': oscuro}" role="region" aria-label="Administración de productos">
   <div class="container mt-4">
-    <h2 class="mb-4">Administración de Productos</h2>
-    
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Lista de Productos</h4>
-            <button class="btn btn-primary" (click)="toggleCreateForm()">
-              <i class="fas fa-plus me-2"></i>Añadir Producto
-            </button>
-          </div>
-          <div class="card-body">
-            <!-- Formulari de Creació de Producte -->
-            <div *ngIf="showCreateForm" class="mb-4">
-              <div class="card" [ngClass]="{'bg-dark text-white': oscuro}">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5>Nuevo Producto</h5>
-                  <button class="btn btn-sm btn-secondary" (click)="toggleCreateForm()">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-                <div class="card-body">
-                  <form (ngSubmit)="createProduct()">
-                    <div class="row">
-                      <div class="col-md-6 mb-3">
-                        <label for="nombre" class="form-label">Nombre *</label>
-                        <input type="text" class="form-control" id="nombre" 
-                               [(ngModel)]="newProduct.nombre" name="nombre" required>
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label for="imagen" class="form-label">URL de Imagen *</label>
-                        <input type="text" class="form-control" id="imagen" 
-                               [(ngModel)]="newProduct.imagen" name="imagen" required>
-                      </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                      <label for="descripcion" class="form-label">Descripción</label>
-                      <textarea class="form-control" id="descripcion" rows="3" 
-                                [(ngModel)]="newProduct.descripcion" name="descripcion"></textarea>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-4 mb-3">
-                        <label for="precio" class="form-label">Precio</label>
-                        <input type="number" class="form-control" id="precio" 
-                               [(ngModel)]="newProduct.precio" name="precio" 
-                               min="0" step="0.01">
-                      </div>
-                      <div class="col-md-4 mb-3">
-                        <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" id="stock" 
-                               [(ngModel)]="newProduct.stock" name="stock" 
-                               min="0" step="1">
-                      </div>
-                      <div class="col-md-4 mb-3">
-                        <label for="categoria_id" class="form-label">Categoría</label>
-                        <input type="number" class="form-control" id="categoria_id" 
-                               [(ngModel)]="newProduct.categoria_id" name="categoria_id" 
-                               min="1" step="1">
-                      </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                      <label for="nota" class="form-label">Nota (0-5)</label>
-                      <input type="number" class="form-control" id="nota" 
-                             [(ngModel)]="newProduct.nota" name="nota" 
-                             min="0" max="5" step="0.1">
-                    </div>
-                    
-                    <div class="d-flex justify-content-end">
-                      <button type="button" class="btn btn-secondary me-2" (click)="toggleCreateForm()">Cancelar</button>
-                      <button type="submit" class="btn btn-success">Guardar Producto</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+    <header>
+      <h1 class="mb-4" id="admin-title">Administración de Productos</h1>
+    </header>
+
+    <main>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h2>Lista de Productos</h2>
+              <button class="btn btn-primary" (click)="toggleCreateForm()" [attr.aria-expanded]="showCreateForm" aria-controls="create-product-form">
+                <i class="fas fa-plus me-2" aria-hidden="true"></i>Añadir Producto
+              </button>
             </div>
-            
-            <!-- Indicador de càrrega -->
-            <div *ngIf="loading" class="text-center py-5">
-              <div class="spinner-border" role="status">
-              </div>
-            </div>
-            
-            <!-- Missatge d'error -->
-            <div *ngIf="error" class="alert alert-danger">
-              {{ error }}
-            </div>
-            
-            <!-- Taula de productes -->
-            <div *ngIf="!loading && !error" class="table-responsive">
-              <table class="table table-hover" [ngClass]="{'table-dark': oscuro}">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Imagen</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Descripción</th>
-                    <th scope="col">Precio</th>
-                    <th scope="col">Stock</th>
-                    <th scope="col">Categoría</th>
-                    <th scope="col">Nota</th>
-                    <th scope="col">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of products; let i = index">
-                    <th scope="row">{{ i + 1 }}</th>
-                    
-                    <!-- Columna d'imatge -->
-                    <td>
-                      <div *ngIf="editingProductId !== product.id">
-                        <img [src]="product.imagen" alt="{{ product.nombre }}" class="product-thumbnail">
-                      </div>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="text" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.imagen" 
-                               placeholder="URL de la imagen">
-                      </div>
-                    </td>
-                    
-                    <!-- Columna de nom -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">{{ product.nombre }}</span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="text" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.nombre" 
-                               placeholder="Nombre del producto">
-                      </div>
-                    </td>
-                    
-                    <!-- Columna de descripció -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">{{ product.descripcion | slice:0:50 }}{{ product.descripcion && product.descripcion.length > 50 ? '...' : '' }}</span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <textarea class="form-control form-control-sm" 
-                                 [(ngModel)]="editingProduct.descripcion" 
-                                 placeholder="Descripción del producto" rows="2"></textarea>
-                      </div>
-                    </td>
-                    
-                    <!-- Columna de preu -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">{{ product.precio | currency:'EUR' }}</span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="number" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.precio" 
-                               min="0" step="0.01"
-                               placeholder="Precio">
-                      </div>
-                    </td>
-                    
-                    <!-- Columna d'estoc -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">{{ product.stock }}</span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="number" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.stock" 
-                               min="0" step="1"
-                               placeholder="Stock">
-                      </div>
-                    </td>
-                    
-                    <!-- Columna de categoria -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">{{ product.categoria_id }}</span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="number" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.categoria_id" 
-                               min="1" step="1"
-                               placeholder="Categoría">
-                      </div>
-                    </td>
-                    
-                    <!-- Columna de valoració -->
-                    <td>
-                      <span *ngIf="editingProductId !== product.id">
-                        <div class="d-flex align-items-center">
-                          {{ product.nota | number:'1.1-1' }} 
-                          <i class="fas fa-star text-warning ms-1"></i>
+            <div class="card-body">
+              <!-- Formulario de Creación de Producto -->
+              <div *ngIf="showCreateForm" class="mb-4" id="create-product-form" aria-labelledby="new-product-title">
+                <div class="card" [ngClass]="{'bg-dark text-white': oscuro}">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 id="new-product-title">Nuevo Producto</h3>
+                    <button class="btn btn-sm btn-secondary" (click)="toggleCreateForm()" aria-label="Cerrar formulario">
+                      <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <form (ngSubmit)="createProduct()" aria-labelledby="new-product-title">
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <label for="nombre" class="form-label">Nombre <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(obligatorio)</span></label>
+                          <input type="text" class="form-control" id="nombre"
+                                 [(ngModel)]="newProduct.nombre" name="nombre" required
+                                 aria-required="true">
                         </div>
-                      </span>
-                      <div *ngIf="editingProductId === product.id" class="form-group">
-                        <input type="number" class="form-control form-control-sm" 
-                               [(ngModel)]="editingProduct.nota" 
+                        <div class="col-md-6 mb-3">
+                          <label for="imagen" class="form-label">URL de Imagen <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(obligatorio)</span></label>
+                          <input type="text" class="form-control" id="imagen"
+                                 [(ngModel)]="newProduct.imagen" name="imagen" required
+                                 aria-required="true">
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" rows="3"
+                                  [(ngModel)]="newProduct.descripcion" name="descripcion"
+                                  aria-describedby="descripcion-help"></textarea>
+                        <div id="descripcion-help" class="form-text">Ingrese una descripción detallada del producto</div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-4 mb-3">
+                          <label for="precio" class="form-label">Precio</label>
+                          <input type="number" class="form-control" id="precio"
+                                 [(ngModel)]="newProduct.precio" name="precio"
+                                 min="0" step="0.01" aria-describedby="precio-help">
+                          <div id="precio-help" class="form-text">Ingrese el precio en euros</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="stock" class="form-label">Stock</label>
+                          <input type="number" class="form-control" id="stock"
+                                 [(ngModel)]="newProduct.stock" name="stock"
+                                 min="0" step="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                          <label for="categoria_id" class="form-label">Categoría</label>
+                          <input type="number" class="form-control" id="categoria_id"
+                                 [(ngModel)]="newProduct.categoria_id" name="categoria_id"
+                                 min="1" step="1">
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="nota" class="form-label">Nota (0-5)</label>
+                        <input type="number" class="form-control" id="nota"
+                               [(ngModel)]="newProduct.nota" name="nota"
                                min="0" max="5" step="0.1"
-                               placeholder="Nota (0-5)">
+                               aria-describedby="nota-help">
+                        <div id="nota-help" class="form-text">Valoración del producto entre 0 y 5 estrellas</div>
                       </div>
-                    </td>
-                    
-                    <!-- Columna d'accions -->
-                    <td>
-                      <div *ngIf="editingProductId !== product.id" class="btn-group">
-                        <button class="btn btn-sm btn-info me-1" (click)="startEditing(product)">
-                          <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" (click)="deleteProduct(product)">
-                          <i class="fas fa-trash"></i>
-                        </button>
+
+                      <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" (click)="toggleCreateForm()">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Producto</button>
                       </div>
-                      <div *ngIf="editingProductId === product.id" class="btn-group">
-                        <button class="btn btn-sm btn-success me-1" (click)="saveProduct()">
-                          <i class="fas fa-save"></i>
-                        </button>
-                        <button class="btn btn-sm btn-secondary" (click)="cancelEditing()">
-                          <i class="fas fa-times"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            
-            <!-- Missatge de cap producte disponible -->
-            <div *ngIf="!loading && !error && products.length === 0" class="alert alert-info">
-              No hay productos disponibles. Añade un nuevo producto para comenzar.
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Indicador de carga -->
+              <div *ngIf="loading" class="text-center py-5" aria-live="polite">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Cargando productos...</span>
+                </div>
+              </div>
+
+              <!-- Mensaje de error -->
+              <div *ngIf="error" class="alert alert-danger" role="alert" aria-live="assertive">
+                {{ error }}
+              </div>
+
+              <!-- Tabla de productos -->
+              <div *ngIf="!loading && !error" class="table-responsive" aria-labelledby="products-table-title">
+                <h3 id="products-table-title" class="visually-hidden">Lista de productos</h3>
+                <table class="table table-hover" [ngClass]="{'table-dark': oscuro}">
+                  <caption class="visually-hidden">Tabla de productos disponibles</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Imagen</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Descripción</th>
+                      <th scope="col">Precio</th>
+                      <th scope="col">Stock</th>
+                      <th scope="col">Categoría</th>
+                      <th scope="col">Nota</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let product of products; let i = index">
+                      <th scope="row">{{ i + 1 }}</th>
+
+                      <!-- Columna de imagen -->
+                      <td>
+                        <div *ngIf="editingProductId !== product.id">
+                          <img [src]="product.imagen" [alt]="'Imagen de ' + product.nombre" class="product-thumbnail">
+                        </div>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-imagen-{{product.id}}" class="visually-hidden">URL de la imagen</label>
+                          <input type="text" class="form-control form-control-sm"
+                                 id="edit-imagen-{{product.id}}"
+                                 [(ngModel)]="editingProduct.imagen"
+                                 name="imagen-{{product.id}}"
+                                 placeholder="URL de la imagen">
+                        </div>
+                      </td>
+
+                      <!-- Columna de nombre -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">{{ product.nombre }}</span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-nombre-{{product.id}}" class="visually-hidden">Nombre del producto</label>
+                          <input type="text" class="form-control form-control-sm"
+                                 id="edit-nombre-{{product.id}}"
+                                 [(ngModel)]="editingProduct.nombre"
+                                 name="nombre-{{product.id}}"
+                                 placeholder="Nombre del producto">
+                        </div>
+                      </td>
+
+                      <!-- Columna de descripción -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">{{ product.descripcion | slice:0:50 }}{{ product.descripcion && product.descripcion.length > 50 ? '...' : '' }}</span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-descripcion-{{product.id}}" class="visually-hidden">Descripción del producto</label>
+                          <textarea class="form-control form-control-sm"
+                                   id="edit-descripcion-{{product.id}}"
+                                   [(ngModel)]="editingProduct.descripcion"
+                                   name="descripcion-{{product.id}}"
+                                   placeholder="Descripción del producto" rows="2"></textarea>
+                        </div>
+                      </td>
+
+                      <!-- Columna de precio -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">{{ product.precio | currency:'EUR' }}</span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-precio-{{product.id}}" class="visually-hidden">Precio</label>
+                          <input type="number" class="form-control form-control-sm"
+                                 id="edit-precio-{{product.id}}"
+                                 [(ngModel)]="editingProduct.precio"
+                                 name="precio-{{product.id}}"
+                                 min="0" step="0.01"
+                                 placeholder="Precio">
+                        </div>
+                      </td>
+
+                      <!-- Columna de stock -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">{{ product.stock }}</span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-stock-{{product.id}}" class="visually-hidden">Stock</label>
+                          <input type="number" class="form-control form-control-sm"
+                                 id="edit-stock-{{product.id}}"
+                                 [(ngModel)]="editingProduct.stock"
+                                 name="stock-{{product.id}}"
+                                 min="0" step="1"
+                                 placeholder="Stock">
+                        </div>
+                      </td>
+
+                      <!-- Columna de categoría -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">{{ product.categoria_id }}</span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-categoria-{{product.id}}" class="visually-hidden">Categoría</label>
+                          <input type="number" class="form-control form-control-sm"
+                                 id="edit-categoria-{{product.id}}"
+                                 [(ngModel)]="editingProduct.categoria_id"
+                                 name="categoria-{{product.id}}"
+                                 min="1" step="1"
+                                 placeholder="Categoría">
+                        </div>
+                      </td>
+
+                      <!-- Columna de valoración -->
+                      <td>
+                        <span *ngIf="editingProductId !== product.id">
+                          <div class="d-flex align-items-center">
+                            {{ product.nota | number:'1.1-1' }}
+                            <i class="fas fa-star text-warning ms-1" aria-hidden="true"></i>
+                            <span class="visually-hidden">estrellas</span>
+                          </div>
+                        </span>
+                        <div *ngIf="editingProductId === product.id" class="form-group">
+                          <label for="edit-nota-{{product.id}}" class="visually-hidden">Nota (0-5)</label>
+                          <input type="number" class="form-control form-control-sm"
+                                 id="edit-nota-{{product.id}}"
+                                 [(ngModel)]="editingProduct.nota"
+                                 name="nota-{{product.id}}"
+                                 min="0" max="5" step="0.1"
+                                 placeholder="Nota (0-5)">
+                        </div>
+                      </td>
+
+                      <!-- Columna de acciones -->
+                      <td>
+                        <div *ngIf="editingProductId !== product.id" class="btn-group">
+                          <button class="btn btn-sm btn-info me-1" (click)="startEditing(product)"
+                                  [attr.aria-label]="'Editar ' + product.nombre">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button class="btn btn-sm btn-danger" (click)="deleteProduct(product)"
+                                  [attr.aria-label]="'Eliminar ' + product.nombre">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                        <div *ngIf="editingProductId === product.id" class="btn-group">
+                          <button class="btn btn-sm btn-success me-1" (click)="saveProduct()"
+                                  aria-label="Guardar cambios">
+                            <i class="fas fa-save" aria-hidden="true"></i>
+                          </button>
+                          <button class="btn btn-sm btn-secondary" (click)="cancelEditing()"
+                                  aria-label="Cancelar edición">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Mensaje de ningún producto disponible -->
+              <div *ngIf="!loading && !error && products.length === 0" class="alert alert-info" role="alert" aria-live="polite">
+                No hay productos disponibles. Añade un nuevo producto para comenzar.
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </div>

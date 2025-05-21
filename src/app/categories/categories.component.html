@@ -1,7 +1,5 @@
-
 <main>
   <div class="row">
-    <!-- Loading indicator -->
     @if(loading){
       <div class="text-center my-5">
         <div class="spinner-border text-primary" role="status">
@@ -11,14 +9,12 @@
       </div>
     }
 
-    <!-- Error message -->
     @if(error){
       <div class="alert alert-danger text-center my-5">
         {{ error }}
       </div>
     }
 
-    <!-- Secció de categories -->
     @if(!loading && !error){
       @for (categoria of categories; track categoria.id) {
         <div class="col-4">
@@ -42,7 +38,6 @@
       }
     }
 
-    <!-- Selected category products -->
     @if(selectedCategory){
 
       <div class="row">
